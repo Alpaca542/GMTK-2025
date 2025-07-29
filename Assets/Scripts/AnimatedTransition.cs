@@ -3,7 +3,7 @@ using DG.Tweening;
 
 public class AnimatedTransition : MonoBehaviour
 {
-    [SerializeField] private float transitionDuration = 1f;
+    public float transitionDuration = 1f;
     [SerializeField] private Vector3 beginningStartPosition;
     [SerializeField] private Vector3 endingStartPosition;
 
