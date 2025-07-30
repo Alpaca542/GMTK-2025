@@ -60,7 +60,8 @@ public class PlaneController : MonoBehaviour
             float currentAngle = transform.eulerAngles.z;
             float angleDiff = Mathf.DeltaAngle(currentAngle, targetAngle);
             float rotationAmount = Mathf.Sign(angleDiff) * Mathf.Min(Mathf.Abs(angleDiff), rotationSpeed * Time.fixedDeltaTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, targetAngle), additionalRotationSmoothing * Time.fixedDeltaTime);
+            float smoothedRotation = Mathf.Lerp(0, rotationAmount, additionalRotationSmoothing * Time.fixedDeltaTime);
+            transform.Rotate(0, 0, smoothedRotation);
         }
     }
 
