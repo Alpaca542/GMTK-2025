@@ -20,7 +20,7 @@ public class PlaneController : MonoBehaviour
     private Vector2 inputDirection = Vector2.zero;
     private Vector2 targetInput = Vector2.zero;
 
-    private bool started = false;
+    public bool started = false;
 
     void Awake()
     {
