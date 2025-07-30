@@ -129,8 +129,8 @@ GameObject:
   m_Component:
   - component: {fileID: 326880333}
   - component: {fileID: 326880332}
+  - component: {fileID: 326880335}
   - component: {fileID: 326880331}
-  - component: {fileID: 326880329}
   - component: {fileID: 326880334}
   m_Layer: 0
   m_Name: Player
@@ -139,28 +139,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &326880329
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 326880328}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78806794f90cde64894482b4686eb1ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  thrustForce: 80
-  rotationSpeed: 800
-  maxSpeed: 8
-  baseDrag: 1
-  airDrag: 3
-  inputSmoothing: 8
-  accelerationSmoothing: 5
-  momentumDrag: 0.96
-  additionalRotationSmoothing: 8
-  started: 0
 --- !u!50 &326880331
 Rigidbody2D:
   serializedVersion: 5
@@ -308,6 +286,21 @@ PolygonCollider2D:
       - {x: -0.5, y: -0.28866667}
       - {x: 0.5, y: -0.28866667}
   m_UseDelaunayMesh: 0
+--- !u!114 &326880335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326880328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92754f46893d86741bc3b139c154e249, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
+  rotationSpeed: 150
+  started: 0
 --- !u!1 &497668394
 GameObject:
   m_ObjectHideFlags: 0

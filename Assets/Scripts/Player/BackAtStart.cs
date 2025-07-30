@@ -10,7 +10,7 @@ public class BackAtStart : MonoBehaviour
             Transform startPoint = LevelManager.Instance.startPoint;
             player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, 0.1f);
             player.transform.rotation = Quaternion.identity;
-            PlaneController planeController = player.GetComponent<PlaneController>();
+            PlayerController planeController = player.GetComponent<PlayerController>();
             planeController.started = false;
             Debug.Log("round done");
             LevelManager.Instance.NextLevel();
