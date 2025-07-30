@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlaneController : MonoBehaviour
+public class PlainController : MonoBehaviour
 {
     [Header("Movement")]
     public float thrustForce = 10f;
@@ -20,20 +20,12 @@ public class PlaneController : MonoBehaviour
     private Vector2 inputDirection = Vector2.zero;
     private Vector2 targetInput = Vector2.zero;
 
-    private bool started = false;
-
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.linearDamping = baseDrag;
     }
-    void Update()
-    {
-        if (!started && (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0))
-        {
-            started = true;
-        }
-    }
+
     void FixedUpdate()
     {
         HandleInput();
