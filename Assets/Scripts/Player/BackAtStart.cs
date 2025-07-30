@@ -8,7 +8,7 @@ public class BackAtStart : MonoBehaviour
         {
             GameObject player = other.gameObject;
             Transform startPoint = LevelManager.Instance.startPoint;
-            player.transform.position = startPoint.position;
+            player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, 0.1f);
             player.transform.rotation = Quaternion.identity;
             PlaneController planeController = player.GetComponent<PlaneController>();
             planeController.started = false;
