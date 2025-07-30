@@ -151,8 +151,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78806794f90cde64894482b4686eb1ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  rotationSpeed: 150
+  thrustForce: 80
+  rotationSpeed: 800
+  maxSpeed: 8
+  baseDrag: 1
+  airDrag: 3
+  inputSmoothing: 8
+  accelerationSmoothing: 5
+  momentumDrag: 0.96
+  additionalRotationSmoothing: 8
   started: 0
 --- !u!50 &326880331
 Rigidbody2D:
