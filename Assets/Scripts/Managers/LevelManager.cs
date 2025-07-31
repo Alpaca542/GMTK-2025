@@ -16,6 +16,7 @@ public class LevelManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        currentLevel = PlayerPrefs.GetInt("CurrentLevel", 0);
     }
 
     public void Start()
@@ -74,6 +75,8 @@ public class LevelManager : MonoBehaviour
     public void NextLevel()
     {
         currentLevel++;
+        PlayerPrefs.SetInt("CurrentLevel", currentLevel);
+        PlayerPrefs.Save();
         SpawnCollectibles();
         LevelAddition.Instance.NextLevel(currentLevel);
     }

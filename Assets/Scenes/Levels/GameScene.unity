@@ -273,6 +273,7 @@ MonoBehaviour:
   liftCoefficient: 45
   minLiftSpeed: 1
   maxLiftSpeed: 1
+  started: 0
 --- !u!50 &127307197
 Rigidbody2D:
   serializedVersion: 5
