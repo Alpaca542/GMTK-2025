@@ -277,6 +277,7 @@ MonoBehaviour:
   started: 0
   gravity: 4
   isdead: 0
+  isinanim: 0
 --- !u!50 &127307197
 Rigidbody2D:
   serializedVersion: 5
@@ -1065,6 +1066,7 @@ MonoBehaviour:
   collectiblePrefab: {fileID: 5568428773650907379, guid: a996e284529d31b46b637eb41ece7b94, type: 3}
   currentLevel: 0
   levelSwitchAnimation: {fileID: 1508506793}
+  FirstHalfDone: 0
 --- !u!1 &575970934
 GameObject:
   m_ObjectHideFlags: 0
@@ -1339,71 +1341,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8193299381788617015, guid: 27bd605f57813bd40834b9f9f4e85b24, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 883399867}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 27bd605f57813bd40834b9f9f4e85b24, type: 3}
 --- !u!4 &883399865 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5798507826750126036, guid: 27bd605f57813bd40834b9f9f4e85b24, type: 3}
   m_PrefabInstance: {fileID: 883399864}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &883399866 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8193299381788617015, guid: 27bd605f57813bd40834b9f9f4e85b24, type: 3}
-  m_PrefabInstance: {fileID: 883399864}
-  m_PrefabAsset: {fileID: 0}
---- !u!60 &883399867
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 883399866}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.28866667}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0, y: 0.5773587}
-      - {x: -0.5, y: -0.28866667}
-      - {x: 0.5, y: -0.28866667}
-  m_UseDelaunayMesh: 0
 --- !u!4 &894966453 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3606167051468680825, guid: 5d158d886fbcae24ca576bee3ce396a0, type: 3}
