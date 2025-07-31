@@ -8,6 +8,9 @@ public class LevelSwitchAnimation : MonoBehaviour
 
     public void AnimateLevelSwitch()
     {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        player.GetComponent<PlainController>().isinanim = true;
+        player.GetComponent<Rigidbody2D>().gravityScale = 0f;
         transform.position = pos1.position;
         transform.DOMove(pos2.position, 5f)
             .SetEase(Ease.InOutSine);

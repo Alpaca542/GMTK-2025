@@ -28,6 +28,7 @@ public class PlainController : MonoBehaviour
     public bool started;
     public float gravity = 4f;
     public bool isdead = false;
+    public bool isinanim = false;
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -46,7 +47,7 @@ public class PlainController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isdead) return;
+        if (isdead || isinanim) return;
         HandleInput();
         HandleRotation();
         HandleMovement();

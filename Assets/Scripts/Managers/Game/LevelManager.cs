@@ -83,6 +83,9 @@ public class LevelManager : MonoBehaviour
     private void SwitchFinal()
     {
         currentLevel++;
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        player.GetComponent<PlainController>().isinanim = false;
+        player.GetComponent<Rigidbody2D>().gravityScale = player.GetComponent<PlainController>().gravity;
         LevelAddition.Instance.NextLevel(currentLevel);
         SpawnCollectibles();
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);
