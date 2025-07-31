@@ -921,7 +921,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnBlockingLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   maxAttempts: 100
   topLeftSpawnArea: {fileID: 1089716446}
   bottomRightSpawnArea: {fileID: 1427392945}
