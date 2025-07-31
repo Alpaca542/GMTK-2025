@@ -1,3 +1,4 @@
+using EZCameraShake;
 using UnityEngine;
 
 public class MenuManager : MonoBehaviour
@@ -6,6 +7,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private string menuSceneName = "MenuScene";
     [SerializeField] private string winSceneName = "WinScene";
     [SerializeField] private string loseSceneName = "LoseScene";
+    public CameraShaker Sheker;
 
     public AnimatedTransition transition;
 
@@ -18,22 +20,20 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void TransitionToGame()
+    public void Play()
     {
         Debug.Log("Game Started");
         TransitionToScene(gameSceneName);
     }
 
-    public void TransitionToLose()
+    public void Exit()
     {
-        Debug.Log("Transitioning to Lose Scene");
-        TransitionToScene(loseSceneName);
+        transition.Exit();
     }
 
-    public void TransitionToWin()
+    public void FreakOut()
     {
-        Debug.Log("Transitioning to Win Scene");
-        TransitionToScene(winSceneName);
+        Sheker.StartShake(1, 10, 2f);
     }
 
     private void TransitionToScene(string sceneName)
@@ -46,5 +46,11 @@ public class MenuManager : MonoBehaviour
         {
             Debug.LogError("Bruh");
         }
+    }
+
+    public void SetVolume(float volume)
+    {
+        Global.volume = volume;
+        AudioListener.volume = volume;
     }
 }

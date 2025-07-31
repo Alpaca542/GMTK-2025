@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class AnimatedTransition : MonoBehaviour
 {
     // I hereby call this script not finished
-    public float transitionDuration = 1f;
+    [Range(0.5f, 5f)]
+    public float fadeRate = 1f;
     [SerializeField] private CanvasGroup overlay;
     [SerializeField] private Image loadingImage;
     private bool loadingSmth = false;
@@ -18,11 +19,11 @@ public class AnimatedTransition : MonoBehaviour
         StartCoroutine(FadeIn());
     }
 
-    public IEnumerator FadeIn()
+    private IEnumerator FadeIn()
     {
         overlay.gameObject.SetActive(true);
         overlay.alpha = 1f;
-        for(float t = 1f; t > 0f; t -= Time.unscaledDeltaTime * 2f)
+        for(float t = 1f; t > 0f; t -= Time.unscaledDeltaTime * fadeRate)
         {
             overlay.alpha = t;
             yield return null;
@@ -30,20 +31,40 @@ public class AnimatedTransition : MonoBehaviour
         overlay.alpha = 0f;
         overlay.gameObject.SetActive(false);
     }
+    public void Exit()
+    {
+        StartCoroutine(exit());
+    }
+
+    private IEnumerator exit()
+    {
+        if (loadingSmth) yield break;
+        loadingSmth = true;
+        overlay.gameObject.SetActive(true);
+        overlay.alpha = 0f;
+        for (float t = 0f; t < 1f; t += Time.unscaledDeltaTime * fadeRate)
+        {
+            overlay.alpha = t;
+            yield return null;
+        }
+        overlay.alpha = 1f;
+        Application.Quit();
+    }
 
     public void TransitionTo(string sceneName)
     {
-        StartCoroutine(TransitionTo(SceneManager.GetSceneByName(sceneName)));
+        StartCoroutine(transitionTo(sceneName));
     }
     public void TransitionTo(int sceneIndex)
     {
-        StartCoroutine(TransitionTo(SceneManager.GetSceneByBuildIndex(sceneIndex)));
+        StartCoroutine(transitionTo(SceneManager.GetSceneByBuildIndex(sceneIndex).name));
     }
 
     // A very script from out old game MagnetMadness which adds a loadign bar to the bottom and parallel loading
-    private IEnumerator TransitionTo(Scene scene)
+    private IEnumerator transitionTo(string name)
     {
         if (loadingSmth) yield break;
+        StopCoroutine(FadeIn());
         loadingSmth = true;
         float progress = 0f;
         overlay.gameObject.SetActive(true);
@@ -82,17 +103,17 @@ public class AnimatedTransition : MonoBehaviour
         }
         progress = 1f;
         loadingImage.fillAmount = progress;
-        for (float t = 0; t <= 1; t += Time.unscaledDeltaTime * 2f)
+        for (float t = 0; t <= 1; t += Time.unscaledDeltaTime * fadeRate)
         {
             overlay.alpha = t;
             yield return null;
         }
         overlay.alpha = 1;
-        yield return new WaitForSecondsRealtime(0.1f);
+        yield return new WaitForSecondsRealtime(0.3f);
 
         loading.allowSceneActivation = true;
         yield return new WaitUntil(() => loading.isDone);
-        SceneManager.SetActiveScene(scene);
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(name));
         loadingSmth = false;
         SceneManager.UnloadSceneAsync(lastScene);
     }

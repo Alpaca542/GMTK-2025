@@ -13,6 +13,7 @@ public class SaveManager : MonoBehaviour
     public SaveObject save; // The current save
     private SaveObject storedSave; // A copy of whats stored inside the playerprefs
     public bool autoSave = true;
+    public string saveName = "defaultSave";
 
     private void Awake()
     {
@@ -37,9 +38,10 @@ public class SaveManager : MonoBehaviour
     {
         // For example
         // save.level = Global.currentLevel;
+        save.fullScreen = Screen.fullScreen;
+        save.volume = AudioListener.volume;
     }
-    public void Load() { Load("primarySave"); } // Default save
-    public void Load(string saveName)
+    public void Load()
     {
         string json = PlayerPrefs.GetString(saveName, "");
         if (json == "")
@@ -48,9 +50,17 @@ public class SaveManager : MonoBehaviour
         }
         SaveObject _save = JsonUtility.FromJson<SaveObject>(json);
         save = _save;
+        UpdateGlobalProps();
+    }
+    // To change settings and stuff on load
+    public void UpdateGlobalProps()
+    {
+        AudioListener.volume = save.volume;
+        Global.volume = AudioListener.volume;
+        Screen.fullScreen = save.fullScreen;
     }
 
-    public void Save(string saveName)
+    public void Save()
     {
         UpdateProps();
         string json = JsonUtility.ToJson(save);
@@ -58,7 +68,6 @@ public class SaveManager : MonoBehaviour
         PlayerPrefs.Save();
         storedSave = save;
     }
-    public void Save() { Save("primarySave"); } // Default save
 
     // Save before quitting
     static bool WantsToQuit()
