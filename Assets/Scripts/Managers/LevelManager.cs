@@ -75,10 +75,10 @@ public class LevelManager : MonoBehaviour
     public void NextLevel()
     {
         currentLevel++;
+        LevelAddition.Instance.NextLevel(currentLevel);
+        SpawnCollectibles();
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);
         PlayerPrefs.Save();
-        SpawnCollectibles();
-        LevelAddition.Instance.NextLevel(currentLevel);
     }
 
 }
