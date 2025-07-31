@@ -1,6 +1,5 @@
-using UnityEngine.SceneManagement;
+using EZCameraShake;
 using UnityEngine;
-using System.Collections;
 
 public class MenuManager : MonoBehaviour
 {
@@ -8,45 +7,50 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private string menuSceneName = "MenuScene";
     [SerializeField] private string winSceneName = "WinScene";
     [SerializeField] private string loseSceneName = "LoseScene";
+    public CameraShaker Sheker;
 
-    private AnimatedTransition transition;
+    public AnimatedTransition transition;
 
     void Start()
     {
-        transition = FindAnyObjectByType<AnimatedTransition>();
+        transition = AnimatedTransition.instance;
         if (!transition)
         {
             Debug.LogError("AnimatedTransition not found in the scene.");
         }
-        transition.StartTransitionEnding();
     }
 
-    public void TransitionToGame()
+    public void Play()
     {
         Debug.Log("Game Started");
-        StartCoroutine(TransitionToScene(gameSceneName));
+        TransitionToScene(gameSceneName);
     }
 
-    public void TransitionToLose()
+    public void Exit()
     {
-        Debug.Log("Transitioning to Lose Scene");
-        StartCoroutine(TransitionToScene(loseSceneName));
+        transition.Exit();
     }
 
-    public void TransitionToWin()
+    public void FreakOut()
     {
-        Debug.Log("Transitioning to Win Scene");
-        StartCoroutine(TransitionToScene(winSceneName));
+        Sheker.StartShake(1, 10, 2f);
     }
 
-    private IEnumerator TransitionToScene(string sceneName)
+    private void TransitionToScene(string sceneName)
     {
         if (transition)
         {
-            transition.StartTransitionBeginning();
-            yield return new WaitForSeconds(transition.transitionDuration);
+            transition.TransitionTo(sceneName);
         }
+        else
+        {
+            Debug.LogError("Bruh");
+        }
+    }
 
-        SceneManager.LoadScene(sceneName);
+    public void SetVolume(float volume)
+    {
+        Global.volume = volume;
+        AudioListener.volume = volume;
     }
 }
