@@ -197,8 +197,8 @@ GameObject:
   - component: {fileID: 127307196}
   - component: {fileID: 127307195}
   m_Layer: 0
-  m_Name: Plane (1)
-  m_TagString: Untagged
+  m_Name: Player
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -296,9 +296,9 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!212 &127307198
 SpriteRenderer:
@@ -382,7 +382,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 131609235}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Level (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -416,7 +416,7 @@ GameObject:
   - component: {fileID: 192644698}
   - component: {fileID: 192644697}
   - component: {fileID: 192644696}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Square (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -718,17 +718,17 @@ RectTransform:
   m_GameObject: {fileID: 347906942}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.64, y: 0.64, z: 0.64}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 219016279}
   - {fileID: 756874924}
   m_Father: {fileID: 1704702468}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -467.22, y: 459.64}
-  m_SizeDelta: {x: 1091.91, y: 135.48}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -75}
+  m_SizeDelta: {x: 1091.91, y: 135.47998}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &359362206
 GameObject:
@@ -788,7 +788,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 372974312}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Level (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -807,7 +807,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1716923894}
   m_Father: {fileID: 1011853729}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &388232798
@@ -819,7 +820,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 388232799}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Level (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -838,8 +839,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1716923894}
+  m_Children: []
   m_Father: {fileID: 1011853729}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &393602554
@@ -919,6 +919,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0de14cd5d772d2543894f17e22a0b4cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnBlockingLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  maxAttempts: 100
+  topLeftSpawnArea: {fileID: 1089716446}
+  bottomRightSpawnArea: {fileID: 1427392945}
   startPoint: {fileID: 1914692178}
   collectiblePrefab: {fileID: 5568428773650907379, guid: a996e284529d31b46b637eb41ece7b94, type: 3}
   currentLevel: 0
@@ -931,7 +937,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 665114530}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Level (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1085,7 +1091,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 970138082}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Level (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1117,7 +1123,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1011853729}
   - component: {fileID: 1011853728}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Objects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1275,8 +1281,41 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1089716446}
+  - {fileID: 1427392945}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1089716445
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1089716446}
+  m_Layer: 0
+  m_Name: Pos1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1089716446
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089716445}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.15, y: 3.76, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1071235336}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1118320899
 GameObject:
@@ -1290,7 +1329,7 @@ GameObject:
   - component: {fileID: 1118320903}
   - component: {fileID: 1118320902}
   - component: {fileID: 1118320901}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Square (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1449,7 +1488,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1165660402}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Level (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1480,7 +1519,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1184528528}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Level (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1751,7 +1790,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1345443538}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Level (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1773,6 +1812,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1011853729}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1427392944
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1427392945}
+  m_Layer: 0
+  m_Name: Pos2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1427392945
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427392944}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.72, y: -5.59, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1071235336}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1544895305
 GameObject:
   m_ObjectHideFlags: 0
@@ -1785,7 +1855,7 @@ GameObject:
   - component: {fileID: 1544895309}
   - component: {fileID: 1544895308}
   - component: {fileID: 1544895307}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2049,7 +2119,7 @@ GameObject:
   - component: {fileID: 1716923897}
   - component: {fileID: 1716923896}
   - component: {fileID: 1716923895}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Square (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2069,7 +2139,7 @@ Transform:
   m_LocalScale: {x: 5.3665, y: 3.1692, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 388232799}
+  m_Father: {fileID: 372974312}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1716923895
 Rigidbody2D:
@@ -2211,7 +2281,7 @@ GameObject:
   - component: {fileID: 1810722259}
   - component: {fileID: 1810722258}
   - component: {fileID: 1810722257}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Square (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2370,7 +2440,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1836167413}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2575,7 +2645,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1996662748}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Level (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2601,10 +2671,10 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 127307199}
   - {fileID: 393602555}
   - {fileID: 1836167413}
   - {fileID: 114229588}
   - {fileID: 1011853729}
   - {fileID: 1970151138}
   - {fileID: 1071235336}
-  - {fileID: 127307199}

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 public class LevelManager : MonoBehaviour
 {
+    [SerializeField] private LayerMask spawnBlockingLayers;
+    [SerializeField] private int maxAttempts = 100;
+    public Transform topLeftSpawnArea;
+    public Transform bottomRightSpawnArea;
     public static LevelManager Instance;
     public Transform startPoint;
     public GameObject collectiblePrefab;
@@ -28,6 +32,8 @@ public class LevelManager : MonoBehaviour
         activeCollectibles.Remove(collected.gameObject);
         Destroy(collected.gameObject);
     }
+
+
     private void SpawnCollectibles()
     {
         foreach (var obj in GameObject.FindGameObjectsWithTag("Collectible"))
@@ -37,14 +43,33 @@ public class LevelManager : MonoBehaviour
 
         activeCollectibles.Clear();
 
-        for (int i = 0; i < 3 + currentLevel; i++)
+        int spawned = 0;
+        int attempts = 0;
+        int totalToSpawn = 3 + currentLevel;
+
+        while (spawned < totalToSpawn && attempts < maxAttempts)
         {
-            Vector2 pos = new Vector2(Random.Range(-6f, 6f), Random.Range(-3f, 3f));
-            GameObject newItem = Instantiate(collectiblePrefab, pos, Quaternion.identity);
-            newItem.tag = "Collectible";
-            activeCollectibles.Add(newItem);
+            attempts++;
+            float x = Random.Range(topLeftSpawnArea.position.x, bottomRightSpawnArea.position.x);
+            float y = Random.Range(bottomRightSpawnArea.position.y, topLeftSpawnArea.position.y);
+            Vector2 spawnPos = new Vector2(x, y);
+            bool blocked = Physics2D.OverlapCircle(spawnPos, 0.3f, spawnBlockingLayers);
+            if (!blocked)
+            {
+                GameObject newItem = Instantiate(collectiblePrefab, spawnPos, Quaternion.identity);
+                newItem.tag = "Collectible";
+                activeCollectibles.Add(newItem);
+                spawned++;
+            }
+        }
+
+        if (spawned < totalToSpawn)
+        {
+            Debug.LogWarning($"Only spawned {spawned} of {totalToSpawn} collectibles. Adjust area or LayerMask.");
         }
     }
+
+
     #endregion
     public void NextLevel()
     {
