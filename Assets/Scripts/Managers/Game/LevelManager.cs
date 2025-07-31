@@ -11,7 +11,8 @@ public class LevelManager : MonoBehaviour
     public Transform startPoint;
     public GameObject collectiblePrefab;
     public int currentLevel = 0;
-    private List<GameObject> activeCollectibles = new List<GameObject>();
+    private List<GameObject> activeCollectibles = new();
+    [SerializeField] LevelSwitchAnimation levelSwitchAnimation;
 
     private void Awake()
     {
@@ -28,6 +29,7 @@ public class LevelManager : MonoBehaviour
     {
         return activeCollectibles.Count == 0;
     }
+
     public void CollectItem(Collectible collected)
     {
         activeCollectibles.Remove(collected.gameObject);
@@ -53,7 +55,7 @@ public class LevelManager : MonoBehaviour
             attempts++;
             float x = Random.Range(topLeftSpawnArea.position.x, bottomRightSpawnArea.position.x);
             float y = Random.Range(bottomRightSpawnArea.position.y, topLeftSpawnArea.position.y);
-            Vector2 spawnPos = new Vector2(x, y);
+            Vector2 spawnPos = new(x, y);
             bool blocked = Physics2D.OverlapCircle(spawnPos, 0.3f, spawnBlockingLayers);
             if (!blocked)
             {
@@ -75,6 +77,11 @@ public class LevelManager : MonoBehaviour
     public void NextLevel()
     {
         currentLevel++;
+        levelSwitchAnimation.AnimateLevelSwitch();
+        Invoke(nameof(SwitchFinal), 3f);
+    }
+    private void SwitchFinal()
+    {
         LevelAddition.Instance.NextLevel(currentLevel);
         SpawnCollectibles();
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);

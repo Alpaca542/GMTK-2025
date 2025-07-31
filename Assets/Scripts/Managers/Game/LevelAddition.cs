@@ -15,7 +15,7 @@ public class LevelAddition : MonoBehaviour
     {
         for (int i = 0; i < transform.childCount; i++)
         {
-            if (i <= level)
+            if (i == level)
             {
                 transform.GetChild(i).gameObject.SetActive(true);
             }

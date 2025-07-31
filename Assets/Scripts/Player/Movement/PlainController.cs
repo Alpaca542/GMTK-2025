@@ -126,7 +126,7 @@ public class PlainController : MonoBehaviour
         if (speed < minLiftSpeed) return;
         float liftStrength = Mathf.Clamp01(speed / maxLiftSpeed);
         Vector2 velocity = rb.linearVelocity.normalized;
-        Vector2 liftDirection = new Vector2(-velocity.y, velocity.x); // Perpendicular to velocity
+        Vector2 liftDirection = new(-velocity.y, velocity.x); // Perpendicular to velocity
 
         // Only apply upward component of lift to prevent strange behavior
         float upwardComponent = Vector2.Dot(liftDirection, Vector2.up);
