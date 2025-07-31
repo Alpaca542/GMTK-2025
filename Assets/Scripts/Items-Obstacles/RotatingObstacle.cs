@@ -4,7 +4,7 @@ using DG.Tweening;
 public class RotatingObstacle : MonoBehaviour
 {
     [SerializeField] private Vector3[] angles;
-    [SerializeField] private float speed = 90f; // degrees per second
+    [SerializeField] private float speed = 90f;
 
     private Ease[] easeList = new Ease[]
     {

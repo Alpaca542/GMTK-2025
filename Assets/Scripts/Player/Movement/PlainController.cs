@@ -30,12 +30,22 @@ public class PlainController : MonoBehaviour
     public bool isdead = false;
     public bool isinanim = false;
     public static PlainController Instance;
+    private bool isGrounded = false;
+    public LayerMask groundLayer;
+
     void Awake()
     {
         Instance = this;
         rb = GetComponent<Rigidbody2D>();
         rb.linearDamping = baseDrag;
         gravity = rb.gravityScale;
+    }
+
+    void isGroundedCheck()
+    {
+        float checkRadius = 0.15f;
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, checkRadius, groundLayer);
+        isGrounded = hit != null;
     }
 
     void Start()
@@ -73,10 +83,22 @@ public class PlainController : MonoBehaviour
 
         bool hasInput = false;
 
-        if (Input.GetKey(KeyCode.W)) { targetInput += Vector2.up; hasInput = true; }
-        if (Input.GetKey(KeyCode.S)) { targetInput += Vector2.down; hasInput = true; }
-        if (Input.GetKey(KeyCode.A)) { targetInput += Vector2.left; hasInput = true; }
-        if (Input.GetKey(KeyCode.D)) { targetInput += Vector2.right; hasInput = true; }
+        isGroundedCheck();
+
+        if (isGrounded)
+        {
+            if (Input.GetKey(KeyCode.W)) { targetInput += Vector2.right; hasInput = true; }
+            if (Input.GetKey(KeyCode.S)) { targetInput += Vector2.left; hasInput = true; }
+            if (Input.GetKey(KeyCode.A)) { targetInput += Vector2.left; hasInput = true; }
+            if (Input.GetKey(KeyCode.D)) { targetInput += Vector2.right; hasInput = true; }
+        }
+        else
+        {
+            if (Input.GetKey(KeyCode.W)) { targetInput += Vector2.up; hasInput = true; }
+            if (Input.GetKey(KeyCode.S)) { targetInput += Vector2.down; hasInput = true; }
+            if (Input.GetKey(KeyCode.A)) { targetInput += Vector2.left; hasInput = true; }
+            if (Input.GetKey(KeyCode.D)) { targetInput += Vector2.right; hasInput = true; }
+        }
 
         if (hasInput)
         {
@@ -98,38 +120,38 @@ public class PlainController : MonoBehaviour
             float maxRotationThisFrame = rotationSpeed * Time.fixedDeltaTime;
             float rotationThisFrame = Mathf.Clamp(angleDiff, -maxRotationThisFrame, maxRotationThisFrame);
 
-            transform.rotation = Quaternion.Euler(0, 0, currentAngle + rotationThisFrame);
+            rb.MoveRotation(currentAngle + rotationThisFrame);
         }
     }
 
     void HandleMovement()
-{
-    if (!started)
     {
-        rb.gravityScale = 0f;
-        return;
+        if (!started)
+        {
+            rb.gravityScale = 0f;
+            return;
+        }
+
+        rb.gravityScale = gravity;
+
+        float inputMagnitude = inputDirection.magnitude;
+        targetThrust = Mathf.Clamp01(inputMagnitude);
+        currentThrust = Mathf.Lerp(currentThrust, targetThrust, accelerationSmoothing * Time.fixedDeltaTime);
+
+        if (currentThrust > 0.01f && fuelManager.HasFuel)
+        {
+            Vector2 thrustDirection = transform.up;
+            rb.AddForce(thrustForce * currentThrust * thrustDirection);
+            rb.linearDamping = baseDrag;
+        }
+        else
+        {
+            rb.linearDamping = airDrag;
+            rb.linearVelocity *= momentumDrag;
+        }
+
+        ApplyLift();
     }
-
-    rb.gravityScale = gravity;
-
-    float inputMagnitude = inputDirection.magnitude;
-    targetThrust = Mathf.Clamp01(inputMagnitude);
-    currentThrust = Mathf.Lerp(currentThrust, targetThrust, accelerationSmoothing * Time.fixedDeltaTime);
-
-    if (currentThrust > 0.01f && fuelManager.HasFuel)
-    {
-        Vector2 thrustDirection = transform.up;
-        rb.AddForce(thrustForce * currentThrust * thrustDirection);
-        rb.linearDamping = baseDrag;
-    }
-    else
-    {
-        rb.linearDamping = airDrag;
-        rb.linearVelocity *= momentumDrag;
-    }
-
-    ApplyLift();
-}
 
 
     void ApplyLift()
@@ -142,9 +164,19 @@ public class PlainController : MonoBehaviour
 
         // Only apply upward component of lift to prevent strange behavior
         float upwardComponent = Vector2.Dot(liftDirection, Vector2.up);
+
+        // Check if the plane is upside down (z rotation between 90 and 270 degrees)
+        float zRotation = transform.eulerAngles.z;
+        bool isUpsideDown = zRotation > 90f && zRotation < 270f;
+
         if (upwardComponent > 0)
         {
             Vector2 liftForce = Vector2.up * liftCoefficient * liftStrength * upwardComponent;
+            if (isUpsideDown)
+            {
+                // Apply a slight negative lift if upside down
+                liftForce *= -0.3f;
+            }
             rb.AddForce(liftForce);
         }
     }
