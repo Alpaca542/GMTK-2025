@@ -102,11 +102,7 @@ public class PlainController : MonoBehaviour
     {
         float speed = rb.linearVelocity.magnitude;
         if (speed < minLiftSpeed) return;
-
-        // Simple lift strength based on speed
         float liftStrength = Mathf.Clamp01(speed / maxLiftSpeed);
-
-        // Lift acts perpendicular to velocity direction (like real aerodynamics)
         Vector2 velocity = rb.linearVelocity.normalized;
         Vector2 liftDirection = new Vector2(-velocity.y, velocity.x); // Perpendicular to velocity
 
