@@ -15,13 +15,9 @@ public class PlainController : MonoBehaviour
     public float additionalRotationSmoothing = 0.5f;
 
     [Header("Lift System")]
-    public float liftCoefficient = 0.8f;
+    public float liftCoefficient = 2f;
     public float minLiftSpeed = 1.0f;
     public float maxLiftSpeed = 5f;
-    public float liftCurve = 0.8f;
-    public Transform liftApplicationPoint;
-    public float liftControlSensitivity = 0.5f;
-    public float maxLiftForce = 3f;
 
     private Rigidbody2D rb;
     private float currentThrust = 0f;
@@ -84,6 +80,8 @@ public class PlainController : MonoBehaviour
         float inputMagnitude = inputDirection.magnitude;
         targetThrust = Mathf.Clamp01(inputMagnitude);
         currentThrust = Mathf.Lerp(currentThrust, targetThrust, accelerationSmoothing * Time.fixedDeltaTime);
+
+        // Apply thrust
         if (currentThrust > 0.01f)
         {
             Vector2 thrustDirection = transform.up;
@@ -96,16 +94,27 @@ public class PlainController : MonoBehaviour
             rb.linearVelocity *= momentumDrag;
         }
 
-        // Apply lift force based on forward velocity
-        Vector2 liftForce = CalculateLiftForce();
+        // Apply lift force
+        ApplyLift();
+    }
 
-        // Apply lift at a specific point to allow for realistic aerodynamics
-        if (liftApplicationPoint != null)
+    void ApplyLift()
+    {
+        float speed = rb.linearVelocity.magnitude;
+        if (speed < minLiftSpeed) return;
+
+        // Simple lift strength based on speed
+        float liftStrength = Mathf.Clamp01(speed / maxLiftSpeed);
+
+        // Lift acts perpendicular to velocity direction (like real aerodynamics)
+        Vector2 velocity = rb.linearVelocity.normalized;
+        Vector2 liftDirection = new Vector2(-velocity.y, velocity.x); // Perpendicular to velocity
+
+        // Only apply upward component of lift to prevent strange behavior
+        float upwardComponent = Vector2.Dot(liftDirection, Vector2.up);
+        if (upwardComponent > 0)
         {
-            rb.AddForceAtPosition(liftForce, liftApplicationPoint.position);
-        }
-        else
-        {
+            Vector2 liftForce = Vector2.up * liftCoefficient * liftStrength * upwardComponent;
             rb.AddForce(liftForce);
         }
     }
@@ -116,43 +125,5 @@ public class PlainController : MonoBehaviour
         {
             rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
         }
-    }
-
-    Vector2 CalculateLiftForce()
-    {
-        // Calculate horizontal velocity only (lift comes from horizontal airspeed)
-        Vector2 horizontalVelocity = new Vector2(rb.linearVelocity.x, 0f);
-        float horizontalSpeed = horizontalVelocity.magnitude;
-
-        // Only apply lift when moving horizontally and above minimum speed
-        if (horizontalSpeed < minLiftSpeed)
-            return Vector2.zero;
-
-        // Normalize velocity to 0-1 range for lift calculation
-        float normalizedVelocity = Mathf.Clamp01((horizontalSpeed - minLiftSpeed) / (maxLiftSpeed - minLiftSpeed));
-
-        // Apply curve to make lift feel more natural (stronger at medium speeds)
-        float baseLiftStrength = Mathf.Pow(normalizedVelocity, liftCurve) * liftCoefficient;
-
-        // Make lift controllable based on input (pulling up increases lift, pushing down decreases it)
-        float liftControl = 1f;
-        if (inputDirection.magnitude > 0.1f)
-        {
-            // Calculate how much the input is pointing "up" relative to the plane
-            float upInput = Vector2.Dot(inputDirection, transform.up);
-            liftControl = 1f + (upInput * liftControlSensitivity);
-            liftControl = Mathf.Clamp(liftControl, 0.2f, 1.8f); // Prevent negative or excessive lift
-        }
-
-        float finalLiftStrength = baseLiftStrength * liftControl;
-
-        // Lift is always purely vertical (upward) - Vector2.up, not transform.up
-        Vector2 liftDirection = Vector2.up;
-
-        // Calculate lift force and clamp to maximum to prevent excessive flipping
-        float liftMagnitude = finalLiftStrength * Mathf.Sqrt(horizontalSpeed) * 0.6f;
-        liftMagnitude = Mathf.Clamp(liftMagnitude, 0f, maxLiftForce);
-
-        return liftDirection * liftMagnitude;
     }
 }
