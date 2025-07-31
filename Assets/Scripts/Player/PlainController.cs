@@ -25,11 +25,13 @@ public class PlainController : MonoBehaviour
     private Vector2 inputDirection = Vector2.zero;
     private Vector2 targetInput = Vector2.zero;
     private FuelManager fuelManager;
-
+    public bool started;
+    private float gravity = 4f;
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.linearDamping = baseDrag;
+        gravity = rb.gravityScale;
     }
 
     void Start()
@@ -53,12 +55,22 @@ public class PlainController : MonoBehaviour
     void HandleInput()
     {
         targetInput = Vector2.zero;
-        if (Input.GetKey(KeyCode.W)) targetInput += Vector2.up;
-        if (Input.GetKey(KeyCode.S)) targetInput += Vector2.down;
-        if (Input.GetKey(KeyCode.A)) targetInput += Vector2.left;
-        if (Input.GetKey(KeyCode.D)) targetInput += Vector2.right;
+
+        bool hasInput = false;
+
+        if (Input.GetKey(KeyCode.W)) { targetInput += Vector2.up; hasInput = true; }
+        if (Input.GetKey(KeyCode.S)) { targetInput += Vector2.down; hasInput = true; }
+        if (Input.GetKey(KeyCode.A)) { targetInput += Vector2.left; hasInput = true; }
+        if (Input.GetKey(KeyCode.D)) { targetInput += Vector2.right; hasInput = true; }
+
+        if (hasInput)
+        {
+            started = true;
+        }
+
         inputDirection = Vector2.Lerp(inputDirection, targetInput.normalized, inputSmoothing * Time.fixedDeltaTime);
     }
+
 
     void HandleRotation()
     {
@@ -77,6 +89,14 @@ public class PlainController : MonoBehaviour
 
     void HandleMovement()
     {
+        if (!started)
+        {
+            rb.gravityScale = 0f;
+        }
+        else
+        {
+            rb.gravityScale = gravity;
+        }
         float inputMagnitude = inputDirection.magnitude;
         targetThrust = Mathf.Clamp01(inputMagnitude);
         currentThrust = Mathf.Lerp(currentThrust, targetThrust, accelerationSmoothing * Time.fixedDeltaTime);

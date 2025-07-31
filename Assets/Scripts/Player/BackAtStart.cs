@@ -10,6 +10,7 @@ public class BackAtStart : MonoBehaviour
             Transform startPoint = LevelManager.Instance.startPoint;
             player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, 0.1f);
             player.transform.rotation = Quaternion.identity;
+            player.GetComponent<PlainController>().started = false;
             Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
