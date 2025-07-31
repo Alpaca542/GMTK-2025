@@ -10,10 +10,25 @@ public class AnimatedTransition : MonoBehaviour
     [SerializeField] private CanvasGroup overlay;
     [SerializeField] private Image loadingImage;
     private bool loadingSmth = false;
+    public static AnimatedTransition instance;
 
-    private void Start()
+    private void Awake()
     {
+        instance = this;
+        StartCoroutine(FadeIn());
+    }
 
+    public IEnumerator FadeIn()
+    {
+        overlay.gameObject.SetActive(true);
+        overlay.alpha = 1f;
+        for(float t = 1f; t > 0f; t -= Time.unscaledDeltaTime * 2f)
+        {
+            overlay.alpha = t;
+            yield return null;
+        }
+        overlay.alpha = 0f;
+        overlay.gameObject.SetActive(false);
     }
 
     public void TransitionTo(string sceneName)
@@ -33,7 +48,7 @@ public class AnimatedTransition : MonoBehaviour
         float progress = 0f;
         overlay.gameObject.SetActive(true);
         overlay.alpha = 0;
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSecondsRealtime(0.1f);
         while (progress < 0.05f)
         {
             progress = Mathf.Lerp(progress, 0.105f, Time.unscaledDeltaTime * 5f);
@@ -58,7 +73,7 @@ public class AnimatedTransition : MonoBehaviour
             loadingImage.fillAmount = progress;
             yield return null;
         }
-        yield return new WaitForSecondsRealtime(0.7f);
+        yield return new WaitForSecondsRealtime(0.2f);
         for (float t = 0; t <= 1; t += Time.unscaledDeltaTime * 2f)
         {
             progress = Mathf.Lerp(progress, 1, Time.unscaledDeltaTime);
@@ -73,11 +88,11 @@ public class AnimatedTransition : MonoBehaviour
             yield return null;
         }
         overlay.alpha = 1;
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return new WaitForSecondsRealtime(0.1f);
 
         loading.allowSceneActivation = true;
         yield return new WaitUntil(() => loading.isDone);
-        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(1));
+        SceneManager.SetActiveScene(scene);
         loadingSmth = false;
         SceneManager.UnloadSceneAsync(lastScene);
     }

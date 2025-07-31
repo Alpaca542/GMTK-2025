@@ -11,13 +11,10 @@ public class MenuManager : MonoBehaviour
 
     void Start()
     {
+        transition = AnimatedTransition.instance;
         if (!transition)
         {
-            transition = FindAnyObjectByType<AnimatedTransition>();
-            if (!transition)
-            {
-                Debug.LogError("AnimatedTransition not found in the scene.");
-            }
+            Debug.LogError("AnimatedTransition not found in the scene.");
         }
     }
 
@@ -44,6 +41,10 @@ public class MenuManager : MonoBehaviour
         if (transition)
         {
             transition.TransitionTo(sceneName);
+        }
+        else
+        {
+            Debug.LogError("Bruh");
         }
     }
 }
