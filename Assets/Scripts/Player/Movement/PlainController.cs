@@ -167,13 +167,14 @@ public class PlainController : MonoBehaviour
 
         // Check if the plane is upside down (z rotation between 90 and 270 degrees)
         float zRotation = transform.eulerAngles.z;
-        bool isUpsideDown = zRotation > 90f && zRotation < 270f;
+        bool isUpsideDown = false;
 
         if (upwardComponent > 0)
         {
             Vector2 liftForce = Vector2.up * liftCoefficient * liftStrength * upwardComponent;
             if (isUpsideDown)
             {
+                Debug.LogWarning("Plane is upside down, applying negative lift.");
                 // Apply a slight negative lift if upside down
                 liftForce *= -0.3f;
             }

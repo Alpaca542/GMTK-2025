@@ -1235,21 +1235,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thrustForce: 80
-  rotationSpeed: 500
+  rotationSpeed: 200
   maxSpeed: 8
   baseDrag: 1
   airDrag: 3
-  inputSmoothing: 7
+  inputSmoothing: 4
   accelerationSmoothing: 5
   momentumDrag: 0.96
   additionalRotationSmoothing: 1000
   liftCoefficient: 45
   minLiftSpeed: 1
   maxLiftSpeed: 1
-  started: 0
+  started: 1
   gravity: 4
   isdead: 0
   isinanim: 0
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!50 &766786991
 Rigidbody2D:
   serializedVersion: 5
