@@ -46,23 +46,11 @@ public class LevelManager : MonoBehaviour
         }
     }
     #endregion
-    public void CompleteLoop()
-    {
-        currentLevel++;
-        ResetPlane();
-        SpawnCollectibles();
-    }
-
-    private void ResetPlane()
-    {
-        GameObject player = GameObject.FindWithTag("Player");
-        player.transform.position = startPoint.position;
-        player.transform.rotation = Quaternion.identity;
-    }
     public void NextLevel()
     {
         currentLevel++;
         SpawnCollectibles();
+        LevelAddition.Instance.NextLevel(currentLevel);
     }
 
 }
