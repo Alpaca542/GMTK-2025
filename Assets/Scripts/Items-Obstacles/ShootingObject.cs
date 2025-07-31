@@ -1,0 +1,1 @@
+//look at player and shoot when player is in range

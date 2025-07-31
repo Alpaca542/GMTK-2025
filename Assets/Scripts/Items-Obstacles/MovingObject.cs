@@ -1,33 +1,57 @@
 using UnityEngine;
-using UnityEngine.Animations;
+using DG.Tweening;
 
 public class MovingObject : MonoBehaviour
 {
-    [SerializeField] private Transform pointA;
-    [SerializeField] private Transform pointB;
+    [SerializeField] private Transform[] points;
     [SerializeField] private float speed = 2f;
 
-    private bool movingToB = true;
-    void Start()
+    private Ease[] easeList = new Ease[]
     {
-        if (pointA == null || pointB == null)
+        Ease.Linear,
+        Ease.InSine,
+        Ease.OutSine,
+        Ease.InOutSine,
+        Ease.InQuad,
+        Ease.OutQuad,
+        Ease.InOutQuad,
+        Ease.InCubic,
+        Ease.OutCubic,
+        Ease.InOutCubic
+    };
+
+    [SerializeField] private int easeIndex = 0;
+    private int currentPointIndex = 0;
+
+    private void Start()
+    {
+        if (points == null || points.Length < 2)
         {
-            pointA = transform.parent.GetChild(0);
-            pointB = transform.parent.GetChild(1);
+            Debug.LogError("MovingObject requires at least two points to move between.");
+            return;
         }
+
+        currentPointIndex = 0;
+        transform.position = points[currentPointIndex].position;
+        MoveToNextPoint();
     }
 
-    private void Update()
+    private void MoveToNextPoint()
     {
-        if (pointA == null || pointB == null) return;
+        int nextPointIndex = (currentPointIndex + 1) % points.Length;
+        Vector3 target = points[nextPointIndex].position;
+        float distance = Vector3.Distance(transform.position, target);
+        float duration = distance / speed;
 
-        Vector3 target = movingToB ? pointB.position : pointA.position;
+        int clampedIndex = Mathf.Clamp(easeIndex, 0, easeList.Length - 1);
+        Ease selectedEase = easeList[clampedIndex];
 
-        if (Vector3.Distance(transform.position, target) < 0.1f)
-        {
-            movingToB = !movingToB;
-        }
-
-        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+        transform.DOMove(target, duration)
+            .SetEase(selectedEase)
+            .OnComplete(() =>
+            {
+                currentPointIndex = nextPointIndex;
+                MoveToNextPoint();
+            });
     }
 }
