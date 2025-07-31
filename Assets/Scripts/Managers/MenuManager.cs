@@ -47,6 +47,6 @@ public class MenuManager : MonoBehaviour
             yield return new WaitForSeconds(transition.transitionDuration);
         }
 
-        SceneManager.LoadScene(sceneName);
+        SceneManager.LoadSceneAsync(sceneName);
     }
 }
