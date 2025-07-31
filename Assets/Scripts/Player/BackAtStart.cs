@@ -16,13 +16,8 @@ public class BackAtStart : MonoBehaviour
             player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, 0.1f);
             player.transform.rotation = Quaternion.identity;
             player.GetComponent<PlainController>().started = false;
-            Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
-            if (rb != null)
-            {
-                rb.linearVelocity = Vector2.zero;
-                rb.angularVelocity = 0f;
-            }
             Debug.Log("round done");
+            player.GetComponent<PlainController>().ResetPlayer();
             LevelManager.Instance.NextLevel();
         }
         else if (other.CompareTag("Player"))
@@ -36,12 +31,7 @@ public class BackAtStart : MonoBehaviour
         player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, 0.1f);
         player.transform.rotation = Quaternion.identity;
         player.GetComponent<PlainController>().started = false;
-        Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector2.zero;
-            rb.angularVelocity = 0f;
-        }
+        player.GetComponent<PlainController>().ResetPlayer();
         player.GetComponent<PlainController>().isdead = false;
     }
 }

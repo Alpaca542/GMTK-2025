@@ -152,7 +152,16 @@ public class PlainController : MonoBehaviour
         started = false;
         Invoke(nameof(DelayedReset), 2f);
     }
-
+    public void ResetPlayer()
+    {
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.rotation = 0f;
+        rb.linearDamping = baseDrag;
+        inputDirection = Vector2.zero;
+        targetInput = Vector2.zero;
+        currentThrust = 0f;
+    }
     void DelayedReset()
     {
         BackAtStart.Instance.ResetPlayerPosition(gameObject);
