@@ -1643,13 +1643,9 @@ MonoBehaviour:
   accelerationSmoothing: 5
   momentumDrag: 0.96
   additionalRotationSmoothing: 1000
-  liftCoefficient: 3
-  minLiftSpeed: 0.5
-  maxLiftSpeed: 6
-  liftCurve: 1.2
-  liftApplicationPoint: {fileID: 2132964655}
-  liftControlSensitivity: 0.8
-  maxLiftForce: 3
+  liftCoefficient: 45
+  minLiftSpeed: 1
+  maxLiftSpeed: 1
 --- !u!50 &2117905671
 Rigidbody2D:
   serializedVersion: 5
@@ -1666,7 +1662,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 4
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: b4c29460ad16e40beaa8da964eab7d8e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
