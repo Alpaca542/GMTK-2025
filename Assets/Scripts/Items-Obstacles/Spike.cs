@@ -2,14 +2,15 @@ using UnityEngine;
 
 public class Spike : MonoBehaviour
 {
-    void OTriggerEnter2D(Collider2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.CompareTag("Player"))
+        Debug.Log("hit");
+        if (collision.gameObject.CompareTag("Player"))
         {
-           PlainController playerscript = collision.GetComponent<PlainController>();
+            PlainController playerscript = collision.gameObject.GetComponent<PlainController>();
             if (playerscript != null && playerscript.started)
             {
-                Rigidbody2D rb = collision.GetComponent<Rigidbody2D>();
+                Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
                 if (rb != null)
                 {
                     rb.linearVelocity = Vector2.zero;
