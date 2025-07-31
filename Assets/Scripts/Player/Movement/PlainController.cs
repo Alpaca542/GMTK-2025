@@ -142,4 +142,10 @@ public class PlainController : MonoBehaviour
             rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
         }
     }
+    public void DieBySpike()
+    {
+        Debug.Log("Player has died by spike.");
+        started = false;
+        Invoke(nameof(BackAtStart.Instance.ResetPlayerPosition), 2f);
+    }
 }
