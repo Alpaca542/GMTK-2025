@@ -46,13 +46,16 @@ public class PlainController : MonoBehaviour
 
     void HandleRotation()
     {
-        if (inputDirection.magnitude > 0.2f)
+        if (inputDirection.magnitude > 0.1f)
         {
             float targetAngle = Mathf.Atan2(inputDirection.y, inputDirection.x) * Mathf.Rad2Deg - 90f;
             float currentAngle = transform.eulerAngles.z;
             float angleDiff = Mathf.DeltaAngle(currentAngle, targetAngle);
-            float rotationAmount = Mathf.Sign(angleDiff) * Mathf.Min(Mathf.Abs(angleDiff), rotationSpeed * Time.fixedDeltaTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, targetAngle), additionalRotationSmoothing * Time.fixedDeltaTime);
+
+            float maxRotationThisFrame = rotationSpeed * Time.fixedDeltaTime;
+            float rotationThisFrame = Mathf.Clamp(angleDiff, -maxRotationThisFrame, maxRotationThisFrame);
+
+            transform.rotation = Quaternion.Euler(0, 0, currentAngle + rotationThisFrame);
         }
     }
 
