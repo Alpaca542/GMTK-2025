@@ -484,7 +484,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1716923894}
   m_Father: {fileID: 1011853729}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &393602554
@@ -1450,10 +1451,6 @@ MonoBehaviour:
   liftCoefficient: 3
   minLiftSpeed: 0.5
   maxLiftSpeed: 6
-  liftCurve: 1.2
-  liftApplicationPoint: {fileID: 141269060}
-  liftControlSensitivity: 0.8
-  maxLiftForce: 3
 --- !u!50 &1609952480
 Rigidbody2D:
   serializedVersion: 5
@@ -1718,12 +1715,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1716923893}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: -2.49, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -54.75419, y: -7.29379, z: 0}
   m_LocalScale: {x: 5.3665, y: 3.1692, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1836167413}
+  m_Father: {fileID: 388232799}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1716923895
 Rigidbody2D:
@@ -2137,7 +2134,6 @@ Transform:
   - {fileID: 192644695}
   - {fileID: 1810722256}
   - {fileID: 1118320900}
-  - {fileID: 1716923894}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1854714883
