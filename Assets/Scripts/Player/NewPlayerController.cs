@@ -8,14 +8,12 @@ public class NewPlayerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [Header("Velocity Settings")]
     public Transform position;//where we apply force
-    public float currentVelocity = 0f;
-    public float maxVelocity = 5f;
-    public float minVelocity = -5f;
+    public bool accelerate;
     public float forceCoef = 10f;
-    public float accelerationSmoothness = 5f;
+
     float targetVelocity = 0f;
     public float flapsC = 10f;
-    public float decelerationSmoothness = 3f;
+
 
     private Rigidbody2D rb;
 
@@ -30,34 +28,33 @@ public class NewPlayerController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.D))
         {
-            currentVelocity = Mathf.Lerp(currentVelocity, maxVelocity, Time.deltaTime * accelerationSmoothness); ;
+            accelerate = true;
+
         }
-        if (Input.GetKey(KeyCode.A))
+        else
         {
-            currentVelocity = Mathf.Lerp(currentVelocity, 0, Time.deltaTime * accelerationSmoothness); ;
+            accelerate = false;
         }
 
 
-        Vector3 mouseScreenPos = Input.mousePosition;
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
-        mouseWorldPos.z = 0f;
-        Vector2 directionToMouse = mouseWorldPos - transform.position;
-        Vector2 targetDirection = -directionToMouse.normalized;
 
     }
     void FixedUpdate()
     {
-        Vector2 force = currentVelocity * forceCoef * (Vector2)transform.right + ApplyLiftForce(currentVelocity);
-        rb.AddForce(force, ForceMode2D.Force);
 
-        currentVelocity = Mathf.Lerp(currentVelocity, 0f, Time.deltaTime * decelerationSmoothness);
+        Vector2 force = ApplyLiftForce();
+        if (accelerate)
+        {
+            rb.AddForce((Vector2)transform.right * forceCoef, ForceMode2D.Force);
+        }
+
         rb.AddForceAtPosition(force, position.position, ForceMode2D.Force);
     }
 
-    Vector2 ApplyLiftForce(float motor)
+    Vector2 ApplyLiftForce()
     {
 
-        Vector2 liftForce = (Vector2)transform.up * motor * flapsC;
+        Vector2 liftForce = (Vector2)transform.up * rb.linearVelocity.magnitude * rb.linearVelocity.magnitude * flapsC;
         return liftForce;
     }
 }
