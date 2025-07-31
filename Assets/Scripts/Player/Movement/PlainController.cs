@@ -29,8 +29,10 @@ public class PlainController : MonoBehaviour
     public float gravity = 4f;
     public bool isdead = false;
     public bool isinanim = false;
+    public static PlainController Instance;
     void Awake()
     {
+        Instance = this;
         rb = GetComponent<Rigidbody2D>();
         rb.linearDamping = baseDrag;
         gravity = rb.gravityScale;
@@ -48,12 +50,22 @@ public class PlainController : MonoBehaviour
     void FixedUpdate()
     {
         if (isdead || isinanim) return;
+
+        if (!fuelManager.HasFuel)
+        {
+            currentThrust = 0f;
+            rb.linearDamping = airDrag;
+            rb.gravityScale = gravity;
+            return;
+        }
+
         HandleInput();
         HandleRotation();
         HandleMovement();
         ClampVelocity();
-        fuelManager.CalculateFuelConsumptionBasedOnThrust(currentThrust);
+        if (started) fuelManager.CalculateFuelConsumptionBasedOnThrust(currentThrust);
     }
+
 
     void HandleInput()
     {
@@ -91,35 +103,34 @@ public class PlainController : MonoBehaviour
     }
 
     void HandleMovement()
+{
+    if (!started)
     {
-        if (!started)
-        {
-            rb.gravityScale = 0f;
-        }
-        else
-        {
-            rb.gravityScale = gravity;
-        }
-        float inputMagnitude = inputDirection.magnitude;
-        targetThrust = Mathf.Clamp01(inputMagnitude);
-        currentThrust = Mathf.Lerp(currentThrust, targetThrust, accelerationSmoothing * Time.fixedDeltaTime);
-
-        // Apply thrust
-        if (currentThrust > 0.01f)
-        {
-            Vector2 thrustDirection = transform.up;
-            rb.AddForce(thrustForce * currentThrust * thrustDirection);
-            rb.linearDamping = baseDrag;
-        }
-        else
-        {
-            rb.linearDamping = airDrag;
-            rb.linearVelocity *= momentumDrag;
-        }
-
-        // Apply lift force
-        ApplyLift();
+        rb.gravityScale = 0f;
+        return;
     }
+
+    rb.gravityScale = gravity;
+
+    float inputMagnitude = inputDirection.magnitude;
+    targetThrust = Mathf.Clamp01(inputMagnitude);
+    currentThrust = Mathf.Lerp(currentThrust, targetThrust, accelerationSmoothing * Time.fixedDeltaTime);
+
+    if (currentThrust > 0.01f && fuelManager.HasFuel)
+    {
+        Vector2 thrustDirection = transform.up;
+        rb.AddForce(thrustForce * currentThrust * thrustDirection);
+        rb.linearDamping = baseDrag;
+    }
+    else
+    {
+        rb.linearDamping = airDrag;
+        rb.linearVelocity *= momentumDrag;
+    }
+
+    ApplyLift();
+}
+
 
     void ApplyLift()
     {
@@ -162,7 +173,12 @@ public class PlainController : MonoBehaviour
         inputDirection = Vector2.zero;
         targetInput = Vector2.zero;
         currentThrust = 0f;
+        started = false;
+        isdead = false;
+        isinanim = false;
+        fuelManager.ResetFuel();
     }
+
     void DelayedReset()
     {
         BackAtStart.Instance.ResetPlayerPosition(gameObject);
