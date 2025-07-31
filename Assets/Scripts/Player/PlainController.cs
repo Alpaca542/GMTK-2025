@@ -15,12 +15,13 @@ public class PlainController : MonoBehaviour
     public float additionalRotationSmoothing = 0.5f;
 
     [Header("Lift System")]
-    public float liftCoefficient = 1.5f;
-    public float minLiftSpeed = 0.5f;
-    public float maxLiftSpeed = 6f;
-    public float liftCurve = 1.2f;
+    public float liftCoefficient = 0.8f;
+    public float minLiftSpeed = 1.0f;
+    public float maxLiftSpeed = 5f;
+    public float liftCurve = 0.8f;
     public Transform liftApplicationPoint;
-    public float liftControlSensitivity = 0.8f;
+    public float liftControlSensitivity = 0.5f;
+    public float maxLiftForce = 3f;
 
     private Rigidbody2D rb;
     private float currentThrust = 0f;
@@ -119,16 +120,16 @@ public class PlainController : MonoBehaviour
 
     Vector2 CalculateLiftForce()
     {
-        // Calculate forward velocity in the direction the plane is facing
-        Vector2 forwardDirection = transform.up;
-        float forwardVelocity = Vector2.Dot(rb.linearVelocity, forwardDirection);
+        // Calculate horizontal velocity only (lift comes from horizontal airspeed)
+        Vector2 horizontalVelocity = new Vector2(rb.linearVelocity.x, 0f);
+        float horizontalSpeed = horizontalVelocity.magnitude;
 
-        // Only apply lift when moving forward and above minimum speed
-        if (forwardVelocity < minLiftSpeed)
+        // Only apply lift when moving horizontally and above minimum speed
+        if (horizontalSpeed < minLiftSpeed)
             return Vector2.zero;
 
         // Normalize velocity to 0-1 range for lift calculation
-        float normalizedVelocity = Mathf.Clamp01((forwardVelocity - minLiftSpeed) / (maxLiftSpeed - minLiftSpeed));
+        float normalizedVelocity = Mathf.Clamp01((horizontalSpeed - minLiftSpeed) / (maxLiftSpeed - minLiftSpeed));
 
         // Apply curve to make lift feel more natural (stronger at medium speeds)
         float baseLiftStrength = Mathf.Pow(normalizedVelocity, liftCurve) * liftCoefficient;
@@ -140,14 +141,18 @@ public class PlainController : MonoBehaviour
             // Calculate how much the input is pointing "up" relative to the plane
             float upInput = Vector2.Dot(inputDirection, transform.up);
             liftControl = 1f + (upInput * liftControlSensitivity);
+            liftControl = Mathf.Clamp(liftControl, 0.2f, 1.8f); // Prevent negative or excessive lift
         }
 
         float finalLiftStrength = baseLiftStrength * liftControl;
 
-        // Calculate lift direction (perpendicular to forward direction, upward relative to plane)
-        Vector2 liftDirection = new Vector2(-forwardDirection.y, forwardDirection.x);
+        // Lift is always purely vertical (upward) - Vector2.up, not transform.up
+        Vector2 liftDirection = Vector2.up;
 
-        // Apply lift force (reduced strength for more controllable feel)
-        return liftDirection * finalLiftStrength * forwardVelocity * 0.3f;
+        // Calculate lift force and clamp to maximum to prevent excessive flipping
+        float liftMagnitude = finalLiftStrength * Mathf.Sqrt(horizontalSpeed) * 0.6f;
+        liftMagnitude = Mathf.Clamp(liftMagnitude, 0f, maxLiftForce);
+
+        return liftDirection * liftMagnitude;
     }
 }
