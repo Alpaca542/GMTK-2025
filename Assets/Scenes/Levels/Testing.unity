@@ -1476,7 +1476,7 @@ MonoBehaviour:
   maxSpeed: 8
   baseDrag: 1
   airDrag: 3
-  inputSmoothing: 8
+  inputSmoothing: 7
   accelerationSmoothing: 5
   momentumDrag: 0.96
   additionalRotationSmoothing: 1000

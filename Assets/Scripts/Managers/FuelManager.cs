@@ -20,7 +20,6 @@ public class FuelManager : MonoBehaviour
 
     public void CalculateFuelConsumptionBasedOnThrust(float thrust)
     {
-        Debug.Log($"Calculating fuel consumption based on thrust: {thrust}");
         fuelConsumptionRate = Mathf.Clamp(thrust * 20f, 0f, 20f);
     }
 
