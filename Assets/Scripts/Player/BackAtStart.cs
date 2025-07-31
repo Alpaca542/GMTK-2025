@@ -3,6 +3,10 @@ using UnityEngine;
 public class BackAtStart : MonoBehaviour
 {
     public static BackAtStart Instance;
+    void Awake()
+    {
+        Instance = this;
+    }
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player") && LevelManager.Instance.AllCollectiblesCollected())
@@ -38,5 +42,6 @@ public class BackAtStart : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
             rb.angularVelocity = 0f;
         }
+        player.GetComponent<PlainController>().isdead = false;
     }
 }

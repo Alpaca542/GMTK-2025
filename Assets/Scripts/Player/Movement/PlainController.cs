@@ -26,7 +26,8 @@ public class PlainController : MonoBehaviour
     private Vector2 targetInput = Vector2.zero;
     private FuelManager fuelManager;
     public bool started;
-    private float gravity = 4f;
+    public float gravity = 4f;
+    public bool isdead = false;
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -45,6 +46,7 @@ public class PlainController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isdead) return;
         HandleInput();
         HandleRotation();
         HandleMovement();
@@ -145,7 +147,14 @@ public class PlainController : MonoBehaviour
     public void DieBySpike()
     {
         Debug.Log("Player has died by spike.");
+        isdead = true;
+        rb.gravityScale = 0f;
         started = false;
-        Invoke(nameof(BackAtStart.Instance.ResetPlayerPosition), 2f);
+        Invoke(nameof(DelayedReset), 2f);
+    }
+
+    void DelayedReset()
+    {
+        BackAtStart.Instance.ResetPlayerPosition(gameObject);
     }
 }
