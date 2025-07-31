@@ -13,6 +13,7 @@ public class LevelManager : MonoBehaviour
     public int currentLevel = 0;
     private List<GameObject> activeCollectibles = new();
     [SerializeField] LevelSwitchAnimation levelSwitchAnimation;
+    public bool FirstHalfDone = false;
 
     private void Awake()
     {
