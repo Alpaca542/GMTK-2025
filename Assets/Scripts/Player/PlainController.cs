@@ -19,11 +19,21 @@ public class PlainController : MonoBehaviour
     private float targetThrust = 0f;
     private Vector2 inputDirection = Vector2.zero;
     private Vector2 targetInput = Vector2.zero;
+    public FuelManager fuelManager;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.linearDamping = baseDrag;
+    }
+
+    void Start()
+    {
+        fuelManager = FindFirstObjectByType<FuelManager>();
+        if (fuelManager == null)
+        {
+            Debug.LogError("FuelManager not found in the scene.");
+        }
     }
 
     void FixedUpdate()
@@ -32,6 +42,7 @@ public class PlainController : MonoBehaviour
         HandleRotation();
         HandleMovement();
         ClampVelocity();
+        fuelManager.CalculateFuelConsumptionBasedOnThrust(currentThrust);
     }
 
     void HandleInput()
