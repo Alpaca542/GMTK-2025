@@ -6,10 +6,22 @@ public class LevelAddition : MonoBehaviour
     public static LevelAddition Instance;
 
     [SerializeField] private List<GameObject> levelObjects = new List<GameObject>();
-
+    void Reset()
+    {
+        levelObjects.Clear();
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            levelObjects.Add(transform.GetChild(i).gameObject);
+        }
+    }
     void Awake()
     {
         Instance = this;
+        levelObjects.Clear();
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            levelObjects.Add(transform.GetChild(i).gameObject);
+        }
     }
 
     void Start()
