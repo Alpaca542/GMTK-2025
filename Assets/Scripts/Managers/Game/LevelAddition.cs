@@ -1,28 +1,28 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelAddition : MonoBehaviour
 {
     public static LevelAddition Instance;
+
+    [SerializeField] private List<GameObject> levelObjects = new List<GameObject>();
+
     void Awake()
     {
         Instance = this;
     }
+
     void Start()
     {
         NextLevel(LevelManager.Instance.currentLevel);
     }
+
     public void NextLevel(int level)
     {
-        for (int i = 0; i < transform.childCount; i++)
+        Debug.Log($"Switching to level {level}");
+        for (int i = 0; i < levelObjects.Count; i++)
         {
-            if (i == level)
-            {
-                transform.GetChild(i).gameObject.SetActive(true);
-            }
-            else
-            {
-                transform.GetChild(i).gameObject.SetActive(false);
-            }
+            levelObjects[i].SetActive(i == level);
         }
     }
 }

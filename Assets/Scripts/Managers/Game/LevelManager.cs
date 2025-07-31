@@ -76,12 +76,12 @@ public class LevelManager : MonoBehaviour
     #endregion
     public void NextLevel()
     {
-        currentLevel++;
         levelSwitchAnimation.AnimateLevelSwitch();
         Invoke(nameof(SwitchFinal), 3f);
     }
     private void SwitchFinal()
     {
+        currentLevel++;
         LevelAddition.Instance.NextLevel(currentLevel);
         SpawnCollectibles();
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);
