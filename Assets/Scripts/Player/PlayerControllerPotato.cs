@@ -12,9 +12,6 @@ public class PlayerControllerPotato : MonoBehaviour
     private float previousRot;
 
     private Rigidbody2D rb;
-    private float currentThrust = 0f;
-    private float targetThrust = 0f;
-    private Vector2 inputDirection = Vector2.zero;
     private Vector2 targetInput = Vector2.zero;
 
     public bool started = false;
@@ -48,16 +45,22 @@ public class PlayerControllerPotato : MonoBehaviour
     void HandleRotation()
     {
 
-
+        //my side velocity transfer code is somewhat broken :(
         rb.angularVelocity += -targetInput.x * rotationSpeed;
         float percentRotated = Mathf.Clamp01(Mathf.Abs(rb.rotation - previousRot)/90);
         float badMovement = Vector2.Dot(rb.linearVelocity, transform.right);
         Quaternion rotVec = Quaternion.FromToRotation(Vector3.up, transform.up);
-        rb.linearVelocity -= badMovement * sideTransfer * (Vector2)(rotVec * Vector3.right) * percentRotated;
-        rb.linearVelocity += badMovement * sideTransfer * (Vector2)(rotVec * Vector3.up) * percentRotated;
+        Debug.DrawRay(transform.position, rotVec * Vector3.right * badMovement);
+        rb.linearVelocity -= badMovement * sideTransfer * (Vector2)(rotVec * Vector3.right);
+        rb.linearVelocity += badMovement * sideTransfer * (Vector2)(rotVec * Vector3.up);
         badMovement = Vector2.Dot(rb.linearVelocity, transform.right);
+
+
         rb.linearVelocity -= badMovement * sideDrag * (Vector2)(rotVec * Vector3.right) * Time.deltaTime;
         previousRot = rb.rotation;
+
+        Debug.DrawRay(transform.position,-( rotVec * Vector3.right * badMovement));
+
     }
 
     void HandleMovement()
