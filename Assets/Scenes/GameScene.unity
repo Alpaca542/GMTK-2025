@@ -1404,6 +1404,11 @@ PolygonCollider2D:
       - {x: -0.5, y: -0.28866667}
       - {x: 0.5, y: -0.28866667}
   m_UseDelaunayMesh: 0
+--- !u!4 &894966453 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3606167051468680825, guid: 5d158d886fbcae24ca576bee3ce396a0, type: 3}
+  m_PrefabInstance: {fileID: 1726691983}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1011853727
 GameObject:
   m_ObjectHideFlags: 0
@@ -2312,6 +2317,11 @@ Transform:
   - {fileID: 1726691984}
   m_Father: {fileID: 1011853729}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1683925305 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2417563417328745136, guid: 5d158d886fbcae24ca576bee3ce396a0, type: 3}
+  m_PrefabInstance: {fileID: 1726691983}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1704702467
 GameObject:
   m_ObjectHideFlags: 0
@@ -2422,6 +2432,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1563153560}
     m_Modifications:
+    - target: {fileID: 1654540538615158101, guid: 5d158d886fbcae24ca576bee3ce396a0, type: 3}
+      propertyPath: points.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1654540538615158101, guid: 5d158d886fbcae24ca576bee3ce396a0, type: 3}
+      propertyPath: 'points.Array.data[0]'
+      value: 
+      objectReference: {fileID: 894966453}
+    - target: {fileID: 1654540538615158101, guid: 5d158d886fbcae24ca576bee3ce396a0, type: 3}
+      propertyPath: 'points.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1683925305}
     - target: {fileID: 2417563417328745136, guid: 5d158d886fbcae24ca576bee3ce396a0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.74
