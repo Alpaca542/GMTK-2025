@@ -22,7 +22,7 @@ public class LevelAddition : MonoBehaviour
         Debug.Log($"Switching to level {level}");
         for (int i = 0; i < levelObjects.Count; i++)
         {
-            levelObjects[i].SetActive(i == level);
+            levelObjects[i].SetActive(i <= level);
         }
     }
 }
