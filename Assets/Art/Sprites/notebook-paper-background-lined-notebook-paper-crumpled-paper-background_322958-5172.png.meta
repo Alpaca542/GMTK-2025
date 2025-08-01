@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2034e5df7c7fe486b8ce5d1b0608b33c
+guid: c56545705a50b4bedbbd514ad10f7d04
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5562309781770732413
-    second: Notebook_Paper_Sheet_PNG_Clipart_Picture_0
+      213: -2915032721007675632
+    second: notebook-paper-background-lined-notebook-paper-crumpled-paper-background_322958-5172_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,17 +109,30 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Notebook_Paper_Sheet_PNG_Clipart_Picture_0
+      name: notebook-paper-background-lined-notebook-paper-crumpled-paper-background_322958-5172_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 68
-        width: 3927
-        height: 4884
+        y: 0
+        width: 740
+        height: 1046
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d730021b64b413d40800000000000000
-      internalID: 5562309781770732413
+      spriteID: 01772bb4f29bb87d0800000000000000
+      internalID: -2915032721007675632
       vertices: []
       indices: 
       edges: []
@@ -148,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Notebook_Paper_Sheet_PNG_Clipart_Picture_0: 5562309781770732413
+      notebook-paper-background-lined-notebook-paper-crumpled-paper-background_322958-5172_0: -2915032721007675632
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -8,6 +8,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private string winSceneName = "WinScene";
     [SerializeField] private string loseSceneName = "LoseScene";
     public CameraShaker Sheker;
+    public AudioSource freeeaaakkkk;
+    private CameraShakeInstance shaker_I;
 
     public AnimatedTransition transition;
 
@@ -33,7 +35,14 @@ public class MenuManager : MonoBehaviour
 
     public void FreakOut()
     {
-        Sheker.StartShake(1, 10, 2f);
+        shaker_I = Sheker.ShakeOnce(1, 10, 2f, 1f);
+        Invoke(nameof(StopFreakOut), 16);
+        freeeaaakkkk.Play();
+    }
+    
+    public void StopFreakOut()
+    {
+        shaker_I.StartFadeOut(1f);
     }
 
     private void TransitionToScene(string sceneName)
