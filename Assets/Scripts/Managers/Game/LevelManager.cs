@@ -26,12 +26,12 @@ public class LevelManager : MonoBehaviour
         halfBorder.SetActive(false);
         Camera.main.GetComponent<PlayerFollow>().enabled = false;
         Camera.main.GetComponent<CameraZoom>().enabled = false;
-        Camera.main.transform.DOMove(new Vector3(0, 0, -10), 2f).SetEase(Ease.InOutSine);
+        Camera.main.GetComponent<PlayerFollow>().useFirstBounds = false;
+        Camera.main.transform.DOMove(new Vector3(0, 0, GameObject.FindAnyObjectByType<PlainController>().transform.position.z - 10), 2f).SetEase(Ease.InOutSine);
         Camera.main.DOFieldOfView(88f, 2f).OnComplete(() =>
         {
             Camera.main.GetComponent<PlayerFollow>().enabled = true;
             Camera.main.GetComponent<CameraZoom>().enabled = true;
-            Camera.main.DOFieldOfView(43f, 2f);
         });
 
         // Safely handle BackPos fade animations
