@@ -3,20 +3,29 @@ using UnityEngine;
 
 public class BackAtStart : MonoBehaviour
 {
-    public static BackAtStart Instance;
     public bool used = false;
-    void Awake()
+
+    void Start()
     {
-        Instance = this;
+        // Reset used flag when the object becomes active (new level starts)
+        used = false;
+    }
+
+    public void ResetUsed()
+    {
+        used = false;
+        Debug.Log($"BackAtStart ({gameObject.name}): Reset used flag");
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (used)
         {
+            Debug.Log($"BackAtStart ({gameObject.name}): Already used, ignoring trigger");
             return;
         }
         if (other.CompareTag("Player") && LevelManager.Instance != null && LevelManager.Instance.AllCollectiblesCollected())
         {
+            Debug.Log($"BackAtStart ({gameObject.name}): All collectibles collected, proceeding to next level");
             if (!used)
             {
                 used = true;
@@ -47,7 +56,7 @@ public class BackAtStart : MonoBehaviour
         }
         else if (other.CompareTag("Player"))
         {
-            Debug.Log("Collect all collectibles first!");
+            Debug.Log($"BackAtStart ({gameObject.name}): Collect all collectibles first!");
         }
     }
     public void ResetPlayerPosition(GameObject player)

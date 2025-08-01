@@ -215,7 +215,6 @@ public class PlainController : MonoBehaviour
         isdead = true;
         rb.gravityScale = 0f;
         started = false;
-        Invoke(nameof(DelayedReset), 2f);
     }
     public void ResetPlayer()
     {
@@ -232,8 +231,8 @@ public class PlainController : MonoBehaviour
         fuelManager.ResetFuel();
     }
 
-    void DelayedReset()
-    {
-        BackAtStart.Instance.ResetPlayerPosition(gameObject);
-    }
+    // void DelayedReset()
+    // {
+    //     BackAtStart.Instance.ResetPlayerPosition(gameObject);
+    // }
 }
