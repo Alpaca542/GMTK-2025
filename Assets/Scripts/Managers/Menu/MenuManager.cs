@@ -35,7 +35,7 @@ public class MenuManager : MonoBehaviour
 
     public void FreakOut()
     {
-        shaker_I = Sheker.ShakeOnce(1, 10, 2f, 1f);
+        shaker_I = Sheker.StartShake(1, 10, 2f);
         Invoke(nameof(StopFreakOut), 16);
         freeeaaakkkk.Play();
     }
