@@ -10,6 +10,10 @@ TagManager:
   - BackPos2
   - Spring
   - Obstacle
+  - Magnet
+  - Cow
+  - Basket
+  - LevelEnding
   layers:
   - Default
   - TransparentFX
@@ -17,8 +21,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Chain
+  - Player
   - 
   - Obstacle
   - 

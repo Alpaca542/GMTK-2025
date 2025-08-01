@@ -10,14 +10,13 @@ public class LevelManager : MonoBehaviour
     public Transform bottomRightSpawnArea;
     public static LevelManager Instance;
     public Transform startPoint;
-    public GameObject collectiblePrefab;
+    public GameObject cowPrefab;
     public int currentLevel = 0;
-    private List<GameObject> activeCollectibles = new();
+    private List<GameObject> activeCows = new();
+    private int cowCount = 0;
     [SerializeField] private LevelSwitchAnimation levelSwitchAnimation;
     public bool FirstHalfDone = false;
     [SerializeField] private GameObject halfBorder;
-    [SerializeField] private GameObject backPos1;
-    [SerializeField] private GameObject backPos2;
 
 
     public void ShowSecondHalf()
@@ -33,54 +32,12 @@ public class LevelManager : MonoBehaviour
             Camera.main.GetComponent<PlayerFollow>().enabled = true;
             Camera.main.GetComponent<CameraZoom>().enabled = true;
         });
-
-        // Safely handle BackPos fade animations
-        if (backPos1 != null && backPos1.GetComponent<SpriteRenderer>() != null)
-        {
-            backPos1.GetComponent<SpriteRenderer>().DOFade(0f, 2f);
-        }
-        else
-        {
-            Debug.LogWarning("BackPos1 not available for fade animation!");
-        }
-
-        if (backPos2 != null && backPos2.GetComponent<SpriteRenderer>() != null)
-        {
-            backPos2.GetComponent<SpriteRenderer>().DOFade(1f, 2f);
-        }
-        else
-        {
-            Debug.LogWarning("BackPos2 not available for fade animation!");
-        }
     }
 
     private void Awake()
     {
         Instance = this;
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
-
-        // Find BackPos objects for the initial level
-        backPos1 = GameObject.FindGameObjectWithTag("BackPos1");
-        backPos2 = GameObject.FindGameObjectWithTag("BackPos2");
-
-        // Set initial BackPos states
-        if (backPos1 != null && backPos1.GetComponent<SpriteRenderer>() != null)
-        {
-            backPos1.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
-        }
-        else
-        {
-            Debug.LogWarning("BackPos1 not found or missing SpriteRenderer!");
-        }
-
-        if (backPos2 != null && backPos2.GetComponent<SpriteRenderer>() != null)
-        {
-            backPos2.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
-        }
-        else
-        {
-            Debug.LogWarning("BackPos2 not found or missing SpriteRenderer!");
-        }
 
         halfBorder.SetActive(true);
     }
@@ -91,36 +48,41 @@ public class LevelManager : MonoBehaviour
         {
             GameObject.FindAnyObjectByType<CutSceneManager>().StartCutScene();
         }
-        // Don't spawn collectibles immediately - let LevelAddition handle the initial level setup
-        // SpawnCollectibles(); // This will be called after the initial level drawing is complete
+        // Don't spawn cows immediately - let LevelAddition handle the initial level setup
+        // SpawnCows(); // This will be called after the initial level drawing is complete
     }
 
     public void SpawnIn()
     {
-        SpawnCollectibles();
+        SpawnCows();
     }
 
-    #region Collectibles
-    public bool AllCollectiblesCollected()
+    #region Cows
+    public bool AllCowsRescued()
     {
-        return activeCollectibles.Count == 0;
+        return activeCows.Count == 0;
     }
 
-    public void CollectItem(Collectible collected)
+    public void RescueCow(GameObject cow)
     {
-        activeCollectibles.Remove(collected.gameObject);
-        Destroy(collected.gameObject);
+        activeCows.Remove(cow);
+        cowCount++;
+        Destroy(cow);
     }
 
-
-    private void SpawnCollectibles()
+    public int GetCowCount()
     {
-        foreach (var obj in GameObject.FindGameObjectsWithTag("Collectible"))
+        return cowCount;
+    }
+
+    private void SpawnCows()
+    {
+        foreach (var obj in GameObject.FindGameObjectsWithTag("Cow"))
         {
             Destroy(obj);
         }
 
-        activeCollectibles.Clear();
+        activeCows.Clear();
 
         int spawned = 0;
         int attempts = 0;
@@ -135,16 +97,16 @@ public class LevelManager : MonoBehaviour
             bool blocked = Physics2D.OverlapCircle((Vector2)spawnPos, 0.3f, spawnBlockingLayers);
             if (!blocked)
             {
-                GameObject newItem = Instantiate(collectiblePrefab, spawnPos, Quaternion.identity);
-                newItem.tag = "Collectible";
-                activeCollectibles.Add(newItem);
+                GameObject newCow = Instantiate(cowPrefab, spawnPos, Quaternion.identity);
+                newCow.tag = "Cow";
+                activeCows.Add(newCow);
                 spawned++;
             }
         }
 
         if (spawned < totalToSpawn)
         {
-            Debug.LogWarning($"Only spawned {spawned} of {totalToSpawn} collectibles. Adjust area or LayerMask.");
+            Debug.LogWarning($"Only spawned {spawned} of {totalToSpawn} cows. Adjust area or LayerMask.");
         }
     }
 
@@ -172,7 +134,8 @@ public class LevelManager : MonoBehaviour
     {
         currentLevel++;
 
-        // Reset level state for new level
+        // Reset cow count for new level
+        cowCount = 0;
         FirstHalfDone = false;
         halfBorder.SetActive(true);
 
@@ -180,31 +143,58 @@ public class LevelManager : MonoBehaviour
         player.GetComponent<PlainController>().isinanim = false;
         player.GetComponent<Rigidbody2D>().gravityScale = player.GetComponent<PlainController>().gravity;
 
+        // Reset and delete all baskets
+        Basket[] baskets = GameObject.FindObjectsByType<Basket>(FindObjectsSortMode.None);
+        foreach (Basket basket in baskets)
+        {
+            if (basket.transform.parent != null)
+            {
+                basket.transform.SetParent(null);
+            }
+            Destroy(basket.gameObject);
+        }
+
+        // Clean up any remaining cows from previous level
+        GameObject[] remainingCows = GameObject.FindGameObjectsWithTag("Cow");
+        foreach (GameObject cow in remainingCows)
+        {
+            Destroy(cow);
+        }
+        activeCows.Clear();
+
+        // Reset any magnet scripts
+        MagnetScript[] magnets = GameObject.FindObjectsByType<MagnetScript>(FindObjectsSortMode.None);
+        foreach (MagnetScript magnet in magnets)
+        {
+            magnet.Taken = false;
+        }
+
+        // Reset player position
+        if (startPoint != null)
+        {
+            player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, -44.3f);
+            player.transform.rotation = Quaternion.identity;
+
+            PlainController controller = player.GetComponent<PlainController>();
+            if (controller != null)
+            {
+                controller.started = false;
+                controller.ResetPlayer();
+                controller.isdead = false;
+            }
+        }
+
         // Call LevelAddition.NextLevel which will handle the drawing animation
         LevelAddition.Instance.NextLevel(currentLevel);
 
-        // Spawn collectibles after level drawing is complete
-        StartCoroutine(WaitForLevelDrawingAndSpawnCollectibles());
-
-        // Find new BackPos objects for the new level
-        backPos1 = GameObject.FindGameObjectWithTag("BackPos1");
-        backPos2 = GameObject.FindGameObjectWithTag("BackPos2");
-
-        // Set initial BackPos states
-        if (backPos1 != null && backPos1.GetComponent<SpriteRenderer>() != null)
-        {
-            backPos1.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
-        }
-        if (backPos2 != null && backPos2.GetComponent<SpriteRenderer>() != null)
-        {
-            backPos2.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
-        }
+        // Spawn cows after level drawing is complete
+        StartCoroutine(WaitForLevelDrawingAndSpawnCows());
 
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);
         PlayerPrefs.Save();
     }
 
-    private IEnumerator WaitForLevelDrawingAndSpawnCollectibles()
+    private IEnumerator WaitForLevelDrawingAndSpawnCows()
     {
         // Wait for the level drawing to complete
         yield return new WaitUntil(() => LevelAddition.Instance != null && !LevelAddition.Instance.IsDrawingLevel);
@@ -212,8 +202,8 @@ public class LevelManager : MonoBehaviour
         // Small delay to ensure everything is properly set up
         yield return new WaitForSeconds(0.1f);
 
-        // Now spawn collectibles
-        SpawnCollectibles();
+        // Now spawn cows
+        SpawnCows();
     }
 
 }

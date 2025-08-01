@@ -44,7 +44,7 @@ public class LevelAddition : MonoBehaviour
         // Set up the first level
         NextLevel(LevelManager.Instance.currentLevel);
 
-        // Wait for drawing to complete, then tell LevelManager to spawn collectibles
+        // Wait for drawing to complete, then tell LevelManager to spawn cows
         yield return new WaitUntil(() => !isDrawingLevel);
 
         if (LevelManager.Instance != null)
