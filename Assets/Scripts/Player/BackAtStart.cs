@@ -1,16 +1,23 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class BackAtStart : MonoBehaviour
 {
-    public static BackAtStart Instance;
-    void Awake()
-    {
-        Instance = this;
-    }
+    public bool used = false;
+
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (used)
+        {
+            Debug.Log($"BackAtStart ({gameObject.name}): Already used, ignoring trigger");
+            return;
+        }
+
         if (other.CompareTag("Player") && LevelManager.Instance != null && LevelManager.Instance.AllCollectiblesCollected())
         {
+            Debug.Log($"BackAtStart ({gameObject.name}): All collectibles collected, proceeding to next level part");
+            used = true;
+
             GameObject player = other.gameObject;
             Transform startPoint = LevelManager.Instance.startPoint;
             if (startPoint == null)
@@ -19,7 +26,7 @@ public class BackAtStart : MonoBehaviour
                 return;
             }
 
-            player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, 0.1f);
+            player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, -44.3f);
             player.transform.rotation = Quaternion.identity;
 
             PlainController controller = player.GetComponent<PlainController>();
@@ -33,14 +40,14 @@ public class BackAtStart : MonoBehaviour
                 Debug.LogError("PlainController not found on player!");
             }
 
-            Debug.Log("round done");
             LevelManager.Instance.NextLevel();
         }
         else if (other.CompareTag("Player"))
         {
-            Debug.Log("Collect all collectibles first!");
+            Debug.Log($"BackAtStart ({gameObject.name}): Collect all collectibles first!");
         }
     }
+
     public void ResetPlayerPosition(GameObject player)
     {
         if (LevelManager.Instance == null)
@@ -56,7 +63,7 @@ public class BackAtStart : MonoBehaviour
             return;
         }
 
-        player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, 0.1f);
+        player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, -44.3f);
         player.transform.rotation = Quaternion.identity;
 
         PlainController controller = player.GetComponent<PlainController>();

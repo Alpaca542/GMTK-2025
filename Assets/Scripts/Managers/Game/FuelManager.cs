@@ -30,7 +30,12 @@ public class FuelManager : MonoBehaviour
 
     void Update()
     {
-        if(PlainController.Instance.isdead || PlainController.Instance.isinanim || !PlainController.Instance.started)
+        if (!PlainController.Instance)
+        {
+            Debug.LogError("PlainController instance not found.");
+            return;
+        }
+        if (PlainController.Instance.isdead || PlainController.Instance.isinanim || !PlainController.Instance.started)
         {
             fuelSlider.value = FuelPercentage;
             return;

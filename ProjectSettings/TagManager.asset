@@ -8,6 +8,8 @@ TagManager:
   - Collectable
   - BackPos1
   - BackPos2
+  - Spring
+  - Obstacle
   layers:
   - Default
   - TransparentFX

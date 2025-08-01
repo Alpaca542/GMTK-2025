@@ -3,7 +3,7 @@ using DG.Tweening; // Make sure you have DOTween imported
 
 public class CameraZoom : MonoBehaviour
 {
-    public float zoomedInSize = 60f;
+    public float zoomedInSize = 43f;
     public float zoomedOutSize = 88f;
     public float zoomSpeed = 2f;
 

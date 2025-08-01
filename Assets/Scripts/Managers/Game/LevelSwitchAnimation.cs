@@ -14,7 +14,7 @@ public class LevelSwitchAnimation : MonoBehaviour
             return;
         }
 
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        GameObject player = GameObject.FindAnyObjectByType<PlainController>().gameObject;
         if (player == null)
         {
             Debug.LogError("Player not found!");
