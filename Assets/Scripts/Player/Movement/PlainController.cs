@@ -12,111 +12,219 @@ public class PlainController : MonoBehaviour
     public float inputSmoothing = 8f;
     public float accelerationSmoothing = 12f;
     public float momentumDrag = 0.98f;
-    private float lastInputTime;
-    private float inputClearDelay = 0.25f;
+    public float additionalRotationSmoothing = 0.5f;
 
     [Header("Lift System")]
     public float liftCoefficient = 2f;
-    public float minLiftSpeed = 1f;
+    public float minLiftSpeed = 1.0f;
     public float maxLiftSpeed = 5f;
 
-    [Header("Ground Check")]
-    public LayerMask groundLayer;
-    public Vector2 groundCheckOffset = new(0f, -0.5f);
-    public float groundCheckRadius = 0.2f;
+    [Header("Wall Avoidance")]
+    public float wallDetectionDistance = 1.5f;
+    public float avoidanceRotationSpeed = 300f;
+    public float avoidanceDuration = 0.8f;
+    public float avoidanceThrust = 0.7f;
+    public LayerMask wallLayer = -1;
 
     private Rigidbody2D rb;
-    private FuelManager fuelManager;
-    private Vector2 inputDirection;
-    private Vector2 targetInput;
-    private float currentThrust;
-    private bool isGrounded;
-
+    private float currentThrust = 0f;
+    private float targetThrust = 0f;
+    private Vector2 inputDirection = Vector2.zero;
+    private Vector2 targetInput = Vector2.zero;
+    [SerializeField] private FuelManager fuelManager;
     public bool started;
     public float gravity = 4f;
-    public bool isdead;
-    public bool isinanim;
+    public bool isdead = false;
+    public bool isinanim = false;
     public static PlainController Instance;
+    private bool isGrounded = false;
+    public LayerMask groundLayer;
+
+    // Wall avoidance variables
+    private bool isAvoidingWall = false;
+    private float avoidanceTimer = 0f;
+    private float targetAvoidanceAngle = 0f;
+
+    public void AddFuel(float amount)
+    {
+        if (fuelManager != null)
+        {
+            fuelManager.AddFuel(amount);
+        }
+        else
+        {
+            Debug.LogError("FuelManager is not assigned in PlainController.");
+        }
+    }
 
     void Awake()
     {
         Instance = this;
         rb = GetComponent<Rigidbody2D>();
-        rb.gravityScale = gravity;
         rb.linearDamping = baseDrag;
+        gravity = rb.gravityScale;
+    }
+
+    void isGroundedCheck()
+    {
+        float checkRadius = 0.15f;
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, checkRadius, groundLayer);
+        isGrounded = hit != null;
+    }
+
+    bool DetectWallInFront()
+    {
+        Vector2 forwardDirection = transform.up;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, forwardDirection, wallDetectionDistance, wallLayer);
+
+        // Debug visualization (optional - remove in production)
+        Debug.DrawRay(transform.position, forwardDirection * wallDetectionDistance, hit.collider != null ? Color.red : Color.green);
+
+        return hit.collider != null;
+    }
+
+    void StartWallAvoidance()
+    {
+        isAvoidingWall = true;
+        avoidanceTimer = avoidanceDuration;
+
+        // Always turn 150 degrees from current direction
+        float currentAngle = transform.eulerAngles.z;
+        targetAvoidanceAngle = currentAngle + 120f;
+
+        // Normalize angle
+        while (targetAvoidanceAngle >= 180f) targetAvoidanceAngle -= 360f;
+        while (targetAvoidanceAngle < -180f) targetAvoidanceAngle += 360f;
     }
 
     void Start()
     {
-        fuelManager = FindFirstObjectByType<FuelManager>();
         if (!fuelManager)
-            Debug.LogError("FuelManager missing!");
+        {
+            fuelManager = FindFirstObjectByType<FuelManager>();
+        }
+        if (fuelManager == null)
+        {
+            Debug.LogError("Someone deleted the FeulManager :skulk:");
+        }
     }
 
     void FixedUpdate()
     {
-        if (!fuelManager || isdead || isinanim || !fuelManager.enabled) return;
+        if (fuelManager.enabled == false)
+        {
+            Debug.LogWarning("FuelManager is disabled, hmmmm someone might've been sabotaging.");
+            return;
+        }
+        if (isdead || isinanim) return;
 
-        CheckGrounded();
         if (!fuelManager.HasFuel)
         {
             currentThrust = 0f;
-            inputDirection = targetInput = Vector2.zero;
-            rb.gravityScale = gravity;
             rb.linearDamping = airDrag;
+            rb.gravityScale = gravity;
             return;
         }
 
-        ProcessInput();
-        RotateToDirection();
-        Move();
+        // Wall avoidance timer update
+        if (isAvoidingWall)
+        {
+            avoidanceTimer -= Time.fixedDeltaTime;
+            if (avoidanceTimer <= 0f)
+            {
+                isAvoidingWall = false;
+                // Reset input direction immediately to prevent auto-looking upward
+                inputDirection = Vector2.zero;
+                targetInput = Vector2.zero;
+            }
+        }
+
+        // Check for walls and start avoidance if needed
+        if (!isAvoidingWall && started && DetectWallInFront())
+        {
+            StartWallAvoidance();
+        }
+
+        HandleInput();
+        HandleRotation();
+        HandleMovement();
         ClampVelocity();
-        UnstickIfStuck();
-
-        if (started)
-            fuelManager.CalculateFuelConsumptionBasedOnThrust(currentThrust);
+        if (started) fuelManager.CalculateFuelConsumptionBasedOnThrust(currentThrust);
     }
 
-    void CheckGrounded()
+
+    void HandleInput()
     {
-        isGrounded = Physics2D.OverlapCircle((Vector2)transform.position + groundCheckOffset, groundCheckRadius, groundLayer);
-    }
+        targetInput = Vector2.zero;
 
-    void ProcessInput()
-    {
-        Vector2 dir = Vector2.zero;
+        bool hasInput = false;
 
-        if (Input.GetKey(KeyCode.W)) dir += isGrounded ? Vector2.right : Vector2.up;
-        if (Input.GetKey(KeyCode.S)) dir += isGrounded ? Vector2.left : Vector2.down;
-        if (Input.GetKey(KeyCode.A)) dir += Vector2.left;
-        if (Input.GetKey(KeyCode.D)) dir += Vector2.right;
+        isGroundedCheck();
 
-        if (dir != Vector2.zero)
+        // Block player input during wall avoidance
+        if (isAvoidingWall)
+        {
+            // During avoidance, maintain some input to keep thrust active
+            targetInput = Vector2.up * avoidanceThrust;
+            inputDirection = Vector2.Lerp(inputDirection, targetInput.normalized, inputSmoothing * Time.fixedDeltaTime);
+            return;
+        }
+
+        if (isGrounded)
+        {
+            if (Input.GetKey(KeyCode.W)) { targetInput += Vector2.right; hasInput = true; }
+            if (Input.GetKey(KeyCode.S)) { targetInput += Vector2.left; hasInput = true; }
+            if (Input.GetKey(KeyCode.A)) { targetInput += Vector2.left; hasInput = true; }
+            if (Input.GetKey(KeyCode.D)) { targetInput += Vector2.right; hasInput = true; }
+        }
+        else
+        {
+            if (Input.GetKey(KeyCode.W)) { targetInput += Vector2.up; hasInput = true; }
+            if (Input.GetKey(KeyCode.S)) { targetInput += Vector2.down; hasInput = true; }
+            if (Input.GetKey(KeyCode.A)) { targetInput += Vector2.left; hasInput = true; }
+            if (Input.GetKey(KeyCode.D)) { targetInput += Vector2.right; hasInput = true; }
+        }
+
+        if (hasInput)
         {
             started = true;
-            lastInputTime = Time.time;
-            targetInput = dir.normalized;
-        }
-        else if (Time.time - lastInputTime > inputClearDelay)
-        {
-            targetInput = Vector2.zero;
         }
 
-        inputDirection = Vector2.Lerp(inputDirection, targetInput, inputSmoothing * Time.fixedDeltaTime);
+        inputDirection = Vector2.Lerp(inputDirection, targetInput.normalized, inputSmoothing * Time.fixedDeltaTime);
     }
 
-    void RotateToDirection()
+
+    void HandleRotation()
     {
-        if (inputDirection.sqrMagnitude < 0.01f) return;
+        float currentAngle = transform.eulerAngles.z;
+        float targetAngle;
+        float rotSpeed;
 
-        float targetAngle = Mathf.Atan2(inputDirection.y, inputDirection.x) * Mathf.Rad2Deg - 90f;
-        float angle = rb.rotation;
-        float delta = Mathf.DeltaAngle(angle, targetAngle);
-        float step = rotationSpeed * Time.fixedDeltaTime;
-        rb.MoveRotation(angle + Mathf.Clamp(delta, -step, step));
+        if (isAvoidingWall)
+        {
+            // During wall avoidance, rotate to target avoidance angle
+            targetAngle = targetAvoidanceAngle;
+            rotSpeed = avoidanceRotationSpeed;
+        }
+        else if (inputDirection.magnitude > 0.1f)
+        {
+            // Normal player-controlled rotation
+            targetAngle = Mathf.Atan2(inputDirection.y, inputDirection.x) * Mathf.Rad2Deg - 90f;
+            rotSpeed = rotationSpeed;
+        }
+        else
+        {
+            return; // No rotation needed
+        }
+
+        float angleDiff = Mathf.DeltaAngle(currentAngle, targetAngle);
+        float maxRotationThisFrame = rotSpeed * Time.fixedDeltaTime;
+        float rotationThisFrame = Mathf.Clamp(angleDiff, -maxRotationThisFrame, maxRotationThisFrame);
+
+        rb.MoveRotation(currentAngle + rotationThisFrame);
     }
 
-    void Move()
+    void HandleMovement()
     {
         if (!started)
         {
@@ -125,12 +233,15 @@ public class PlainController : MonoBehaviour
         }
 
         rb.gravityScale = gravity;
-        currentThrust = Mathf.Lerp(currentThrust, targetInput.magnitude, accelerationSmoothing * Time.fixedDeltaTime);
 
-        if (currentThrust > 0.01f)
+        float inputMagnitude = inputDirection.magnitude;
+        targetThrust = Mathf.Clamp01(inputMagnitude);
+        currentThrust = Mathf.Lerp(currentThrust, targetThrust, accelerationSmoothing * Time.fixedDeltaTime);
+
+        if (currentThrust > 0.01f && fuelManager.HasFuel)
         {
-            Vector2 thrust = currentThrust * thrustForce * transform.up;
-            rb.AddForce(thrust);
+            Vector2 thrustDirection = transform.up;
+            rb.AddForce(thrustForce * currentThrust * thrustDirection);
             rb.linearDamping = baseDrag;
         }
         else
@@ -142,50 +253,32 @@ public class PlainController : MonoBehaviour
         ApplyLift();
     }
 
+
     void ApplyLift()
     {
         float speed = rb.linearVelocity.magnitude;
         if (speed < minLiftSpeed) return;
-
         float liftStrength = Mathf.Clamp01(speed / maxLiftSpeed);
         Vector2 velocity = rb.linearVelocity.normalized;
-        Vector2 liftDirection = new(-velocity.y, velocity.x);
+        Vector2 liftDirection = new(-velocity.y, velocity.x); // Perpendicular to velocity
 
+        // Only apply upward component of lift to prevent strange behavior
         float upwardComponent = Vector2.Dot(liftDirection, Vector2.up);
-        if (upwardComponent <= 0f) return;
 
-        Vector2 lift = Vector2.up * liftCoefficient * liftStrength * upwardComponent;
-        rb.AddForce(lift);
+        if (upwardComponent > 0)
+        {
+            Vector2 liftForce = Vector2.up * liftCoefficient * liftStrength * upwardComponent;
+            rb.AddForce(liftForce);
+        }
     }
 
     void ClampVelocity()
     {
         if (rb.linearVelocity.magnitude > maxSpeed)
-            rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
-    }
-
-    void UnstickIfStuck()
-    {
-        Vector2 pos = rb.position;
-        float offset = 0.4f;
-        float nudge = -1.2f;
-        float speedLimit = 0.05f;
-
-        bool stuckLeft = Physics2D.OverlapCircle(pos + Vector2.left * offset, 0.1f, groundLayer);
-        bool stuckRight = Physics2D.OverlapCircle(pos + Vector2.right * offset, 0.1f, groundLayer);
-
-        bool pressingLeft = Input.GetKey(KeyCode.A);
-        bool pressingRight = Input.GetKey(KeyCode.D);
-
-        if (Mathf.Abs(rb.linearVelocity.x) < speedLimit)
         {
-            if (stuckLeft && pressingRight)
-                rb.linearVelocity += Vector2.right * nudge;
-            else if (stuckRight && pressingLeft)
-                rb.linearVelocity += Vector2.left * nudge;
+            rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
         }
     }
-
     public void DieBySpike()
     {
         Debug.Log("Player has died by spike.");
@@ -193,21 +286,29 @@ public class PlainController : MonoBehaviour
         rb.gravityScale = 0f;
         started = false;
     }
-
     public void ResetPlayer()
     {
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
         rb.rotation = 0f;
         rb.linearDamping = baseDrag;
-        inputDirection = targetInput = Vector2.zero;
+        inputDirection = Vector2.zero;
+        targetInput = Vector2.zero;
         currentThrust = 0f;
-        started = isdead = isinanim = false;
-        fuelManager?.ResetFuel();
+        started = false;
+        isdead = false;
+        isinanim = false;
+
+        // Reset wall avoidance state
+        isAvoidingWall = false;
+        avoidanceTimer = 0f;
+        targetAvoidanceAngle = 0f;
+
+        fuelManager.ResetFuel();
     }
 
-    public void AddFuel(float amount)
-    {
-        fuelManager?.AddFuel(amount);
-    }
+    // void DelayedReset()
+    // {
+    //     BackAtStart.Instance.ResetPlayerPosition(gameObject);
+    // }
 }
