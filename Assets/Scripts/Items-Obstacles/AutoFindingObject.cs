@@ -11,7 +11,7 @@ public class AutoFindingObject : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         if (!target)
         {
-            target = GameObject.FindGameObjectWithTag("Player")?.transform;
+            target = GameObject.FindAnyObjectByType<PlainController>().transform;
             if (target == null)
             {
                 Debug.LogWarning("No target found with tag 'Player'. Please assign a target.");

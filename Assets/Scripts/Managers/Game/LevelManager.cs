@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 public class LevelManager : MonoBehaviour
@@ -53,7 +54,8 @@ public class LevelManager : MonoBehaviour
         {
             GameObject.FindAnyObjectByType<CutSceneManager>().StartCutScene();
         }
-        SpawnCollectibles();
+        // Don't spawn collectibles immediately - let LevelAddition handle the initial level setup
+        // SpawnCollectibles(); // This will be called after the initial level drawing is complete
     }
 
     public void SpawnIn()
@@ -132,15 +134,32 @@ public class LevelManager : MonoBehaviour
     private void SwitchFinal()
     {
         currentLevel++;
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        GameObject player = GameObject.FindAnyObjectByType<PlainController>().gameObject;
         player.GetComponent<PlainController>().isinanim = false;
         player.GetComponent<Rigidbody2D>().gravityScale = player.GetComponent<PlainController>().gravity;
+
+        // Call LevelAddition.NextLevel which will handle the drawing animation
         LevelAddition.Instance.NextLevel(currentLevel);
-        SpawnCollectibles();
+
+        // Spawn collectibles after level drawing is complete
+        StartCoroutine(WaitForLevelDrawingAndSpawnCollectibles());
+
         backPos1 = GameObject.FindGameObjectWithTag("BackPos1");
         backPos2 = GameObject.FindGameObjectWithTag("BackPos2");
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);
         PlayerPrefs.Save();
+    }
+
+    private IEnumerator WaitForLevelDrawingAndSpawnCollectibles()
+    {
+        // Wait for the level drawing to complete
+        yield return new WaitUntil(() => LevelAddition.Instance != null && !LevelAddition.Instance.IsDrawingLevel);
+
+        // Small delay to ensure everything is properly set up
+        yield return new WaitForSeconds(0.1f);
+
+        // Now spawn collectibles
+        SpawnCollectibles();
     }
 
 }

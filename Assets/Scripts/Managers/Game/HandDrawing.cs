@@ -4,6 +4,8 @@ using DG.Tweening;
 
 public class HandDrawing : MonoBehaviour
 {
+    public static HandDrawing Instance;
+
     [Header("Hand Animation Settings")]
     [SerializeField] private Transform handTransform;
     [SerializeField] private float drawingSpeed = 2.0f;
@@ -32,6 +34,8 @@ public class HandDrawing : MonoBehaviour
 
     void Start()
     {
+        Instance = this;
+
         if (handTransform == null)
             handTransform = transform;
 
@@ -67,6 +71,48 @@ public class HandDrawing : MonoBehaviour
     {
         StopCurrentAnimation();
         ReturnToOriginalPosition();
+    }
+
+    /// <summary>
+    /// Draws multiple objects sequentially with a callback when complete
+    /// </summary>
+    /// <param name="objects">Array of GameObjects to draw</param>
+    /// <param name="onComplete">Callback invoked when all objects are drawn</param>
+    public void DrawMultipleObjects(GameObject[] objects, System.Action onComplete = null)
+    {
+        if (isAnimating)
+        {
+            StopCurrentAnimation();
+        }
+
+        if (objects == null || objects.Length == 0)
+        {
+            Debug.LogWarning("No objects to draw!");
+            onComplete?.Invoke();
+            return;
+        }
+
+        StartCoroutine(DrawMultipleObjectsCoroutine(objects, onComplete));
+    }
+
+    private IEnumerator DrawMultipleObjectsCoroutine(GameObject[] objects, System.Action onComplete)
+    {
+        isAnimating = true;
+
+        for (int i = 0; i < objects.Length; i++)
+        {
+            if (objects[i] != null)
+            {
+                // Draw each object
+                yield return StartCoroutine(DrawingAnimationCoroutine(objects[i], true));
+
+                // Small pause between objects for visual clarity
+                yield return new WaitForSeconds(0.2f);
+            }
+        }
+
+        isAnimating = false;
+        onComplete?.Invoke();
     }
 
     private IEnumerator DrawingAnimationCoroutine(GameObject targetObject, bool isDraw)
@@ -226,21 +272,59 @@ public class HandDrawing : MonoBehaviour
 
     private Bounds GetObjectBounds(GameObject obj)
     {
+        bool wasActive = obj.activeSelf;
+
+        // Temporarily activate the object to get proper bounds
+        if (!wasActive)
+        {
+            obj.SetActive(true);
+        }
+
+        Bounds bounds = new Bounds();
+        bool boundsFound = false;
+
         Renderer renderer = obj.GetComponent<Renderer>();
         if (renderer != null)
         {
-            return renderer.bounds;
+            bounds = renderer.bounds;
+            boundsFound = true;
         }
 
-        // Fallback: use collider bounds
-        Collider collider = obj.GetComponent<Collider>();
-        if (collider != null)
+        if (!boundsFound)
         {
-            return collider.bounds;
+            // Fallback: use collider bounds
+            Collider collider = obj.GetComponent<Collider>();
+            if (collider != null)
+            {
+                bounds = collider.bounds;
+                boundsFound = true;
+            }
         }
 
-        // Fallback: use transform position with default size
-        return new Bounds(obj.transform.position, Vector3.one);
+        if (!boundsFound)
+        {
+            // Fallback: use collider2D bounds
+            Collider2D collider2D = obj.GetComponent<Collider2D>();
+            if (collider2D != null)
+            {
+                bounds = collider2D.bounds;
+                boundsFound = true;
+            }
+        }
+
+        if (!boundsFound)
+        {
+            // Final fallback: use transform position with default size
+            bounds = new Bounds(obj.transform.position, Vector3.one);
+        }
+
+        // Restore original active state
+        if (!wasActive)
+        {
+            obj.SetActive(false);
+        }
+
+        return bounds;
     }
 
     private void PlayDrawingSound(bool isDraw)
