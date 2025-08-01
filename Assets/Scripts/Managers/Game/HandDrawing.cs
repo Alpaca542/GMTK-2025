@@ -98,6 +98,8 @@ public class HandDrawing : MonoBehaviour
         // Phase 2: Drawing/Erasing animation
         yield return StartCoroutine(ExecuteDrawingPath(drawingPath, isDraw));
 
+        ApplyDrawingEffect(targetObject, isDraw);
+
         // Phase 3: Return to original position
         yield return StartCoroutine(MoveToPosition(originalHandPosition, 0.6f));
 
@@ -272,7 +274,23 @@ public class HandDrawing : MonoBehaviour
         handTransform.DORotateQuaternion(originalHandRotation, 0.8f)
             .SetEase(Ease.OutQuart);
     }
+    private void ApplyDrawingEffect(GameObject targetObject, bool isDraw)
+    {
+        if (targetObject == null) return;
 
+        if (isDraw)
+        {
+            // Drawing: Turn the object on
+            targetObject.SetActive(true);
+            Debug.Log($"Drew object: {targetObject.name} - Object is now visible");
+        }
+        else
+        {
+            // Erasing: Turn the object off
+            targetObject.SetActive(false);
+            Debug.Log($"Erased object: {targetObject.name} - Object is now hidden");
+        }
+    }
     void OnDestroy()
     {
         StopCurrentAnimation();
