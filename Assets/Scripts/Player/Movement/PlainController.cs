@@ -19,6 +19,13 @@ public class PlainController : MonoBehaviour
     public float minLiftSpeed = 1.0f;
     public float maxLiftSpeed = 5f;
 
+    [Header("Wall Avoidance")]
+    public float wallDetectionDistance = 1.5f;
+    public float avoidanceRotationSpeed = 300f;
+    public float avoidanceDuration = 0.8f;
+    public float avoidanceThrust = 0.7f;
+    public LayerMask wallLayer = -1;
+
     private Rigidbody2D rb;
     private float currentThrust = 0f;
     private float targetThrust = 0f;
@@ -32,6 +39,11 @@ public class PlainController : MonoBehaviour
     public static PlainController Instance;
     private bool isGrounded = false;
     public LayerMask groundLayer;
+
+    // Wall avoidance variables
+    private bool isAvoidingWall = false;
+    private float avoidanceTimer = 0f;
+    private float targetAvoidanceAngle = 0f;
 
     public void AddFuel(float amount)
     {
@@ -58,6 +70,31 @@ public class PlainController : MonoBehaviour
         float checkRadius = 0.15f;
         Collider2D hit = Physics2D.OverlapCircle(transform.position, checkRadius, groundLayer);
         isGrounded = hit != null;
+    }
+
+    bool DetectWallInFront()
+    {
+        Vector2 forwardDirection = transform.up;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, forwardDirection, wallDetectionDistance, wallLayer);
+
+        // Debug visualization (optional - remove in production)
+        Debug.DrawRay(transform.position, forwardDirection * wallDetectionDistance, hit.collider != null ? Color.red : Color.green);
+
+        return hit.collider != null;
+    }
+
+    void StartWallAvoidance()
+    {
+        isAvoidingWall = true;
+        avoidanceTimer = avoidanceDuration;
+
+        // Always turn 150 degrees from current direction
+        float currentAngle = transform.eulerAngles.z;
+        targetAvoidanceAngle = currentAngle + 120f;
+
+        // Normalize angle
+        while (targetAvoidanceAngle >= 180f) targetAvoidanceAngle -= 360f;
+        while (targetAvoidanceAngle < -180f) targetAvoidanceAngle += 360f;
     }
 
     void Start()
@@ -89,6 +126,25 @@ public class PlainController : MonoBehaviour
             return;
         }
 
+        // Wall avoidance timer update
+        if (isAvoidingWall)
+        {
+            avoidanceTimer -= Time.fixedDeltaTime;
+            if (avoidanceTimer <= 0f)
+            {
+                isAvoidingWall = false;
+                // Reset input direction immediately to prevent auto-looking upward
+                inputDirection = Vector2.zero;
+                targetInput = Vector2.zero;
+            }
+        }
+
+        // Check for walls and start avoidance if needed
+        if (!isAvoidingWall && started && DetectWallInFront())
+        {
+            StartWallAvoidance();
+        }
+
         HandleInput();
         HandleRotation();
         HandleMovement();
@@ -104,6 +160,15 @@ public class PlainController : MonoBehaviour
         bool hasInput = false;
 
         isGroundedCheck();
+
+        // Block player input during wall avoidance
+        if (isAvoidingWall)
+        {
+            // During avoidance, maintain some input to keep thrust active
+            targetInput = Vector2.up * avoidanceThrust;
+            inputDirection = Vector2.Lerp(inputDirection, targetInput.normalized, inputSmoothing * Time.fixedDeltaTime);
+            return;
+        }
 
         if (isGrounded)
         {
@@ -131,17 +196,32 @@ public class PlainController : MonoBehaviour
 
     void HandleRotation()
     {
-        if (inputDirection.magnitude > 0.1f)
+        float currentAngle = transform.eulerAngles.z;
+        float targetAngle;
+        float rotSpeed;
+
+        if (isAvoidingWall)
         {
-            float targetAngle = Mathf.Atan2(inputDirection.y, inputDirection.x) * Mathf.Rad2Deg - 90f;
-            float currentAngle = transform.eulerAngles.z;
-            float angleDiff = Mathf.DeltaAngle(currentAngle, targetAngle);
-
-            float maxRotationThisFrame = rotationSpeed * Time.fixedDeltaTime;
-            float rotationThisFrame = Mathf.Clamp(angleDiff, -maxRotationThisFrame, maxRotationThisFrame);
-
-            rb.MoveRotation(currentAngle + rotationThisFrame);
+            // During wall avoidance, rotate to target avoidance angle
+            targetAngle = targetAvoidanceAngle;
+            rotSpeed = avoidanceRotationSpeed;
         }
+        else if (inputDirection.magnitude > 0.1f)
+        {
+            // Normal player-controlled rotation
+            targetAngle = Mathf.Atan2(inputDirection.y, inputDirection.x) * Mathf.Rad2Deg - 90f;
+            rotSpeed = rotationSpeed;
+        }
+        else
+        {
+            return; // No rotation needed
+        }
+
+        float angleDiff = Mathf.DeltaAngle(currentAngle, targetAngle);
+        float maxRotationThisFrame = rotSpeed * Time.fixedDeltaTime;
+        float rotationThisFrame = Mathf.Clamp(angleDiff, -maxRotationThisFrame, maxRotationThisFrame);
+
+        rb.MoveRotation(currentAngle + rotationThisFrame);
     }
 
     void HandleMovement()
@@ -185,19 +265,9 @@ public class PlainController : MonoBehaviour
         // Only apply upward component of lift to prevent strange behavior
         float upwardComponent = Vector2.Dot(liftDirection, Vector2.up);
 
-        // Check if the plane is upside down (z rotation between 90 and 270 degrees)
-        float zRotation = transform.eulerAngles.z;
-        bool isUpsideDown = false;
-
         if (upwardComponent > 0)
         {
             Vector2 liftForce = Vector2.up * liftCoefficient * liftStrength * upwardComponent;
-            if (isUpsideDown)
-            {
-                Debug.LogWarning("Plane is upside down, applying negative lift.");
-                // Apply a slight negative lift if upside down
-                liftForce *= -0.3f;
-            }
             rb.AddForce(liftForce);
         }
     }
@@ -228,6 +298,12 @@ public class PlainController : MonoBehaviour
         started = false;
         isdead = false;
         isinanim = false;
+
+        // Reset wall avoidance state
+        isAvoidingWall = false;
+        avoidanceTimer = 0f;
+        targetAvoidanceAngle = 0f;
+
         fuelManager.ResetFuel();
     }
 
