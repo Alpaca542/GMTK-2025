@@ -1,16 +1,26 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class BackAtStart : MonoBehaviour
 {
     public static BackAtStart Instance;
+    public bool used = false;
     void Awake()
     {
         Instance = this;
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (used)
+        {
+            return;
+        }
         if (other.CompareTag("Player") && LevelManager.Instance != null && LevelManager.Instance.AllCollectiblesCollected())
         {
+            if (!used)
+            {
+                used = true;
+            }
             GameObject player = other.gameObject;
             Transform startPoint = LevelManager.Instance.startPoint;
             if (startPoint == null)
@@ -33,7 +43,6 @@ public class BackAtStart : MonoBehaviour
                 Debug.LogError("PlainController not found on player!");
             }
 
-            Debug.Log("round done");
             LevelManager.Instance.NextLevel();
         }
         else if (other.CompareTag("Player"))
