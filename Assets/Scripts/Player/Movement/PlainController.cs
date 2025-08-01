@@ -68,7 +68,7 @@ public class PlainController : MonoBehaviour
         }
         if (fuelManager == null)
         {
-            Debug.LogError("FuelManager not found in the scene.");
+            Debug.LogError("Someone deleted the FeulManager :skulk:");
         }
     }
 
@@ -76,7 +76,7 @@ public class PlainController : MonoBehaviour
     {
         if (fuelManager.enabled == false)
         {
-            Debug.LogWarning("FuelManager is disabled, skipping fuel consumption calculations.");
+            Debug.LogWarning("FuelManager is disabled, hmmmm someone might've been sabotaging.");
             return;
         }
         if (isdead || isinanim) return;
