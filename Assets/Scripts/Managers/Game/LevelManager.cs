@@ -12,7 +12,7 @@ public class LevelManager : MonoBehaviour
     public GameObject collectiblePrefab;
     public int currentLevel = 0;
     private List<GameObject> activeCollectibles = new();
-    [SerializeField] LevelSwitchAnimation levelSwitchAnimation;
+    [SerializeField] private LevelSwitchAnimation levelSwitchAnimation;
     public bool FirstHalfDone = false;
     [SerializeField] private GameObject halfBorder;
     [SerializeField] private GameObject backPos1;
@@ -119,7 +119,14 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
-        levelSwitchAnimation.AnimateLevelSwitch();
+        if (levelSwitchAnimation != null)
+        {
+            levelSwitchAnimation.AnimateLevelSwitch();
+        }
+        else
+        {
+            Debug.LogError("LevelSwitchAnimation is not assigned in the inspector!");
+        }
         Invoke(nameof(SwitchFinal), 3f);
     }
     private void SwitchFinal()
