@@ -92,8 +92,8 @@ public class LevelManager : MonoBehaviour
             attempts++;
             float x = Random.Range(topLeftSpawnArea.position.x, bottomRightSpawnArea.position.x);
             float y = Random.Range(bottomRightSpawnArea.position.y, topLeftSpawnArea.position.y);
-            Vector2 spawnPos = new(x, y);
-            bool blocked = Physics2D.OverlapCircle(spawnPos, 0.3f, spawnBlockingLayers);
+            Vector3 spawnPos = new(x, y, -44.3f);
+            bool blocked = Physics2D.OverlapCircle((Vector2)spawnPos, 0.3f, spawnBlockingLayers);
             if (!blocked)
             {
                 GameObject newItem = Instantiate(collectiblePrefab, spawnPos, Quaternion.identity);

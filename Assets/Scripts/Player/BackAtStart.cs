@@ -19,7 +19,7 @@ public class BackAtStart : MonoBehaviour
                 return;
             }
 
-            player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, 0.1f);
+            player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, -44.3f);
             player.transform.rotation = Quaternion.identity;
 
             PlainController controller = player.GetComponent<PlainController>();
@@ -56,7 +56,7 @@ public class BackAtStart : MonoBehaviour
             return;
         }
 
-        player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, 0.1f);
+        player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, -44.3f);
         player.transform.rotation = Quaternion.identity;
 
         PlainController controller = player.GetComponent<PlainController>();
