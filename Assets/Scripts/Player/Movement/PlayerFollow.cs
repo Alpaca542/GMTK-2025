@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerFollow : MonoBehaviour
 {
     [SerializeField] private Transform player;
-    [SerializeField] private float speed = 5f;
+    [SerializeField] private float speed = 3f;
 
     private void LateUpdate()
     {
