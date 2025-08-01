@@ -24,7 +24,7 @@ public class PlainController : MonoBehaviour
     private float targetThrust = 0f;
     private Vector2 inputDirection = Vector2.zero;
     private Vector2 targetInput = Vector2.zero;
-    private FuelManager fuelManager;
+    [SerializeField] private FuelManager fuelManager;
     public bool started;
     public float gravity = 4f;
     public bool isdead = false;
@@ -62,7 +62,10 @@ public class PlainController : MonoBehaviour
 
     void Start()
     {
-        fuelManager = FindFirstObjectByType<FuelManager>();
+        if (!fuelManager)
+        {
+            fuelManager = FindFirstObjectByType<FuelManager>();
+        }
         if (fuelManager == null)
         {
             Debug.LogError("FuelManager not found in the scene.");
@@ -71,6 +74,11 @@ public class PlainController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (fuelManager.enabled == false)
+        {
+            Debug.LogWarning("FuelManager is disabled, skipping fuel consumption calculations.");
+            return;
+        }
         if (isdead || isinanim) return;
 
         if (!fuelManager.HasFuel)
