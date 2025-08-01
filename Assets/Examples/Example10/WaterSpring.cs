@@ -58,7 +58,7 @@ namespace Example10
         // we only want to detect when they collide so we can trigger the impact
         private void OnCollisionEnter2D(Collision2D other)
         {
-            if (other.gameObject.tag.Equals("Player"))
+            if (other.gameObject.CompareTag("Player"))
             {
                 PlainController fallingObject = other.gameObject.GetComponent<PlainController>();
                 Rigidbody2D rb = fallingObject.GetComponent<Rigidbody2D>();

@@ -3787,7 +3787,7 @@ MonoBehaviour:
   startPoint: {fileID: 1914692178}
   collectiblePrefab: {fileID: 5568428773650907379, guid: a996e284529d31b46b637eb41ece7b94, type: 3}
   currentLevel: 0
-  levelSwitchAnimation: {fileID: 0}
+  levelSwitchAnimation: {fileID: 845201975}
   FirstHalfDone: 0
   halfBorder: {fileID: 1118320899}
   backPos1: {fileID: 1914692177}
@@ -5493,11 +5493,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handTransform: {fileID: 845201973}
-  drawingSpeed: 2
+  drawingSpeed: 0.7
   shakingIntensity: 0.1
   shakingFrequency: 15
-  minShakeTime: 0.5
-  maxShakeTime: 2
+  minShakeTime: 0.1
+  maxShakeTime: 3
   approachDistance: 1.5
   drawingHeight: 0.5
   movementCurve:
@@ -5530,8 +5530,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -8935,7 +8935,7 @@ Transform:
   m_GameObject: {fileID: 1508506791}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: 0.516, y: 0, z: 0.397}
+  m_LocalPosition: {x: 0.593, y: 0, z: 0.516}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

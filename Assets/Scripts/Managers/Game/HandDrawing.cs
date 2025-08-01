@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public class HandDrawing : MonoBehaviour
 {
@@ -38,7 +39,6 @@ public class HandDrawing : MonoBehaviour
 
         if (handTransform == null)
             handTransform = transform;
-
         originalHandPosition = handTransform.position;
         originalHandRotation = handTransform.rotation;
     }
@@ -121,10 +121,6 @@ public class HandDrawing : MonoBehaviour
 
         // Get object bounds for movement planning
         Bounds objectBounds = GetObjectBounds(targetObject);
-        Vector3 objectCenter = objectBounds.center;
-        Vector3 objectSize = objectBounds.size;
-
-        // Calculate drawing path based on object size
         Vector3[] drawingPath = CalculateDrawingPath(objectBounds);
 
         // Play appropriate sound
@@ -138,16 +134,18 @@ public class HandDrawing : MonoBehaviour
             drawingParticles.Play();
         }
 
-        // Phase 1: Move to starting position
-        yield return StartCoroutine(MoveToPosition(drawingPath[0], 0.8f));
-
-        // Phase 2: Drawing/Erasing animation
-        yield return StartCoroutine(ExecuteDrawingPath(drawingPath, isDraw));
+        // Phase 1: Move to starting position quickly
+        yield return StartCoroutine(MoveToPosition(drawingPath[0], 0.3f));
+        float maxSize = Math.Max(objectBounds.size.x, objectBounds.size.y);
+        // Phase 2: Quick diagonal movement with oscillations
+        float distance = Vector3.Distance(drawingPath[0], drawingPath[1]);
+        float moveTime = (distance / drawingSpeed) * 0.3f; // Fast movement
+        yield return StartCoroutine(MoveToPositionWithOscillation(drawingPath[1], moveTime, maxSize / 4f));
 
         ApplyDrawingEffect(targetObject, isDraw);
 
-        // Phase 3: Return to original position
-        yield return StartCoroutine(MoveToPosition(originalHandPosition, 0.6f));
+        // Phase 3: Return to original position quickly
+        yield return StartCoroutine(MoveToPosition(originalHandPosition, 0.3f));
 
         // Stop effects
         if (drawingParticles != null)
@@ -161,33 +159,20 @@ public class HandDrawing : MonoBehaviour
         Vector3 center = bounds.center;
         Vector3 size = bounds.size;
 
-        // For small objects, just hover over the center
-        if (size.magnitude < 2.0f)
-        {
-            Vector3 hoverPosition = new Vector3(center.x, center.y, center.z - drawingHeight);
-            return new Vector3[] { hoverPosition };
-        }
+        // Same behavior for all objects - diagonal movement across the object
+        Vector3 startPoint = new Vector3(
+            center.x - size.x * 0.3f,
+            center.y + size.y * 0.3f,
+            center.z - drawingHeight
+        );
 
-        // For larger objects, create a path from one end to another
-        Vector3 startPoint, endPoint;
+        Vector3 endPoint = new Vector3(
+            center.x + size.x * 0.3f,
+            center.y - size.y * 0.3f,
+            center.z - drawingHeight
+        );
 
-        // Determine the best drawing direction based on object shape
-        if (size.x > size.y)
-        {
-            // Draw horizontally for wide objects
-            startPoint = new Vector3(center.x - size.x * 0.4f, center.y, center.z - drawingHeight);
-            endPoint = new Vector3(center.x + size.x * 0.4f, center.y, center.z - drawingHeight);
-        }
-        else
-        {
-            // Draw vertically for tall objects
-            startPoint = new Vector3(center.x, center.y + size.y * 0.4f, center.z - drawingHeight);
-            endPoint = new Vector3(center.x, center.y - size.y * 0.4f, center.z - drawingHeight);
-        }
-
-        // Add some intermediate points for more complex paths
-        Vector3 midPoint = Vector3.Lerp(startPoint, endPoint, 0.5f);
-        return new Vector3[] { startPoint, midPoint, endPoint };
+        return new Vector3[] { startPoint, endPoint };
     }
 
     private IEnumerator MoveToPosition(Vector3 targetPosition, float duration)
@@ -208,58 +193,34 @@ public class HandDrawing : MonoBehaviour
         handTransform.position = targetPosition;
     }
 
-    private IEnumerator ExecuteDrawingPath(Vector3[] path, bool isDraw)
+    // Simplified oscillating movement
+    private IEnumerator MoveToPositionWithOscillation(Vector3 targetPosition, float duration, float newShakingIntensity)
     {
-        // Start shaking animation
-        StartRealisticShaking(isDraw);
+        Vector3 startPosition = handTransform.position;
+        float elapsed = 0f;
 
-        // Move through the drawing path
-        for (int i = 0; i < path.Length; i++)
+        while (elapsed < duration)
         {
-            if (i > 0)
-            {
-                // Calculate time based on distance and drawing speed
-                float distance = Vector3.Distance(path[i - 1], path[i]);
-                float moveTime = distance / drawingSpeed;
+            elapsed += Time.deltaTime;
+            float progress = elapsed / duration;
 
-                yield return StartCoroutine(MoveToPosition(path[i], moveTime));
-            }
+            // Base diagonal movement
+            Vector3 basePosition = Vector3.Lerp(startPosition, targetPosition, progress);
 
-            // Add some variation in timing for realism
-            float pauseTime = Random.Range(0.1f, 0.3f);
-            yield return new WaitForSeconds(pauseTime);
+            // Add oscillation perpendicular to the movement direction
+            Vector3 direction = (targetPosition - startPosition).normalized;
+            Vector3 perpendicular = new Vector3(-direction.y, direction.x, 0f);
+
+            // Simple fast oscillations
+            float oscillation = Mathf.Sin(elapsed * 25f) * newShakingIntensity * 3f; // Use existing intensity setting
+
+            handTransform.position = basePosition + perpendicular * oscillation;
+            yield return null;
         }
 
-        // Stop shaking
-        StopShaking();
+        handTransform.position = targetPosition;
     }
 
-    private void StartRealisticShaking(bool isDraw)
-    {
-        StopShaking();
-
-        // Different shaking patterns for drawing vs erasing
-        float intensity = isDraw ? shakingIntensity : shakingIntensity * 1.5f;
-        float frequency = isDraw ? shakingFrequency : shakingFrequency * 0.7f;
-
-        shakeSequence = DOTween.Sequence();
-
-        // Create realistic hand tremor
-        for (int i = 0; i < 50; i++) // 50 shake iterations
-        {
-            Vector3 randomOffset = new Vector3(
-                Random.Range(-intensity, intensity),
-                Random.Range(-intensity, intensity),
-                Random.Range(-intensity * 0.3f, intensity * 0.3f)
-            );
-
-            shakeSequence.Append(handTransform.DOLocalMove(randomOffset, 1f / frequency)
-                .SetRelative(true)
-                .SetEase(Ease.InOutSine));
-        }
-
-        shakeSequence.SetLoops(-1, LoopType.Restart);
-    }
 
     private void StopShaking()
     {
@@ -374,10 +335,6 @@ public class HandDrawing : MonoBehaviour
             targetObject.SetActive(false);
             Debug.Log($"Erased object: {targetObject.name} - Object is now hidden");
         }
-    }
-    void OnDestroy()
-    {
-        StopCurrentAnimation();
     }
 
     // Public properties for runtime adjustments
