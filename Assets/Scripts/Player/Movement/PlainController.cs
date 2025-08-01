@@ -33,6 +33,18 @@ public class PlainController : MonoBehaviour
     private bool isGrounded = false;
     public LayerMask groundLayer;
 
+    public void AddFuel(float amount)
+    {
+        if (fuelManager != null)
+        {
+            fuelManager.AddFuel(amount);
+        }
+        else
+        {
+            Debug.LogError("FuelManager is not assigned in PlainController.");
+        }
+    }
+
     void Awake()
     {
         Instance = this;

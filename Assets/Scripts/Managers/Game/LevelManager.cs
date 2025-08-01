@@ -12,7 +12,7 @@ public class LevelManager : MonoBehaviour
     public GameObject collectiblePrefab;
     public int currentLevel = 0;
     private List<GameObject> activeCollectibles = new();
-    [SerializeField] LevelSwitchAnimation levelSwitchAnimation;
+    [SerializeField] private LevelSwitchAnimation levelSwitchAnimation;
     public bool FirstHalfDone = false;
     [SerializeField] private GameObject halfBorder;
     [SerializeField] private GameObject backPos1;
@@ -25,14 +25,15 @@ public class LevelManager : MonoBehaviour
         halfBorder.SetActive(false);
         Camera.main.GetComponent<PlayerFollow>().enabled = false;
         Camera.main.GetComponent<CameraZoom>().enabled = false;
-        Camera.main.DOFieldOfView(10f, 2f).OnComplete(() =>
+        Camera.main.transform.DOMove(new Vector3(0, 0, -10), 2f).SetEase(Ease.InOutSine);
+        Camera.main.DOFieldOfView(88f, 2f).OnComplete(() =>
         {
             Camera.main.GetComponent<PlayerFollow>().enabled = true;
             Camera.main.GetComponent<CameraZoom>().enabled = true;
+            Camera.main.DOFieldOfView(60f, 2f);
         });
         backPos1.GetComponent<SpriteRenderer>().DOFade(0f, 2f);
         backPos2.GetComponent<SpriteRenderer>().DOFade(1f, 2f);
-        Camera.main.transform.DOMove(new Vector3(0, 0, -10), 2f).SetEase(Ease.InOutSine);
     }
 
     private void Awake()
@@ -43,7 +44,7 @@ public class LevelManager : MonoBehaviour
         backPos2.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
         halfBorder.SetActive(true);
         Instance = this;
-        currentLevel = PlayerPrefs.GetInt("CurrentLevel", 0);
+        currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
     }
 
     public void Start()
@@ -52,6 +53,7 @@ public class LevelManager : MonoBehaviour
         {
             GameObject.FindAnyObjectByType<CutSceneManager>().StartCutScene();
         }
+        SpawnCollectibles();
     }
 
     public void SpawnIn()
@@ -117,7 +119,14 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
-        levelSwitchAnimation.AnimateLevelSwitch();
+        if (levelSwitchAnimation != null)
+        {
+            levelSwitchAnimation.AnimateLevelSwitch();
+        }
+        else
+        {
+            Debug.LogError("LevelSwitchAnimation is not assigned in the inspector!");
+        }
         Invoke(nameof(SwitchFinal), 3f);
     }
     private void SwitchFinal()
