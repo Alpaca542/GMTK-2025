@@ -482,12 +482,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce7e7edb6c576a4428464c7a6d4fb3da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thrust: 100
-  pitchForce: -10
-  pitchVelocityFactor: 0.2
-  baseDrag: 0.1
+  thrust: 50
+  pitchForce: -360
+  pitchVelocityFactor: 1
+  baseDrag: 0.01
   liftFactor: 1
-  takeoffSpeed: 4
+  takeoffSpeed: 6
   stallHeight: 40
   rollSpeed: 2
   highGFactor: 2
