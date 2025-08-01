@@ -5,17 +5,6 @@ public class BackAtStart : MonoBehaviour
 {
     public bool used = false;
 
-    void Start()
-    {
-        // Reset used flag when the object becomes active (new level starts)
-        used = false;
-    }
-
-    public void ResetUsed()
-    {
-        used = false;
-        Debug.Log($"BackAtStart ({gameObject.name}): Reset used flag");
-    }
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (used)
@@ -23,13 +12,12 @@ public class BackAtStart : MonoBehaviour
             Debug.Log($"BackAtStart ({gameObject.name}): Already used, ignoring trigger");
             return;
         }
+
         if (other.CompareTag("Player") && LevelManager.Instance != null && LevelManager.Instance.AllCollectiblesCollected())
         {
-            Debug.Log($"BackAtStart ({gameObject.name}): All collectibles collected, proceeding to next level");
-            if (!used)
-            {
-                used = true;
-            }
+            Debug.Log($"BackAtStart ({gameObject.name}): All collectibles collected, proceeding to next level part");
+            used = true;
+
             GameObject player = other.gameObject;
             Transform startPoint = LevelManager.Instance.startPoint;
             if (startPoint == null)
@@ -59,6 +47,7 @@ public class BackAtStart : MonoBehaviour
             Debug.Log($"BackAtStart ({gameObject.name}): Collect all collectibles first!");
         }
     }
+
     public void ResetPlayerPosition(GameObject player)
     {
         if (LevelManager.Instance == null)

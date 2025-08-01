@@ -52,9 +52,6 @@ public class LevelManager : MonoBehaviour
         {
             Debug.LogWarning("BackPos2 not available for fade animation!");
         }
-
-        // Reset BackAtStart objects for the second half
-        ResetAllBackAtStartObjects();
     }
 
     private void Awake()
@@ -101,7 +98,6 @@ public class LevelManager : MonoBehaviour
     public void SpawnIn()
     {
         SpawnCollectibles();
-        ResetAllBackAtStartObjects();
     }
 
     #region Collectibles
@@ -114,20 +110,6 @@ public class LevelManager : MonoBehaviour
     {
         activeCollectibles.Remove(collected.gameObject);
         Destroy(collected.gameObject);
-    }
-
-    public void ResetAllBackAtStartObjects()
-    {
-        // Find all BackAtStart objects in the current active level and reset them
-        BackAtStart[] backAtStartObjects = FindObjectsByType<BackAtStart>(FindObjectsSortMode.None);
-        foreach (BackAtStart backAtStart in backAtStartObjects)
-        {
-            if (backAtStart.gameObject.activeInHierarchy)
-            {
-                backAtStart.ResetUsed();
-            }
-        }
-        Debug.Log($"Reset {backAtStartObjects.Length} BackAtStart objects");
     }
 
 
@@ -232,9 +214,6 @@ public class LevelManager : MonoBehaviour
 
         // Now spawn collectibles
         SpawnCollectibles();
-
-        // Reset all BackAtStart objects for the new level
-        ResetAllBackAtStartObjects();
     }
 
 }
