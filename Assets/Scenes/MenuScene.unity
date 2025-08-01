@@ -1749,7 +1749,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b3006bbcebd749f294d87da5cc03f0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameSceneName: Testing
+  gameSceneName: GameScene
   menuSceneName: MenuScene
   winSceneName: WinScene
   loseSceneName: LoseScene

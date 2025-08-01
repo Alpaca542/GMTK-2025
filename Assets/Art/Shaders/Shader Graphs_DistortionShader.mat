@@ -47,7 +47,7 @@ Material:
     - _offset: 8.2
     - _scale: 38.51
     - _speed: 4.4
-    - _strength: 0.005
+    - _strength: 0.009
     m_Colors:
     - _speed_1: {r: 2.82, g: 1000, b: 0, a: 0}
   m_BuildTextureStacks: []

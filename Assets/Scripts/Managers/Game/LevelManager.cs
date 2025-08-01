@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-
+using DG.Tweening;
 public class LevelManager : MonoBehaviour
 {
     [SerializeField] private LayerMask spawnBlockingLayers;
@@ -14,17 +14,51 @@ public class LevelManager : MonoBehaviour
     private List<GameObject> activeCollectibles = new();
     [SerializeField] LevelSwitchAnimation levelSwitchAnimation;
     public bool FirstHalfDone = false;
+    [SerializeField] private GameObject halfBorder;
+    [SerializeField] private GameObject backPos1;
+    [SerializeField] private GameObject backPos2;
+
+
+    public void ShowSecondHalf()
+    {
+        FirstHalfDone = true;
+        halfBorder.SetActive(false);
+        Camera.main.GetComponent<PlayerFollow>().enabled = false;
+        Camera.main.GetComponent<CameraZoom>().enabled = false;
+        Camera.main.DOFieldOfView(10f, 2f).OnComplete(() =>
+        {
+            Camera.main.GetComponent<PlayerFollow>().enabled = true;
+            Camera.main.GetComponent<CameraZoom>().enabled = true;
+        });
+        backPos1.GetComponent<SpriteRenderer>().DOFade(0f, 2f);
+        backPos2.GetComponent<SpriteRenderer>().DOFade(1f, 2f);
+        Camera.main.transform.DOMove(new Vector3(0, 0, -10), 2f).SetEase(Ease.InOutSine);
+    }
 
     private void Awake()
     {
+        backPos1 = GameObject.FindGameObjectWithTag("BackPos1");
+        backPos2 = GameObject.FindGameObjectWithTag("BackPos2");
+        backPos1.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+        backPos2.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+        halfBorder.SetActive(true);
         Instance = this;
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 0);
     }
 
     public void Start()
     {
+        if (currentLevel == 0)
+        {
+            GameObject.FindAnyObjectByType<CutSceneManager>().StartCutScene();
+        }
+    }
+
+    public void SpawnIn()
+    {
         SpawnCollectibles();
     }
+
     #region Collectibles
     public bool AllCollectiblesCollected()
     {
@@ -77,6 +111,12 @@ public class LevelManager : MonoBehaviour
     #endregion
     public void NextLevel()
     {
+        if (!FirstHalfDone)
+        {
+            ShowSecondHalf();
+            return;
+        }
+
         levelSwitchAnimation.AnimateLevelSwitch();
         Invoke(nameof(SwitchFinal), 3f);
     }
@@ -88,6 +128,8 @@ public class LevelManager : MonoBehaviour
         player.GetComponent<Rigidbody2D>().gravityScale = player.GetComponent<PlainController>().gravity;
         LevelAddition.Instance.NextLevel(currentLevel);
         SpawnCollectibles();
+        backPos1 = GameObject.FindGameObjectWithTag("BackPos1");
+        backPos2 = GameObject.FindGameObjectWithTag("BackPos2");
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);
         PlayerPrefs.Save();
     }

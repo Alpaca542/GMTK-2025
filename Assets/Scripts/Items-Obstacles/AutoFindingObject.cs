@@ -4,22 +4,30 @@ public class AutoFindingObject : MonoBehaviour
 {
     public Transform target;
     public float speed = 5f;
-    private Rigidbody rb;
+    private Rigidbody2D rb;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody2D>();
+        if (!target)
+        {
+            target = GameObject.FindGameObjectWithTag("Player")?.transform;
+            if (target == null)
+            {
+                Debug.LogWarning("No target found with tag 'Player'. Please assign a target.");
+            }
+        }
     }
 
     void FixedUpdate()
     {
         if (target == null)
         {
-            rb.linearVelocity = Vector3.zero;
+            rb.linearVelocity = Vector2.zero;
             return;
         }
 
-        Vector3 direction = (target.position - transform.position).normalized;
+        Vector2 direction = ((Vector2)target.position - rb.position).normalized;
         rb.linearVelocity = direction * speed;
     }
 }

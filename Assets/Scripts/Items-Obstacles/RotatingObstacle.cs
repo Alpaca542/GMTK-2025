@@ -9,6 +9,7 @@ public class RotatingObstacle : MonoBehaviour
     private Ease[] easeList = new Ease[]
     {
         Ease.Linear,
+        Ease.OutExpo,
         Ease.InSine,
         Ease.OutSine,
         Ease.InOutSine,

@@ -32,21 +32,22 @@ public class MovingObject : MonoBehaviour
         }
 
         currentPointIndex = 0;
-        transform.position = points[currentPointIndex].position;
+        transform.position = new Vector3(points[currentPointIndex].position.x, points[currentPointIndex].position.y, transform.position.z);
         MoveToNextPoint();
     }
 
     private void MoveToNextPoint()
     {
         int nextPointIndex = (currentPointIndex + 1) % points.Length;
-        Vector3 target = points[nextPointIndex].position;
-        float distance = Vector3.Distance(transform.position, target);
+        Vector2 target2D = new Vector2(points[nextPointIndex].position.x, points[nextPointIndex].position.y);
+        Vector2 current2D = new Vector2(transform.position.x, transform.position.y);
+        float distance = Vector2.Distance(current2D, target2D);
         float duration = distance / speed;
 
         int clampedIndex = Mathf.Clamp(easeIndex, 0, easeList.Length - 1);
         Ease selectedEase = easeList[clampedIndex];
 
-        transform.DOMove(target, duration)
+        transform.DOMove(new Vector3(target2D.x, target2D.y, transform.position.z), duration)
             .SetEase(selectedEase)
             .OnComplete(() =>
             {
