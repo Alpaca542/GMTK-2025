@@ -3,13 +3,23 @@ using UnityEngine;
 public class LevelEnding : MonoBehaviour
 {
     public bool active = false;
-
+    public GameObject mySign;
     public void Activate(bool isActive)
     {
         active = isActive;
+        if (mySign != null)
+        {
+            mySign.SetActive(isActive);
+        }
         GetComponent<SpriteRenderer>().enabled = isActive;
     }
-
+    void Start()
+    {
+        if (mySign != null)
+        {
+            mySign.SetActive(false);
+        }
+    }
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Basket") && active)

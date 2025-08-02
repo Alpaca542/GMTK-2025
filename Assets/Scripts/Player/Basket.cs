@@ -68,7 +68,7 @@ public class Basket : MonoBehaviour
         }
 
         // When player touches basket, attach it to the player and open second half
-        if (other.CompareTag("Player") && !attachedToPlayer)
+        if (other.CompareTag("Magnet") && !attachedToPlayer)
         {
             Debug.Log($"Basket ({gameObject.name}): Player touched basket, attaching and opening second half");
 
@@ -81,7 +81,7 @@ public class Basket : MonoBehaviour
             }
 
             // Notify PlainController that basket is picked up
-            PlainController playerController = other.GetComponent<PlainController>();
+            PlainController playerController = GameObject.FindAnyObjectByType<PlainController>();
             if (playerController != null)
             {
                 playerController.OnBasketPickedUp(transform);

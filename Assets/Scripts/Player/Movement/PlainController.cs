@@ -72,7 +72,6 @@ public class PlainController : MonoBehaviour
     private bool isCarryingBasket = false;
 
     // Basket positioning variables
-    [SerializeField] private Vector3 basketCarryOffset = new Vector3(0, 1.5f, 0);
     private Transform carriedBasket = null;
 
     [SerializeField] private GameObject chain;
@@ -407,7 +406,8 @@ public class PlainController : MonoBehaviour
         }
 
         // Check for baskets (only if magnet has a cow to deliver)
-        if (magnetHasCow)
+        Basket basketScript = FindFirstObjectByType<Basket>();
+        if (magnetHasCow || basketScript.myCows >= basketScript.minCows)
         {
             Collider2D basketCollider = Physics2D.OverlapCapsule(
                 activeCowCheck.position,
@@ -603,14 +603,16 @@ public class PlainController : MonoBehaviour
             carriedBasket = basket;
 
             // Set proper parent and position
-            basket.SetParent(transform);
-            basket.localPosition = basketCarryOffset;
+            basket.SetParent(GameObject.FindAnyObjectByType<MagnetScript>().transform);
 
             // Disable any physics on the basket while carrying
             Rigidbody2D basketRb = basket.GetComponent<Rigidbody2D>();
             if (basketRb != null)
             {
                 basketRb.bodyType = RigidbodyType2D.Kinematic;
+                basketRb.linearVelocity = Vector2.zero;
+                basketRb.angularVelocity = 0f;
+                basketRb.simulated = false;
             }
         }
     }
@@ -627,11 +629,6 @@ public class PlainController : MonoBehaviour
     {
         if (isCarryingBasket && carriedBasket != null)
         {
-            // Keep basket positioned correctly relative to the plane
-            carriedBasket.localPosition = basketCarryOffset;
-
-            // Optionally match rotation (or keep it upright)
-            carriedBasket.localRotation = Quaternion.identity;
         }
     }
 
