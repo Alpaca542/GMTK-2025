@@ -12,6 +12,7 @@ public class Basket : MonoBehaviour
     public TMP_Text cowCountText;
     public GameObject hint1;
     public GameObject hint2;
+    public GameObject hint3;
     public bool showHint = false;
     void Update()
     {
@@ -25,17 +26,27 @@ public class Basket : MonoBehaviour
     }
     public GameObject cowPrefab;
     public float cowOffsetY = 0.5f;
-
+    void Start()
+    {
+        if (showHint)
+        {
+            GameObject.FindAnyObjectByType<PlainController>().maxSpeed = 5.5f;
+        }
+    }
+    public void SetFirstHint()
+    {
+        hint1.SetActive(showHint);
+    }
     public void PickupCow(GameObject cow)
     {
         myCows++;
-        if (myCows == 1f)
-        {
-            hint1.SetActive(showHint);
-        }
-        if (myCows == 2f)
+        if (myCows == 1f && hint2 != null)
         {
             hint2.SetActive(showHint);
+        }
+        if (myCows == 2f && hint3 != null)
+        {
+            hint3.SetActive(showHint);
         }
         if (cowPrefab != null)
         {

@@ -18,6 +18,17 @@ public class Cow : MonoBehaviour
         }
         else if (other.CompareTag("Basket") && GameObject.FindAnyObjectByType<chainHolder>().isChainDeployed == true)
         {
+            if (GameObject.FindAnyObjectByType<MagnetScript>().Taken)
+            {
+                Debug.Log("Cow cannot be picked up by basket while magnet is active.");
+                return;
+            }
+
+            if (GameObject.FindAnyObjectByType<Basket>().showHint)
+            {
+                GameObject.FindAnyObjectByType<Basket>().SetFirstHint();
+            }
+
             // Reset magnet state
             MagnetScript magnetScript = GameObject.FindAnyObjectByType<MagnetScript>();
             if (magnetScript != null)
