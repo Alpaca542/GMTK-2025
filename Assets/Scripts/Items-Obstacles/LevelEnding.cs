@@ -2,9 +2,17 @@ using UnityEngine;
 
 public class LevelEnding : MonoBehaviour
 {
+    public bool active = false;
+
+    public void Activate(bool isActive)
+    {
+        active = isActive;
+        GetComponent<SpriteRenderer>().enabled = isActive;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Basket"))
+        if (other.CompareTag("Basket") && active)
         {
             Debug.Log("Basket reached the end point!");
 

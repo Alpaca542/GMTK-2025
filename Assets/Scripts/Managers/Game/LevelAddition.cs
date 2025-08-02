@@ -142,12 +142,6 @@ public class LevelAddition : MonoBehaviour
 
     private void PauseGameSystems(bool pause)
     {
-        // Pause/Resume FuelManager
-        FuelManager fuelManager = FindFirstObjectByType<FuelManager>();
-        if (fuelManager != null)
-        {
-            fuelManager.enabled = !pause;
-        }
 
         // Pause/Resume PlainController
         if (PlainController.Instance != null)

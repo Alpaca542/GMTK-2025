@@ -45,7 +45,6 @@ public class PlainController : MonoBehaviour
     private float targetThrust = 0f;
     private Vector2 inputDirection = Vector2.zero;
     private Vector2 targetInput = Vector2.zero;
-    [SerializeField] private FuelManager fuelManager;
     public bool started;
     public float gravity = 4f;
     public bool isdead = false;
@@ -78,17 +77,6 @@ public class PlainController : MonoBehaviour
 
     [SerializeField] private GameObject chain;
     [SerializeField] private GameObject bound1;
-    public void AddFuel(float amount)
-    {
-        if (fuelManager != null)
-        {
-            fuelManager.AddFuel(amount);
-        }
-        else
-        {
-            Debug.LogError("FuelManager is not assigned in PlainController.");
-        }
-    }
     void OnCollisionEnter2D(Collision2D collision)
     {
         Debug.Log("Collision detected with: " + collision.gameObject.name);
@@ -165,15 +153,6 @@ public class PlainController : MonoBehaviour
 
     void Start()
     {
-        if (!fuelManager)
-        {
-            fuelManager = FindFirstObjectByType<FuelManager>();
-        }
-        if (fuelManager == null)
-        {
-            Debug.LogError("Someone deleted the FeulManager :skulk:");
-        }
-
         // Find chain controller if not assigned
         if (chainController == null)
         {
@@ -201,21 +180,6 @@ public class PlainController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (fuelManager.enabled == false)
-        {
-            Debug.LogWarning("FuelManager is disabled, hmmmm someone might've been sabotaging.");
-            return;
-        }
-        if (isdead || isinanim) return;
-
-        if (!fuelManager.HasFuel)
-        {
-            currentThrust = 0f;
-            rb.linearDamping = airDrag;
-            rb.gravityScale = gravity;
-            return;
-        }
-
         // Wall avoidance timer update
         if (isAvoidingWall)
         {
@@ -251,7 +215,6 @@ public class PlainController : MonoBehaviour
         HandleRotation();
         HandleMovement();
         ClampVelocity();
-        if (started) fuelManager.CalculateFuelConsumptionBasedOnThrust(currentThrust);
     }
 
 
@@ -340,7 +303,7 @@ public class PlainController : MonoBehaviour
         targetThrust = Mathf.Clamp01(inputMagnitude);
         currentThrust = Mathf.Lerp(currentThrust, targetThrust, accelerationSmoothing * Time.fixedDeltaTime);
 
-        if (currentThrust > 0.01f && fuelManager.HasFuel)
+        if (currentThrust > 0.01f)
         {
             Vector2 thrustDirection = transform.up;
             rb.AddForce(thrustForce * currentThrust * thrustDirection);
@@ -708,7 +671,6 @@ public class PlainController : MonoBehaviour
             chainController.ResetChainState();
         }
 
-        fuelManager.ResetFuel();
     }
 
     // void DelayedReset()

@@ -18,7 +18,6 @@ public class LevelManager : MonoBehaviour
     private int cowCount = 0;
     [SerializeField] private LevelSwitchAnimation levelSwitchAnimation;
     public bool FirstHalfDone = false;
-    [SerializeField] private GameObject halfBorder;
 
     // Event for cow rescue
     public static event Action<GameObject> OnCowRescued;
@@ -27,15 +26,46 @@ public class LevelManager : MonoBehaviour
     public void ShowSecondHalf()
     {
         FirstHalfDone = true;
-        halfBorder.SetActive(false);
-        Camera.main.GetComponent<PlayerFollow>().enabled = false;
-        Camera.main.GetComponent<CameraZoom>().enabled = false;
-        Camera.main.GetComponent<PlayerFollow>().useFirstBounds = false;
-        Camera.main.transform.DOMove(new Vector3(0, 0, GameObject.FindAnyObjectByType<PlainController>().transform.position.z - 10), 2f).SetEase(Ease.InOutSine);
-        Camera.main.DOFieldOfView(88f, 2f).OnComplete(() =>
+        GameObject.FindAnyObjectByType<LevelEnding>().Activate(true);
+
+        // Store current camera state
+        Camera cam = Camera.main;
+        PlayerFollow playerFollow = cam.GetComponent<PlayerFollow>();
+        CameraZoom cameraZoom = cam.GetComponent<CameraZoom>();
+
+        Vector3 originalPosition = cam.transform.position;
+        float originalFOV = cam.fieldOfView;
+
+        // Disable camera components
+        playerFollow.enabled = false;
+        cameraZoom.enabled = false;
+
+        // Create smooth animation sequence
+        Sequence cameraSequence = DOTween.Sequence();
+
+        // Move camera to overview position with smooth easing
+        cameraSequence.Append(cam.transform.DOMove(new Vector3(0, 0, GameObject.FindAnyObjectByType<PlainController>().transform.position.z - 10), 1.5f)
+            .SetEase(Ease.InOutQuart));
+
+        // Zoom out with smooth easing
+        cameraSequence.Join(cam.DOFieldOfView(88f, 1.5f)
+            .SetEase(Ease.InOutQuart));
+
+        // Hold the overview for a moment
+        cameraSequence.AppendInterval(1f);
+
+        // Return to original position and FOV
+        cameraSequence.Append(cam.transform.DOMove(originalPosition, 1.5f)
+            .SetEase(Ease.InOutQuart));
+
+        cameraSequence.Join(cam.DOFieldOfView(originalFOV, 1.5f)
+            .SetEase(Ease.InOutQuart));
+
+        // Re-enable camera components when animation completes
+        cameraSequence.OnComplete(() =>
         {
-            Camera.main.GetComponent<PlayerFollow>().enabled = true;
-            Camera.main.GetComponent<CameraZoom>().enabled = true;
+            playerFollow.enabled = true;
+            cameraZoom.enabled = true;
         });
     }
 
@@ -44,7 +74,7 @@ public class LevelManager : MonoBehaviour
         Instance = this;
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
 
-        halfBorder.SetActive(true);
+        GameObject.FindAnyObjectByType<LevelEnding>().Activate(false);
     }
 
     public void Start()
@@ -86,36 +116,12 @@ public class LevelManager : MonoBehaviour
 
     private void SpawnCows()
     {
-        foreach (var obj in GameObject.FindGameObjectsWithTag("Cow"))
-        {
-            Destroy(obj);
-        }
-
         activeCows.Clear();
 
-        int spawned = 0;
-        int attempts = 0;
-        int totalToSpawn = 3 + currentLevel;
-
-        while (spawned < totalToSpawn && attempts < maxAttempts)
+        GameObject[] existingCows = GameObject.FindGameObjectsWithTag("Cow");
+        foreach (GameObject cow in existingCows)
         {
-            attempts++;
-            float x = UnityEngine.Random.Range(topLeftSpawnArea.position.x, bottomRightSpawnArea.position.x);
-            float y = UnityEngine.Random.Range(bottomRightSpawnArea.position.y, topLeftSpawnArea.position.y);
-            Vector3 spawnPos = new(x, y, -44.3f);
-            bool blocked = Physics2D.OverlapCircle((Vector2)spawnPos, 0.3f, spawnBlockingLayers);
-            if (!blocked)
-            {
-                GameObject newCow = Instantiate(cowPrefab, spawnPos, Quaternion.identity);
-                newCow.tag = "Cow";
-                activeCows.Add(newCow);
-                spawned++;
-            }
-        }
-
-        if (spawned < totalToSpawn)
-        {
-            Debug.LogWarning($"Only spawned {spawned} of {totalToSpawn} cows. Adjust area or LayerMask.");
+            activeCows.Add(cow);
         }
     }
 
@@ -146,7 +152,7 @@ public class LevelManager : MonoBehaviour
         // Reset cow count for new level
         cowCount = 0;
         FirstHalfDone = false;
-        halfBorder.SetActive(true);
+        GameObject.FindAnyObjectByType<LevelEnding>().Activate(false);
 
         GameObject player = GameObject.FindAnyObjectByType<PlainController>().gameObject;
         player.GetComponent<PlainController>().isinanim = false;
