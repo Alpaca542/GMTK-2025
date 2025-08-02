@@ -18,7 +18,11 @@ public class AlimadPlayer : MonoBehaviour
     public float turbulenceInterval = 2f;
     public float torqueLimit = 10f;
     private Vector3 offset;
-
+    public GameObject bulletPrefab;
+    public Transform barrel;
+    public float rst = 0.1f;
+    private float timer = 0f;
+    public float health = 100f;
     public GameObject body;
     public Camera cam;
 
@@ -32,6 +36,18 @@ public class AlimadPlayer : MonoBehaviour
         rb.linearVelocity = transform.right * speed;
         offset = cam.transform.position - transform.position;
     }
+
+    void Update()
+    {
+        timer -= Time.deltaTime;
+        if (Input.GetKey(KeyCode.Mouse0) && timer < 0)
+        {
+            Bullet b = Instantiate(bulletPrefab, barrel.position, barrel.rotation).GetComponent<Bullet>();
+            b.initialSpeed = rb.linearVelocity;
+            timer = rst;
+        }
+    }
+
 
     void FixedUpdate()
     {

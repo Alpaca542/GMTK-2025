@@ -119,6 +119,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &233099672
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 233099673}
+  m_Layer: 0
+  m_Name: brrel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &233099673
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233099672}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.077, y: -0.829, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1170872512}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &337728910
 GameObject:
   m_ObjectHideFlags: 0
@@ -436,6 +467,7 @@ Transform:
   - {fileID: 2206283282738159828}
   - {fileID: 1653750888}
   - {fileID: 337728911}
+  - {fileID: 233099673}
   m_Father: {fileID: 1603204497}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1581013603
@@ -644,6 +676,10 @@ MonoBehaviour:
   turbulenceStrength: 2
   turbulenceInterval: 2
   torqueLimit: 15
+  bulletPrefab: {fileID: 2054587415545849261, guid: e5adb0b4f8413984b9a58c2e07d6b362, type: 3}
+  barrel: {fileID: 233099673}
+  rst: 0.1
+  health: 100
   body: {fileID: 1170872511}
   cam: {fileID: 494371750}
 --- !u!4 &1603204497
