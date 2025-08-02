@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using System;
+
 public class LevelManager : MonoBehaviour
 {
     [SerializeField] private LayerMask spawnBlockingLayers;
@@ -17,6 +19,9 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private LevelSwitchAnimation levelSwitchAnimation;
     public bool FirstHalfDone = false;
     [SerializeField] private GameObject halfBorder;
+
+    // Event for cow rescue
+    public static event Action<GameObject> OnCowRescued;
 
 
     public void ShowSecondHalf()
@@ -67,6 +72,10 @@ public class LevelManager : MonoBehaviour
     {
         activeCows.Remove(cow);
         cowCount++;
+
+        // Trigger the event before destroying the cow
+        OnCowRescued?.Invoke(cow);
+
         Destroy(cow);
     }
 
@@ -91,8 +100,8 @@ public class LevelManager : MonoBehaviour
         while (spawned < totalToSpawn && attempts < maxAttempts)
         {
             attempts++;
-            float x = Random.Range(topLeftSpawnArea.position.x, bottomRightSpawnArea.position.x);
-            float y = Random.Range(bottomRightSpawnArea.position.y, topLeftSpawnArea.position.y);
+            float x = UnityEngine.Random.Range(topLeftSpawnArea.position.x, bottomRightSpawnArea.position.x);
+            float y = UnityEngine.Random.Range(bottomRightSpawnArea.position.y, topLeftSpawnArea.position.y);
             Vector3 spawnPos = new(x, y, -44.3f);
             bool blocked = Physics2D.OverlapCircle((Vector2)spawnPos, 0.3f, spawnBlockingLayers);
             if (!blocked)

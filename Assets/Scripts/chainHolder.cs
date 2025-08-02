@@ -12,7 +12,6 @@ public class chainHolder : MonoBehaviour
 
     void FixedUpdate()
     {
-        transform.rotation = planeRb.transform.rotation;
         Vector2 targetPos = planeRb.position;
         rb.MovePosition(targetPos);
     }

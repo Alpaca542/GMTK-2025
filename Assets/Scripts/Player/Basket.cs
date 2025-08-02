@@ -63,7 +63,7 @@ public class Basket : MonoBehaviour
 
     public bool IsPickable()
     {
-        return !used && !attachedToPlayer && myCows < minCows;
+        return !used && !attachedToPlayer && myCows >= minCows;
     }
 
     public void ResetPlayerPosition(GameObject player)

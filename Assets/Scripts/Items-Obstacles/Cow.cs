@@ -6,17 +6,21 @@ public class Cow : MonoBehaviour
     {
         if (other.CompareTag("Magnet"))
         {
-            // Move cow to magnet position
+            if (other.GetComponent<MagnetScript>().Taken)
+            {
+                Debug.Log("Cow already taken by magnet.");
+                return;
+            }
             transform.position = other.transform.position;
             transform.parent = other.transform;
             other.GetComponent<MagnetScript>().Taken = true;
+            GameObject.FindAnyObjectByType<PlainController>().OnCowRescuedHandler(gameObject);
         }
         else if (other.CompareTag("Basket"))
         {
             GameObject.FindAnyObjectByType<MagnetScript>().Taken = false;
             transform.position = other.transform.position;
 
-            // Remove from active cows and add to cow count
             if (LevelManager.Instance != null)
             {
                 LevelManager.Instance.RescueCow(gameObject);

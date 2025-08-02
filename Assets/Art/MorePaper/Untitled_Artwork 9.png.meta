@@ -119,10 +119,10 @@ TextureImporter:
       name: Untitled_Artwork 9_0
       rect:
         serializedVersion: 2
-        x: 975
-        y: 1040
-        width: 202
-        height: 313
+        x: 696
+        y: 976
+        width: 310
+        height: 200
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,10 +141,10 @@ TextureImporter:
       name: Untitled_Artwork 9_1
       rect:
         serializedVersion: 2
-        x: 468
-        y: 164
-        width: 839
-        height: 254
+        x: 1631
+        y: 469
+        width: 252
+        height: 836
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -163,7 +163,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: faa96068393694c8da447285f8b57f31
     internalID: 0
     vertices: []
     indices: 
@@ -171,7 +171,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Untitled_Artwork 9_0: -7592039380097122887
       Untitled_Artwork 9_1: -3809381949290331153

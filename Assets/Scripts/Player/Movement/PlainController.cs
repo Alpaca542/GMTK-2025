@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using DG.Tweening; // Make sure you have DOTween imported
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlainController : MonoBehaviour
 {
@@ -26,6 +26,14 @@ public class PlainController : MonoBehaviour
     public float avoidanceThrust = 0.7f;
     public LayerMask wallLayer = -1;
 
+    [Header("Cow Detection & Time Slow")]
+    public float cowDetectionRadius = 2f;
+    public float timeSlowScale = 0.5f;
+    public float timeSlowDuration = 1f;
+    public float cowPickupBoostForce = 5f;
+    public LayerMask cowLayer = -1;
+    [SerializeField] private Transform cowCheckTransform;
+
     private Rigidbody2D rb;
     private float currentThrust = 0f;
     private float targetThrust = 0f;
@@ -45,6 +53,14 @@ public class PlainController : MonoBehaviour
     private float avoidanceTimer = 0f;
     private float targetAvoidanceAngle = 0f;
 
+    // Cow detection and time slow variables
+    private bool isTimeSlowed = false;
+    private float timeSlowTimer = 0f;
+    private GameObject detectedCow = null;
+    private bool cowPickedUp = false;
+
+    [SerializeField] private GameObject chain;
+    [SerializeField] private GameObject bound1;
     public void AddFuel(float amount)
     {
         if (fuelManager != null)
@@ -56,13 +72,36 @@ public class PlainController : MonoBehaviour
             Debug.LogError("FuelManager is not assigned in PlainController.");
         }
     }
-
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("Collision detected with: " + collision.gameObject.name);
+    }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            ResetPlayer();
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            chain.SetActive(!chain.activeSelf);
+        }
+    }
     void Awake()
     {
         Instance = this;
         rb = GetComponent<Rigidbody2D>();
         rb.linearDamping = baseDrag;
         gravity = rb.gravityScale;
+
+        // Subscribe to cow rescue event
+        LevelManager.OnCowRescued += OnCowRescuedHandler;
+    }
+
+    void OnDestroy()
+    {
+        // Unsubscribe from cow rescue event
+        LevelManager.OnCowRescued -= OnCowRescuedHandler;
     }
 
     void isGroundedCheck()
@@ -144,6 +183,15 @@ public class PlainController : MonoBehaviour
         {
             StartWallAvoidance();
         }
+
+        // Check for cows and start time slow if needed
+        if (!isTimeSlowed && started)
+        {
+            CheckForCowNearby();
+        }
+
+        // Handle time slow timer
+        HandleTimeSlowSystem();
 
         HandleInput();
         HandleRotation();
@@ -279,6 +327,92 @@ public class PlainController : MonoBehaviour
             rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
         }
     }
+
+    void CheckForCowNearby()
+    {
+        Collider2D cowCollider = Physics2D.OverlapCircle(cowCheckTransform.position, cowDetectionRadius, cowLayer);
+        if (cowCollider != null && cowCollider.CompareTag("Cow"))
+        {
+            Debug.Log($"Cow detected nearby: {cowCollider.name}. Starting time slow effect.");
+            StartTimeSlowEffect(cowCollider.gameObject);
+        }
+    }
+
+    void StartTimeSlowEffect(GameObject cow)
+    {
+        if (isTimeSlowed) return;
+        if (GameObject.FindAnyObjectByType<MagnetScript>().Taken)
+        {
+            return;
+        }
+        Debug.Log($"Starting time slow effect for cow: {cow.name}");
+        isTimeSlowed = true;
+        timeSlowTimer = timeSlowDuration;
+        detectedCow = cow;
+        cowPickedUp = false;
+        DOTween.To(() => Time.timeScale, x => Time.timeScale = x, timeSlowScale, 0.2f);
+    }
+
+    public void OnCowRescuedHandler(GameObject rescuedCow)
+    {
+        // Check if this is the cow we're currently tracking
+        if (isTimeSlowed && detectedCow == rescuedCow)
+        {
+            Debug.Log($"Detected cow {rescuedCow.name} was picked up! Applying boost and ending time slow.");
+            OnCowPickedUp();
+        }
+    }
+
+    System.Collections.IEnumerator MonitorCowPickup()
+    {
+        while (isTimeSlowed && detectedCow != null)
+        {
+            // Check if the cow object has been destroyed (indicating it was picked up)
+            if (detectedCow == null)
+            {
+                OnCowPickedUp();
+                yield break;
+            }
+            yield return null;
+        }
+    }
+
+    void OnCowPickedUp()
+    {
+        cowPickedUp = true;
+        EndTimeSlowEffect();
+
+        // Apply boost to the plane
+        if (rb != null)
+        {
+            Debug.Log($"Applying cow pickup boost: {cowPickupBoostForce} force to the right");
+            rb.AddForce(transform.right * cowPickupBoostForce, ForceMode2D.Impulse);
+        }
+    }
+    void HandleTimeSlowSystem()
+    {
+        if (!isTimeSlowed) return;
+
+        timeSlowTimer -= Time.unscaledDeltaTime;
+
+        if (timeSlowTimer <= 0f && !cowPickedUp)
+        {
+            EndTimeSlowEffect();
+        }
+    }
+
+    void EndTimeSlowEffect()
+    {
+        if (!isTimeSlowed) return;
+
+        Debug.Log("Ending time slow effect. Restoring normal time scale.");
+        isTimeSlowed = false;
+        timeSlowTimer = 0f;
+        detectedCow = null;
+        cowPickedUp = false;
+        DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1f, 0.2f);
+    }
+
     public void DieBySpike()
     {
         Debug.Log("Player has died by spike.");
@@ -304,6 +438,9 @@ public class PlainController : MonoBehaviour
         avoidanceTimer = 0f;
         targetAvoidanceAngle = 0f;
 
+        // Reset time slow system
+        EndTimeSlowEffect();
+
         fuelManager.ResetFuel();
     }
 
@@ -311,4 +448,15 @@ public class PlainController : MonoBehaviour
     // {
     //     BackAtStart.Instance.ResetPlayerPosition(gameObject);
     // }
+
+    void OnDrawGizmosSelected()
+    {
+        // Draw cow detection radius
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, cowDetectionRadius);
+
+        // Draw wall detection ray
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, transform.up * wallDetectionDistance);
+    }
 }
