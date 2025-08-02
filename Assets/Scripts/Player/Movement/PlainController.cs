@@ -28,11 +28,14 @@ public class PlainController : MonoBehaviour
 
     [Header("Cow Detection & Time Slow")]
     public float cowDetectionRadius = 2f;
+    public float basketDetectionRadius = 2f;
     public float timeSlowScale = 0.5f;
     public float timeSlowDuration = 1f;
     public float cowPickupBoostForce = 5f;
     public LayerMask cowLayer = -1;
+    public LayerMask basketLayer = -1;
     [SerializeField] private Transform cowCheckTransform;
+    [SerializeField] private chainHolder chainController;
 
     private Rigidbody2D rb;
     private float currentThrust = 0f;
@@ -57,7 +60,10 @@ public class PlainController : MonoBehaviour
     private bool isTimeSlowed = false;
     private float timeSlowTimer = 0f;
     private GameObject detectedCow = null;
+    private GameObject detectedBasket = null;
     private bool cowPickedUp = false;
+    private bool cowDelivered = false;
+    private bool isChainDeployed = false;
 
     [SerializeField] private GameObject chain;
     [SerializeField] private GameObject bound1;
@@ -82,10 +88,8 @@ public class PlainController : MonoBehaviour
         {
             ResetPlayer();
         }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            chain.SetActive(!chain.activeSelf);
-        }
+        // Remove manual chain control as per requirements
+        // Players should have no control over the rope
     }
     void Awake()
     {
@@ -146,6 +150,16 @@ public class PlainController : MonoBehaviour
         {
             Debug.LogError("Someone deleted the FeulManager :skulk:");
         }
+
+        // Find chain controller if not assigned
+        if (chainController == null)
+        {
+            chainController = FindFirstObjectByType<chainHolder>();
+        }
+        if (chainController == null)
+        {
+            Debug.LogWarning("chainHolder not found! Chain deployment/retraction will not work.");
+        }
     }
 
     void FixedUpdate()
@@ -184,10 +198,10 @@ public class PlainController : MonoBehaviour
             StartWallAvoidance();
         }
 
-        // Check for cows and start time slow if needed
+        // Check for cows, baskets, and manage time slow system
         if (!isTimeSlowed && started)
         {
-            CheckForCowNearby();
+            CheckForNearbyObjects();
         }
 
         // Handle time slow timer
@@ -328,28 +342,55 @@ public class PlainController : MonoBehaviour
         }
     }
 
-    void CheckForCowNearby()
+    void CheckForNearbyObjects()
     {
-        Collider2D cowCollider = Physics2D.OverlapCircle(cowCheckTransform.position, cowDetectionRadius, cowLayer);
-        if (cowCollider != null && cowCollider.CompareTag("Cow"))
+        MagnetScript magnetScript = FindFirstObjectByType<MagnetScript>();
+        bool magnetHasCow = magnetScript != null && magnetScript.Taken;
+
+        // Check for cows first (only if magnet doesn't have a cow)
+        if (!magnetHasCow)
         {
-            Debug.Log($"Cow detected nearby: {cowCollider.name}. Starting time slow effect.");
-            StartTimeSlowEffect(cowCollider.gameObject);
+            Collider2D cowCollider = Physics2D.OverlapCircle(cowCheckTransform.position, cowDetectionRadius, cowLayer);
+            if (cowCollider != null && cowCollider.CompareTag("Cow"))
+            {
+                Debug.Log($"Cow detected nearby: {cowCollider.name}. Starting time slow effect and deploying chain.");
+                StartTimeSlowEffect(cowCollider.gameObject, null);
+                return;
+            }
+        }
+
+        // Check for baskets (only if magnet has a cow to deliver)
+        if (magnetHasCow)
+        {
+            Collider2D basketCollider = Physics2D.OverlapCircle(cowCheckTransform.position, basketDetectionRadius, basketLayer);
+            if (basketCollider != null && basketCollider.CompareTag("Basket"))
+            {
+                Debug.Log($"Basket detected nearby with cow ready for delivery: {basketCollider.name}. Starting time slow effect and deploying chain.");
+                StartTimeSlowEffect(null, basketCollider.gameObject);
+                return;
+            }
         }
     }
 
-    void StartTimeSlowEffect(GameObject cow)
+    void StartTimeSlowEffect(GameObject cow, GameObject basket)
     {
         if (isTimeSlowed) return;
-        if (GameObject.FindAnyObjectByType<MagnetScript>().Taken)
-        {
-            return;
-        }
-        Debug.Log($"Starting time slow effect for cow: {cow.name}");
+
+        Debug.Log($"Starting time slow effect for {(cow != null ? "cow: " + cow.name : "basket: " + basket.name)}");
         isTimeSlowed = true;
         timeSlowTimer = timeSlowDuration;
         detectedCow = cow;
+        detectedBasket = basket;
         cowPickedUp = false;
+        cowDelivered = false;
+        isChainDeployed = true;
+
+        // Deploy the chain automatically
+        if (chainController != null)
+        {
+            chainController.DeployChain();
+        }
+
         DOTween.To(() => Time.timeScale, x => Time.timeScale = x, timeSlowScale, 0.2f);
     }
 
@@ -358,8 +399,19 @@ public class PlainController : MonoBehaviour
         // Check if this is the cow we're currently tracking
         if (isTimeSlowed && detectedCow == rescuedCow)
         {
-            Debug.Log($"Detected cow {rescuedCow.name} was picked up! Applying boost and ending time slow.");
+            Debug.Log($"Detected cow {rescuedCow.name} was picked up! Applying boost, retracting chain, and ending time slow.");
             OnCowPickedUp();
+        }
+    }
+
+    // Called when a cow is delivered to a basket
+    public void OnCowDeliveredToBasket()
+    {
+        if (isTimeSlowed)
+        {
+            Debug.Log("Cow delivered to basket! Retracting chain and ending time slow.");
+            cowDelivered = true;
+            EndTimeSlowEffect();
         }
     }
 
@@ -380,6 +432,8 @@ public class PlainController : MonoBehaviour
     void OnCowPickedUp()
     {
         cowPickedUp = true;
+
+        // Don't retract chain immediately - let the EndTimeSlowEffect handle it
         EndTimeSlowEffect();
 
         // Apply boost to the plane
@@ -395,8 +449,23 @@ public class PlainController : MonoBehaviour
 
         timeSlowTimer -= Time.unscaledDeltaTime;
 
-        if (timeSlowTimer <= 0f && !cowPickedUp)
+        // End time slow if timer expires and no cow was picked up or delivered
+        if (timeSlowTimer <= 0f && !cowPickedUp && !cowDelivered)
         {
+            Debug.Log("Time slow duration expired - ending effect");
+            EndTimeSlowEffect();
+        }
+
+        // Safety check: if the detected objects no longer exist, end the effect
+        if (detectedCow != null && detectedCow == null) // Object was destroyed
+        {
+            Debug.Log("Detected cow was destroyed - ending time slow effect");
+            EndTimeSlowEffect();
+        }
+
+        if (detectedBasket != null && detectedBasket == null) // Object was destroyed
+        {
+            Debug.Log("Detected basket was destroyed - ending time slow effect");
             EndTimeSlowEffect();
         }
     }
@@ -406,10 +475,22 @@ public class PlainController : MonoBehaviour
         if (!isTimeSlowed) return;
 
         Debug.Log("Ending time slow effect. Restoring normal time scale.");
+
+        // Always retract chain when ending time slow effect, regardless of the reason
+        if (isChainDeployed && chainController != null)
+        {
+            Debug.Log($"Retracting chain. CowPickedUp: {cowPickedUp}, CowDelivered: {cowDelivered}");
+            chainController.RetractChain();
+        }
+
         isTimeSlowed = false;
         timeSlowTimer = 0f;
         detectedCow = null;
+        detectedBasket = null;
         cowPickedUp = false;
+        cowDelivered = false;
+        isChainDeployed = false;
+
         DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1f, 0.2f);
     }
 
@@ -440,6 +521,14 @@ public class PlainController : MonoBehaviour
 
         // Reset time slow system
         EndTimeSlowEffect();
+        isChainDeployed = false;
+        cowDelivered = false;
+
+        // Force reset chain state
+        if (chainController != null)
+        {
+            chainController.ResetChainState();
+        }
 
         fuelManager.ResetFuel();
     }
@@ -453,7 +542,11 @@ public class PlainController : MonoBehaviour
     {
         // Draw cow detection radius
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, cowDetectionRadius);
+        Gizmos.DrawWireSphere(cowCheckTransform != null ? cowCheckTransform.position : transform.position, cowDetectionRadius);
+
+        // Draw basket detection radius
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(cowCheckTransform != null ? cowCheckTransform.position : transform.position, basketDetectionRadius);
 
         // Draw wall detection ray
         Gizmos.color = Color.red;

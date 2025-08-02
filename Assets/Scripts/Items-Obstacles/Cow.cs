@@ -18,14 +18,34 @@ public class Cow : MonoBehaviour
         }
         else if (other.CompareTag("Basket"))
         {
-            GameObject.FindAnyObjectByType<MagnetScript>().Taken = false;
-            transform.position = other.transform.position;
+            // Reset magnet state
+            MagnetScript magnetScript = GameObject.FindAnyObjectByType<MagnetScript>();
+            if (magnetScript != null)
+            {
+                magnetScript.Taken = false;
+            }
+
+            // Attach cow to basket properly
+            transform.parent = other.transform;
+            transform.localPosition = Vector3.zero;
+
+            // Notify PlainController that cow was delivered to basket
+            PlainController plainController = GameObject.FindAnyObjectByType<PlainController>();
+            if (plainController != null)
+            {
+                plainController.OnCowDeliveredToBasket();
+            }
 
             if (LevelManager.Instance != null)
             {
                 LevelManager.Instance.RescueCow(gameObject);
             }
-            other.GetComponent<Basket>().myCows += 1f;
+
+            Basket basket = other.GetComponent<Basket>();
+            if (basket != null)
+            {
+                basket.myCows += 1f;
+            }
         }
     }
 }

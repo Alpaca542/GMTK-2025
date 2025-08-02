@@ -917,9 +917,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 30
+  m_Mass: 40
   m_LinearDamping: 0
-  m_AngularDamping: 0.1
+  m_AngularDamping: 1
   m_GravityScale: 4
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -1849,9 +1849,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 30
+  m_Mass: 40
   m_LinearDamping: 0
-  m_AngularDamping: 0.1
+  m_AngularDamping: 1
   m_GravityScale: 4
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -3143,16 +3143,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9144d13fd9e2541f4a2f0da423d50942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thrustForce: 40
+  thrustForce: 50
   rotationSpeed: 300
-  maxSpeed: 6
-  baseDrag: 1.333333
-  airDrag: 2.666667
-  inputSmoothing: 4
+  maxSpeed: 7
+  baseDrag: 2
+  airDrag: 3
+  inputSmoothing: 3.5
   accelerationSmoothing: 5
   momentumDrag: 0.4
   additionalRotationSmoothing: 0.5
-  liftCoefficient: 10
+  liftCoefficient: 101
   minLiftSpeed: 1
   maxLiftSpeed: 1
   wallDetectionDistance: 1.2
@@ -3163,16 +3163,21 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 550
   cowDetectionRadius: 14
+  basketDetectionRadius: 2
   timeSlowScale: 0.5
   timeSlowDuration: 1
   cowPickupBoostForce: 5
   cowLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 1024
+  basketLayer:
+    serializedVersion: 2
+    m_Bits: 2048
   cowCheckTransform: {fileID: 724013377}
+  chainController: {fileID: 965955931}
   fuelManager: {fileID: 683359664}
   started: 1
-  gravity: 4
+  gravity: 1
   isdead: 0
   isinanim: 0
   groundLayer:
@@ -3195,7 +3200,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 2
   m_AngularDamping: 0.05
-  m_GravityScale: 2
+  m_GravityScale: 1
   m_Material: {fileID: 6200000, guid: b4c29460ad16e40beaa8da964eab7d8e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
@@ -3598,7 +3603,7 @@ MonoBehaviour:
   topLeftSpawnArea: {fileID: 1089716446}
   bottomRightSpawnArea: {fileID: 1427392945}
   startPoint: {fileID: 0}
-  cowPrefab: {fileID: 5568428773650907379, guid: a996e284529d31b46b637eb41ece7b94, type: 3}
+  cowPrefab: {fileID: 7878303405282915607, guid: eec01d53e9a3a47138ce80854350913c, type: 3}
   currentLevel: 0
   levelSwitchAnimation: {fileID: 845201975}
   FirstHalfDone: 0
@@ -4442,7 +4447,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d2c3263cb5f84649b00506986d16d21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxFuel: 100
+  maxFuel: 10000
   currentFuel: 0
   fuelConsumptionRate: 10
   reloadCooldown: 2
@@ -5147,7 +5152,7 @@ GameObject:
   - component: {fileID: 791005715}
   - component: {fileID: 791005714}
   - component: {fileID: 791005713}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BackPos1
   m_TagString: Basket
   m_Icon: {fileID: 0}
@@ -5779,9 +5784,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 30
+  m_Mass: 40
   m_LinearDamping: 0
-  m_AngularDamping: 0.1
+  m_AngularDamping: 1
   m_GravityScale: 4
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -6668,6 +6673,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planeRb: {fileID: 461157638}
+  magnetScript: {fileID: 972063966}
+  magnetSpringJoint: {fileID: 972063967}
 --- !u!61 &965955932
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6728,6 +6735,7 @@ GameObject:
   - component: {fileID: 972063963}
   - component: {fileID: 972063962}
   - component: {fileID: 972063966}
+  - component: {fileID: 972063967}
   m_Layer: 6
   m_Name: Chain1 (6)
   m_TagString: Magnet
@@ -6744,7 +6752,7 @@ Transform:
   m_GameObject: {fileID: 972063960}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 20.25, y: 2.96, z: 0}
+  m_LocalPosition: {x: 19.8, y: 2.81, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6788,9 +6796,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 50
+  m_Mass: 60
   m_LinearDamping: 0
-  m_AngularDamping: 0.1
+  m_AngularDamping: 2
   m_GravityScale: 4
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -6908,6 +6916,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Taken: 0
+--- !u!231 &972063967
+SpringJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 972063960}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 965955930}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_BreakAction: 3
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 1.4735341, y: 1.2832719}
+  m_AutoConfigureDistance: 0
+  m_Distance: 0.005
+  m_DampingRatio: 0
+  m_Frequency: 2
 --- !u!1 &977799571
 GameObject:
   m_ObjectHideFlags: 0
@@ -11042,9 +11071,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 30
+  m_Mass: 40
   m_LinearDamping: 0
-  m_AngularDamping: 0.1
+  m_AngularDamping: 1
   m_GravityScale: 4
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -12050,9 +12079,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 30
+  m_Mass: 40
   m_LinearDamping: 0
-  m_AngularDamping: 0.1
+  m_AngularDamping: 1
   m_GravityScale: 4
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -12230,9 +12259,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 30
+  m_Mass: 40
   m_LinearDamping: 0
-  m_AngularDamping: 0.1
+  m_AngularDamping: 1
   m_GravityScale: 4
   m_Material: {fileID: 0}
   m_IncludeLayers:
