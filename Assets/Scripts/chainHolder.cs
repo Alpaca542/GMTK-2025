@@ -43,7 +43,7 @@ public class chainHolder : MonoBehaviour
     {
         if (magnetSpringJoint != null)
         {
-            setPiecesOn(true);
+            SetPiecesOn(true);
             isChainDeployed = true;
             magnetSpringJoint.enabled = false;
             Debug.Log("Chain deployed - Spring joint disabled");
@@ -53,7 +53,7 @@ public class chainHolder : MonoBehaviour
             Debug.LogWarning("Cannot deploy chain - SpringJoint2D is null");
         }
     }
-    public void setPiecesOn(bool value)
+    public void SetPiecesOn(bool value)
     {
         foreach (GameObject obj in chainObjects)
         {
@@ -67,7 +67,7 @@ public class chainHolder : MonoBehaviour
     {
         if (magnetSpringJoint != null)
         {
-            Invoke(nameof(setPiecesOff), 0.3f);
+            Invoke(nameof(SetPiecesOff), 0.3f);
             isChainDeployed = false;
             magnetSpringJoint.enabled = true;
             Debug.Log("Chain retracted - Spring joint enabled");
@@ -78,9 +78,9 @@ public class chainHolder : MonoBehaviour
         }
     }
 
-    private void setPiecesOff()
+    private void SetPiecesOff()
     {
-        setPiecesOn(false);
+        SetPiecesOn(false);
     }
 
     public bool CanRetractChain()

@@ -4749,7 +4749,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc18ecb95a5d753479ce9f905398a931, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zoomedInSize: 60
+  zoomedInSize: 55
   zoomedOutSize: 88
   zoomSpeed: 2
 --- !u!1 &672402335
