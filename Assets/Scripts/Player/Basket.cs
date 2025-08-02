@@ -13,6 +13,7 @@ public class Basket : MonoBehaviour
     public GameObject hint1;
     public GameObject hint2;
     public GameObject hint3;
+    public GameObject hint4;
     public bool showHint = false;
     void Update()
     {
@@ -70,14 +71,37 @@ public class Basket : MonoBehaviour
         // When player touches basket, attach it to the player and open second half
         if (other.CompareTag("Magnet") && !attachedToPlayer)
         {
-            Debug.Log($"Basket ({gameObject.name}): Player touched basket, attaching and opening second half");
+            Debug.Log($"Basket ({gameObject.name}): Magnet touched basket, attaching and opening second half");
 
+            // Check if magnet already has something
+            MagnetScript magnetScript = other.GetComponent<MagnetScript>();
+            if (magnetScript != null && magnetScript.Taken)
+            {
+                Debug.Log($"Basket ({gameObject.name}): Magnet already carrying something, cannot pick up basket");
+                return;
+            }
+            if (showHint)
+            {
+                hint4.SetActive(true);
+            }
             // Disable rigidbody physics before attaching
             Rigidbody2D basketRb = GetComponent<Rigidbody2D>();
             if (basketRb != null)
             {
                 basketRb.bodyType = RigidbodyType2D.Kinematic;
+                basketRb.linearVelocity = Vector2.zero;
+                basketRb.angularVelocity = 0f;
                 Debug.Log($"Basket ({gameObject.name}): Rigidbody set to kinematic for carrying");
+            }
+
+            // Attach to magnet
+            transform.position = other.transform.position;
+            transform.parent = other.transform;
+
+            // Set magnet as taken
+            if (magnetScript != null)
+            {
+                magnetScript.Taken = true;
             }
 
             // Notify PlainController that basket is picked up
@@ -140,6 +164,13 @@ public class Basket : MonoBehaviour
         used = false;
         attachedToPlayer = false;
         transform.SetParent(null);
+
+        // Reset magnet state when basket is reset
+        MagnetScript magnetScript = GameObject.FindAnyObjectByType<MagnetScript>();
+        if (magnetScript != null)
+        {
+            magnetScript.Taken = false;
+        }
 
         // Restore rigidbody physics when reset
         Rigidbody2D basketRb = GetComponent<Rigidbody2D>();

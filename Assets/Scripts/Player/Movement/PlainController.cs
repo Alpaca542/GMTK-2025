@@ -405,10 +405,10 @@ public class PlainController : MonoBehaviour
             }
         }
 
-        // Check for baskets (only if magnet has a cow to deliver)
-        Basket basketScript = FindFirstObjectByType<Basket>();
-        if (magnetHasCow || basketScript.myCows >= basketScript.minCows)
+        // Check for baskets (only if magnet has a cow to deliver OR we need to pick up a full basket)
+        if (magnetHasCow)
         {
+            // Looking for basket to deliver cow to
             Collider2D basketCollider = Physics2D.OverlapCapsule(
                 activeCowCheck.position,
                 capsuleSize,
@@ -419,9 +419,31 @@ public class PlainController : MonoBehaviour
 
             if (basketCollider != null && basketCollider.CompareTag("Basket"))
             {
-                Debug.Log($"Basket detected nearby with capsule: {basketCollider.name}. Starting time slow effect.");
+                Debug.Log($"Basket detected nearby for cow delivery: {basketCollider.name}. Starting time slow effect.");
                 StartTimeSlowEffect(null, basketCollider.gameObject);
                 return;
+            }
+        }
+        else if (!isCarryingBasket)
+        {
+            // Looking for full basket to pick up
+            Collider2D basketCollider = Physics2D.OverlapCapsule(
+                activeCowCheck.position,
+                capsuleSize,
+                CapsuleDirection2D.Horizontal,
+                capsuleAngle,
+                basketLayer
+            );
+
+            if (basketCollider != null && basketCollider.CompareTag("Basket"))
+            {
+                Basket basketScript = basketCollider.GetComponent<Basket>();
+                if (basketScript != null && basketScript.IsPickable())
+                {
+                    Debug.Log($"Full basket detected nearby for pickup: {basketCollider.name}. Starting time slow effect.");
+                    StartTimeSlowEffect(null, basketCollider.gameObject);
+                    return;
+                }
             }
         }
     }
@@ -602,18 +624,8 @@ public class PlainController : MonoBehaviour
             isCarryingBasket = true;
             carriedBasket = basket;
 
-            // Set proper parent and position
-            basket.SetParent(GameObject.FindAnyObjectByType<MagnetScript>().transform);
-
-            // Disable any physics on the basket while carrying
-            Rigidbody2D basketRb = basket.GetComponent<Rigidbody2D>();
-            if (basketRb != null)
-            {
-                basketRb.bodyType = RigidbodyType2D.Kinematic;
-                basketRb.linearVelocity = Vector2.zero;
-                basketRb.angularVelocity = 0f;
-                basketRb.simulated = false;
-            }
+            // Basket is already properly attached to magnet by Basket.cs
+            // No need to reparent here, just update our state
         }
     }
 
@@ -621,6 +633,15 @@ public class PlainController : MonoBehaviour
     public void OnBasketDelivered()
     {
         Debug.Log("Basket delivered - player no longer carrying basket");
+
+        // Reset magnet state when basket is delivered
+        MagnetScript magnetScript = FindFirstObjectByType<MagnetScript>();
+        if (magnetScript != null)
+        {
+            magnetScript.Taken = false;
+            Debug.Log("Magnet state reset - ready to pickup new items");
+        }
+
         isCarryingBasket = false;
         carriedBasket = null;
     }
@@ -667,6 +688,13 @@ public class PlainController : MonoBehaviour
         // Reset basket carrying state
         isCarryingBasket = false;
         carriedBasket = null;
+
+        // Reset magnet state
+        MagnetScript magnetScript = FindFirstObjectByType<MagnetScript>();
+        if (magnetScript != null)
+        {
+            magnetScript.Taken = false;
+        }
 
         // Force reset chain state
         if (chainController != null)
