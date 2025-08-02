@@ -3164,11 +3164,11 @@ MonoBehaviour:
     m_Bits: 550
   cowDetectionRadius: 3.5
   basketDetectionRadius: 3.5
-  detectionCapsuleWidth: 4
-  detectionCapsuleHeight: 2.53
+  detectionCapsuleWidth: 6.34
+  detectionCapsuleHeight: 3.01
   timeSlowScale: 0.5
-  timeSlowDuration: 1
-  cowPickupBoostForce: 5
+  timeSlowDuration: 1.6
+  cowPickupBoostForce: 7
   cowLayer:
     serializedVersion: 2
     m_Bits: 1024
@@ -3280,7 +3280,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 461157635}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: -0.6940304, w: 0.7199457}
   m_LocalPosition: {x: -11, y: -9.9, z: -44.3}
   m_LocalScale: {x: 0.08, y: 0.08, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3289,7 +3289,7 @@ Transform:
   - {fileID: 724013377}
   - {fileID: 770526456}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -87.9}
 --- !u!1001 &497790923
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4700,7 +4700,7 @@ Transform:
   m_GameObject: {fileID: 724013376}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 20, y: 23.6, z: 0}
+  m_LocalPosition: {x: 21.3, y: 25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5039,7 +5039,7 @@ Transform:
   m_GameObject: {fileID: 770526455}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.5, y: 25, z: 0}
+  m_LocalPosition: {x: -18.7, y: 25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
