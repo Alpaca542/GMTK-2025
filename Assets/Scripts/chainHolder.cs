@@ -33,10 +33,22 @@ public class chainHolder : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+    }
+
     void FixedUpdate()
     {
         Vector2 targetPos = planeRb.position;
         rb.MovePosition(targetPos);
+        if (!isChainDeployed)
+        {
+            Rigidbody2D magnetRb = magnetScript.GetComponent<Rigidbody2D>();
+            if (magnetRb != null)
+            {
+                magnetRb.MoveRotation(planeRb.rotation);
+            }
+        }
     }
 
     public void DeployChain()

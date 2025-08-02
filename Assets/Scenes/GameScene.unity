@@ -6206,9 +6206,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handTransform: {fileID: 845201973}
-  drawingSpeed: 0.8
+  drawingSpeed: 3
   shakingIntensity: 2
-  shakingFrequency: 15
+  shakingFrequency: 25
   minShakeTime: 0.3
   maxShakeTime: 10
   approachDistance: 1.5

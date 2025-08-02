@@ -87,9 +87,8 @@ public class LevelAddition : MonoBehaviour
 
         // Set up camera overview
         bool cameraAnimationComplete = false;
-        StartCoroutine(AnimateCameraOverview(() => cameraAnimationComplete = true));
+        cameraAnimationComplete = true;
 
-        // Find all obstacles in the level with "Obstacle" tag
         List<GameObject> obstacles = new List<GameObject>();
         Transform[] allTransforms = levelObject.GetComponentsInChildren<Transform>(true);
 
@@ -140,9 +139,8 @@ public class LevelAddition : MonoBehaviour
         }
 
         // Wait for camera to return to original position
-        bool cameraReturnComplete = false;
-        StartCoroutine(ReturnCameraToOriginal(() => cameraReturnComplete = true));
-        yield return new WaitUntil(() => cameraReturnComplete);
+        Camera.main.GetComponent<CameraZoom>().enabled = true;
+        Camera.main.GetComponent<PlayerFollow>().enabled = true;
 
         // Small delay before resuming gameplay
         yield return new WaitForSeconds(0.3f);
@@ -214,36 +212,6 @@ public class LevelAddition : MonoBehaviour
     }
 
     private Camera storedCamera;
-    private PlayerFollow storedPlayerFollow;
-    private CameraZoom storedCameraZoom;
-    private Vector3 storedOriginalPosition;
-    private float storedOriginalFOV;
-
-    private IEnumerator AnimateCameraOverview(System.Action onComplete)
-    {
-        yield return new WaitForSeconds(3f);
-
-        onComplete?.Invoke();
-    }
-
-    private IEnumerator ReturnCameraToOriginal(System.Action onComplete)
-    {
-        if (storedCamera == null)
-        {
-            onComplete?.Invoke();
-            yield break;
-        }
-
-
-        // Wait for the sequence to complete
-        yield return new WaitForSeconds(2f);
-
-        // Re-enable camera components when animation completes
-        if (storedPlayerFollow != null) storedPlayerFollow.enabled = true;
-        if (storedCameraZoom != null) storedCameraZoom.enabled = true;
-
-        onComplete?.Invoke();
-    }
 
     public bool IsDrawingLevel => isDrawingLevel;
 }

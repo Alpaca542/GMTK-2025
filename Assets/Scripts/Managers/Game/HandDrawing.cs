@@ -153,17 +153,16 @@ public class HandDrawing : MonoBehaviour
         if (CurrentTrail != null) CurrentTrail.SetActive(true);
 
         float maxSize = Math.Max(objectBounds.size.x, objectBounds.size.y);
-        // Phase 2: Quick diagonal movement with oscillations - improved intensity formula
+        // Phase 2: Diagonal drawing movement with proper speed and oscillations
         float distance = Vector3.Distance(drawingPath[0], drawingPath[1]);
-        float moveTime = (distance / drawingSpeed) * 0.3f; // Fast movement
+        float moveTime = distance / drawingSpeed; // Use proper speed calculation
         float improvedShakingIntensity = CalculateShakingIntensity(maxSize);
         yield return StartCoroutine(MoveToPositionWithOscillation(drawingPath[1], moveTime, improvedShakingIntensity));
 
         ApplyDrawingEffect(targetObject, isDraw);
 
-        // Turn off trail after drawing
-        CurrentTrail.SetActive(false);
-        if (CurrentTrail != null) CurrentTrail.SetActive(true);
+        // Clean up trail after drawing
+        if (CurrentTrail != null) CurrentTrail.SetActive(false);
 
         // Phase 3: Return to original position only if specified
         if (returnToStart)
@@ -184,7 +183,8 @@ public class HandDrawing : MonoBehaviour
     /// </summary>
     private float CalculateShakingIntensity(float objectSize)
     {
-        return shakingIntensity / 4f;
+        // Use a more noticeable shaking intensity that scales with object size
+        return shakingIntensity * Mathf.Clamp(objectSize * 0.5f, 0.5f, 2.0f);
     }
 
     private Vector3[] CalculateDrawingPath(Bounds bounds)
@@ -192,16 +192,22 @@ public class HandDrawing : MonoBehaviour
         Vector3 center = bounds.center;
         Vector3 size = bounds.size;
 
-        // Same behavior for all objects - diagonal movement across the object
+        // Create a proper diagonal movement across the entire object
+        // Start from top-left corner, move to bottom-right corner
+        // Ensure minimum movement distance for small objects
+        float minMovement = 0.5f;
+        float xOffset = Mathf.Max(size.x * 0.6f, minMovement);
+        float yOffset = Mathf.Max(size.y * 0.6f, minMovement);
+
         Vector3 startPoint = new Vector3(
-            center.x - size.x * 0.3f,
-            center.y + size.y * 0.3f,
+            center.x - xOffset,
+            center.y + yOffset,
             center.z - drawingHeight
         );
 
         Vector3 endPoint = new Vector3(
-            center.x + size.x * 0.3f,
-            center.y - size.y * 0.3f,
+            center.x + xOffset,
+            center.y - yOffset,
             center.z - drawingHeight
         );
 
@@ -226,7 +232,7 @@ public class HandDrawing : MonoBehaviour
         handTransform.position = targetPosition;
     }
 
-    // Simplified oscillating movement
+    // Improved oscillating movement for better drawing effect
     private IEnumerator MoveToPositionWithOscillation(Vector3 targetPosition, float duration, float oscillationIntensity)
     {
         Vector3 startPosition = handTransform.position;
@@ -237,15 +243,19 @@ public class HandDrawing : MonoBehaviour
             elapsed += Time.deltaTime;
             float progress = elapsed / duration;
 
-            // Base diagonal movement
-            Vector3 basePosition = Vector3.Lerp(startPosition, targetPosition, progress);
+            // Base diagonal movement with smooth easing
+            Vector3 basePosition = Vector3.Lerp(startPosition, targetPosition, movementCurve.Evaluate(progress));
 
             // Add oscillation perpendicular to the movement direction
             Vector3 direction = (targetPosition - startPosition).normalized;
             Vector3 perpendicular = new Vector3(-direction.y, direction.x, 0f);
 
-            // Simple fast oscillations
-            float oscillation = Mathf.Sin(elapsed * 25f) * oscillationIntensity * 3f;
+            // Create natural drawing oscillations that vary in intensity
+            float oscillationFreq = shakingFrequency;
+            float oscillation = Mathf.Sin(elapsed * oscillationFreq) * oscillationIntensity;
+
+            // Add some randomness for more natural hand movement
+            oscillation += Mathf.PerlinNoise(elapsed * 10f, 0f) * oscillationIntensity * 0.3f;
 
             handTransform.position = basePosition + perpendicular * oscillation;
             yield return null;
