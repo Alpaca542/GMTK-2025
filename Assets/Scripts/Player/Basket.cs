@@ -10,6 +10,9 @@ public class Basket : MonoBehaviour
     public float minCows = 1f;
     public float currentOffset = 0f;
     public TMP_Text cowCountText;
+    public GameObject hint1;
+    public GameObject hint2;
+    public bool showHint = false;
     void Update()
     {
         if (cowCountText == null)
@@ -20,13 +23,20 @@ public class Basket : MonoBehaviour
         cowCountText.text = myCows.ToString() + " / " + minCows.ToString();
         cowCountText.color = myCows >= minCows ? Color.green : Color.red;
     }
-    public GameObject cowPrefab; // Assign in inspector
-    public float cowOffsetY = 0.5f; // Vertical offset between cows
+    public GameObject cowPrefab;
+    public float cowOffsetY = 0.5f;
 
     public void PickupCow(GameObject cow)
     {
         myCows++;
-
+        if (myCows == 1f)
+        {
+            hint1.SetActive(showHint);
+        }
+        if (myCows == 2f)
+        {
+            hint2.SetActive(showHint);
+        }
         if (cowPrefab != null)
         {
             currentOffset += cowOffsetY;
