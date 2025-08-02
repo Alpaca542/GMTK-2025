@@ -19,7 +19,7 @@ public class HandDrawingExample : MonoBehaviour
     {
         // Auto-find HandDrawing component if not assigned
         if (handDrawing == null)
-            handDrawing = FindObjectOfType<HandDrawing>();
+            handDrawing = FindAnyObjectByType<HandDrawing>();
 
         if (handDrawing == null)
         {
@@ -31,7 +31,7 @@ public class HandDrawingExample : MonoBehaviour
         if (targetObjects == null || targetObjects.Length == 0)
         {
             // Find all GameObjects with renderers (potential drawing targets)
-            Renderer[] renderers = FindObjectsOfType<Renderer>();
+            Renderer[] renderers = FindObjectsByType<Renderer>(FindObjectsSortMode.None);
             targetObjects = new GameObject[renderers.Length];
             for (int i = 0; i < renderers.Length; i++)
             {

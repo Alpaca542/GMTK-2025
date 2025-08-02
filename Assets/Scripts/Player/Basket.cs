@@ -17,7 +17,7 @@ public class Basket : MonoBehaviour
             Debug.LogError("Basket: cowCountText is not assigned!");
             return;
         }
-        cowCountText.text = myCows.ToString();
+        cowCountText.text = myCows.ToString() + " / " + minCows.ToString();
         cowCountText.color = myCows >= minCows ? Color.green : Color.red;
     }
     public GameObject cowPrefab; // Assign in inspector

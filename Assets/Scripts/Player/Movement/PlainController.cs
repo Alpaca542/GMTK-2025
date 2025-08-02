@@ -89,7 +89,7 @@ public class PlainController : MonoBehaviour
         }
 
         // Handle spacebar for rope extraction (only during time slow)
-        if (isTimeSlowed && Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space))
         {
             if (!isChainDeployed && chainController != null)
             {
@@ -97,6 +97,12 @@ public class PlainController : MonoBehaviour
                 chainController.DeployChain();
                 isChainDeployed = true;
             }
+        }
+        else if (isChainDeployed && chainController != null)
+        {
+            Debug.Log("Player released spacebar - retracting chain");
+            chainController.RetractChain();
+            isChainDeployed = false;
         }
 
         // Update basket position if carrying one
