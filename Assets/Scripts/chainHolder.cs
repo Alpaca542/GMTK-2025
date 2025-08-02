@@ -6,7 +6,7 @@ public class chainHolder : MonoBehaviour
     public MagnetScript magnetScript;
     public SpringJoint2D magnetSpringJoint;
     public bool isChainDeployed = false;
-
+    public GameObject[] cainObjects;
     private Rigidbody2D rb;
 
     void Start()
@@ -43,6 +43,7 @@ public class chainHolder : MonoBehaviour
     {
         if (magnetSpringJoint != null)
         {
+            setPiecesOn(true);
             isChainDeployed = true;
             magnetSpringJoint.enabled = false;
             Debug.Log("Chain deployed - Spring joint disabled");
@@ -52,11 +53,21 @@ public class chainHolder : MonoBehaviour
             Debug.LogWarning("Cannot deploy chain - SpringJoint2D is null");
         }
     }
-
+    public void setPiecesOn(bool value)
+    {
+        foreach (GameObject obj in cainObjects)
+        {
+            if (obj != null)
+            {
+                obj.GetComponent<SpriteRenderer>().enabled = value;
+            }
+        }
+    }
     public void RetractChain()
     {
         if (magnetSpringJoint != null)
         {
+            Invoke(nameof(setPiecesOff), 0.4f);
             isChainDeployed = false;
             magnetSpringJoint.enabled = true;
             Debug.Log("Chain retracted - Spring joint enabled");
@@ -65,6 +76,11 @@ public class chainHolder : MonoBehaviour
         {
             Debug.LogWarning("Cannot retract chain - SpringJoint2D is null");
         }
+    }
+
+    private void setPiecesOff()
+    {
+        setPiecesOn(false);
     }
 
     public bool CanRetractChain()
