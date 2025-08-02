@@ -33,6 +33,9 @@ public class HandDrawing : MonoBehaviour
     private bool isAnimating = false;
     private Sequence shakeSequence;
 
+    [SerializeField] private GameObject CurrentTrail;
+    [SerializeField] private GameObject trailPrefab;
+
     void Start()
     {
         Instance = this;
@@ -61,7 +64,7 @@ public class HandDrawing : MonoBehaviour
             return;
         }
 
-        currentAnimationCoroutine = StartCoroutine(DrawingAnimationCoroutine(targetObject, isDraw));
+        currentAnimationCoroutine = StartCoroutine(DrawingAnimationCoroutine(targetObject, isDraw, true));
     }
 
     /// <summary>
@@ -104,18 +107,22 @@ public class HandDrawing : MonoBehaviour
             if (objects[i] != null)
             {
                 // Draw each object
-                yield return StartCoroutine(DrawingAnimationCoroutine(objects[i], true));
+                yield return StartCoroutine(DrawingAnimationCoroutine(objects[i], true, i == objects.Length - 1));
 
                 // Small pause between objects for visual clarity
-                yield return new WaitForSeconds(0.2f);
+                if (i < objects.Length - 1) // Don't pause after the last object
+                    yield return new WaitForSeconds(0.2f);
             }
         }
+
+        // Return to original position only after all drawings are complete
+        yield return StartCoroutine(MoveToPosition(originalHandPosition, 0.3f));
 
         isAnimating = false;
         onComplete?.Invoke();
     }
 
-    private IEnumerator DrawingAnimationCoroutine(GameObject targetObject, bool isDraw)
+    private IEnumerator DrawingAnimationCoroutine(GameObject targetObject, bool isDraw, bool returnToStart = true)
     {
         isAnimating = true;
 
@@ -134,24 +141,50 @@ public class HandDrawing : MonoBehaviour
             drawingParticles.Play();
         }
 
-        // Phase 1: Move to starting position quickly
+        // Phase 1: Move to starting position quickly (turn off trail during movement)
+        if (CurrentTrail != null) CurrentTrail.SetActive(false);
         yield return StartCoroutine(MoveToPosition(drawingPath[0], 0.3f));
+
+        // Turn on trail for drawing
+        GameObject newTrail = Instantiate(trailPrefab, CurrentTrail.transform.position, Quaternion.identity);
+        newTrail.transform.SetParent(CurrentTrail.transform.parent);
+        CurrentTrail.transform.SetParent(null);
+        CurrentTrail = newTrail;
+        if (CurrentTrail != null) CurrentTrail.SetActive(true);
+
         float maxSize = Math.Max(objectBounds.size.x, objectBounds.size.y);
-        // Phase 2: Quick diagonal movement with oscillations
+        // Phase 2: Quick diagonal movement with oscillations - improved intensity formula
         float distance = Vector3.Distance(drawingPath[0], drawingPath[1]);
         float moveTime = (distance / drawingSpeed) * 0.3f; // Fast movement
-        yield return StartCoroutine(MoveToPositionWithOscillation(drawingPath[1], moveTime, maxSize / 4f));
+        float improvedShakingIntensity = CalculateShakingIntensity(maxSize);
+        yield return StartCoroutine(MoveToPositionWithOscillation(drawingPath[1], moveTime, improvedShakingIntensity));
 
         ApplyDrawingEffect(targetObject, isDraw);
 
-        // Phase 3: Return to original position quickly
-        yield return StartCoroutine(MoveToPosition(originalHandPosition, 0.3f));
+        // Turn off trail after drawing
+        CurrentTrail.SetActive(false);
+        if (CurrentTrail != null) CurrentTrail.SetActive(true);
+
+        // Phase 3: Return to original position only if specified
+        if (returnToStart)
+        {
+            yield return StartCoroutine(MoveToPosition(originalHandPosition, 0.3f));
+        }
 
         // Stop effects
         if (drawingParticles != null)
             drawingParticles.Stop();
 
         isAnimating = false;
+    }
+
+    /// <summary>
+    /// Calculates appropriate shaking intensity based on object size
+    /// Uses a logarithmic curve to prevent excessive shaking for large objects
+    /// </summary>
+    private float CalculateShakingIntensity(float objectSize)
+    {
+        return shakingIntensity / 4f;
     }
 
     private Vector3[] CalculateDrawingPath(Bounds bounds)
@@ -194,7 +227,7 @@ public class HandDrawing : MonoBehaviour
     }
 
     // Simplified oscillating movement
-    private IEnumerator MoveToPositionWithOscillation(Vector3 targetPosition, float duration, float newShakingIntensity)
+    private IEnumerator MoveToPositionWithOscillation(Vector3 targetPosition, float duration, float oscillationIntensity)
     {
         Vector3 startPosition = handTransform.position;
         float elapsed = 0f;
@@ -212,7 +245,7 @@ public class HandDrawing : MonoBehaviour
             Vector3 perpendicular = new Vector3(-direction.y, direction.x, 0f);
 
             // Simple fast oscillations
-            float oscillation = Mathf.Sin(elapsed * 25f) * newShakingIntensity * 3f; // Use existing intensity setting
+            float oscillation = Mathf.Sin(elapsed * 25f) * oscillationIntensity * 3f;
 
             handTransform.position = basePosition + perpendicular * oscillation;
             yield return null;

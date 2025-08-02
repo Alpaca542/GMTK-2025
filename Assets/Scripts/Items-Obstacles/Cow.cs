@@ -40,7 +40,11 @@ public class Cow : MonoBehaviour
                 Debug.Log("Chain is not deployed, cannot pick up cow with magnet.");
                 return;
             }
-
+            Basket basketScript = GameObject.FindAnyObjectByType<Basket>();
+            if (basketScript != null && basketScript.showHint)
+            {
+                basketScript.SetFirstHint();
+            }
             transform.position = other.transform.position;
             transform.parent = other.transform;
             magnetScript.Taken = true;
@@ -98,12 +102,6 @@ public class Cow : MonoBehaviour
             }
 
             Debug.Log($"Delivering cow {gameObject.name} to basket {other.name}. Basket current cows: {basket.myCows}");
-
-            Basket basketScript = GameObject.FindAnyObjectByType<Basket>();
-            if (basketScript != null && basketScript.showHint)
-            {
-                basketScript.SetFirstHint();
-            }
 
             // Reset magnet state
             magnetScript.Taken = false;

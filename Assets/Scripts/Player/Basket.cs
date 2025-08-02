@@ -8,13 +8,20 @@ public class Basket : MonoBehaviour
     private bool attachedToPlayer = false;
     public float myCows = 0f;
     public float minCows = 1f;
-    public float currentOffset = 0f;
     public TMP_Text cowCountText;
     public GameObject hint1;
     public GameObject hint2;
     public GameObject hint3;
     public GameObject hint4;
     public bool showHint = false;
+
+    [Header("Cow Textures")]
+    public GameObject cowTexture1; // First cow texture
+    public GameObject cowTexture2; // Second cow texture  
+    public GameObject cowTexture3; // Third cow texture
+    public GameObject cowTexture4; // Fourth cow texture
+    private float lastCowCount = -1f; // Track changes
+
     void Update()
     {
         if (cowCountText == null)
@@ -24,23 +31,52 @@ public class Basket : MonoBehaviour
         }
         cowCountText.text = myCows.ToString() + " / " + minCows.ToString();
         cowCountText.color = myCows >= minCows ? Color.green : Color.red;
+
+        // Only update textures if cow count changed
+        if (lastCowCount != myCows)
+        {
+            SetCowTexturesVisibility();
+            lastCowCount = myCows;
+        }
     }
-    public GameObject cowPrefab;
-    public float cowOffsetY = 0.5f;
     void Start()
     {
         if (showHint)
         {
             GameObject.FindAnyObjectByType<PlainController>().maxSpeed = 5.5f;
         }
+
+        // Initialize all cow textures as disabled
+        SetCowTexturesVisibility();
     }
+
+    private void SetCowTexturesVisibility()
+    {
+        // Turn off all cow textures first
+        if (cowTexture1 != null) cowTexture1.SetActive(false);
+        if (cowTexture2 != null) cowTexture2.SetActive(false);
+        if (cowTexture3 != null) cowTexture3.SetActive(false);
+        if (cowTexture4 != null) cowTexture4.SetActive(false);
+
+        // Turn on textures based on cow count
+        if (myCows >= 1 && cowTexture1 != null) cowTexture1.SetActive(true);
+        if (myCows >= 2 && cowTexture2 != null) cowTexture2.SetActive(true);
+        if (myCows >= 3 && cowTexture3 != null) cowTexture3.SetActive(true);
+        if (myCows >= 4 && cowTexture4 != null) cowTexture4.SetActive(true);
+
+        Debug.Log($"Basket: Updated cow textures visibility. Showing {myCows} cow textures");
+    }
+
     public void SetFirstHint()
     {
         hint1.SetActive(showHint);
     }
+
     public void PickupCow(GameObject cow)
     {
         myCows++;
+
+        // Show hints
         if (myCows == 1f && hint2 != null)
         {
             hint2.SetActive(showHint);
@@ -50,20 +86,14 @@ public class Basket : MonoBehaviour
             hint3.SetActive(showHint);
         }
 
-        // Position cow relative to basket
+        // Update cow texture visibility
+        SetCowTexturesVisibility();
+
+        // Destroy the actual cow GameObject since we're using textures now
         if (cow != null)
         {
-            currentOffset += cowOffsetY;
-            // Position cow relative to the basket, not using absolute world position
-            cow.transform.localPosition = new Vector3(currentOffset, 0, 0);
-
-            SpriteRenderer sr = cow.GetComponent<SpriteRenderer>();
-            if (sr != null)
-            {
-                sr.sortingOrder = (int)myCows + 1; // Make sure cows are in front of basket
-            }
-
-            Debug.Log($"Basket: Cow {cow.name} positioned at local offset {currentOffset}, total cows: {myCows}");
+            Debug.Log($"Basket: Collected cow {cow.name}, total cows: {myCows}. Destroying cow GameObject.");
+            Destroy(cow);
         }
     }
     private void OnTriggerEnter2D(Collider2D other)
@@ -170,8 +200,11 @@ public class Basket : MonoBehaviour
         used = false;
         attachedToPlayer = false;
         myCows = 0f;
-        currentOffset = 0f;
+        lastCowCount = -1f; // Reset tracking
         transform.SetParent(null);
+
+        // Reset cow texture visibility
+        SetCowTexturesVisibility();
 
         // Reset magnet state when basket is reset
         MagnetScript magnetScript = GameObject.FindAnyObjectByType<MagnetScript>();
@@ -185,7 +218,7 @@ public class Basket : MonoBehaviour
         if (basketRb != null)
         {
             basketRb.bodyType = RigidbodyType2D.Dynamic;
-            Debug.Log($"Basket ({gameObject.name}): Rigidbody restored to dynamic, cow count reset");
+            Debug.Log($"Basket ({gameObject.name}): Rigidbody restored to dynamic, cow count and textures reset");
         }
     }
 

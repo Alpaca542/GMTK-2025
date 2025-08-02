@@ -85,6 +85,10 @@ public class LevelAddition : MonoBehaviour
         // Pause the game systems
         PauseGameSystems(true);
 
+        // Set up camera overview
+        bool cameraAnimationComplete = false;
+        StartCoroutine(AnimateCameraOverview(() => cameraAnimationComplete = true));
+
         // Find all obstacles in the level with "Obstacle" tag
         List<GameObject> obstacles = new List<GameObject>();
         Transform[] allTransforms = levelObject.GetComponentsInChildren<Transform>(true);
@@ -101,8 +105,8 @@ public class LevelAddition : MonoBehaviour
 
         Debug.Log($"Found {obstacles.Count} obstacles to draw in level");
 
-        // Wait a moment before starting to draw
-        yield return new WaitForSeconds(0.5f);
+        // Wait for camera to reach overview position
+        yield return new WaitUntil(() => cameraAnimationComplete);
 
         // Draw all obstacles if hand drawing is available
         if (HandDrawing.Instance != null && obstacles.Count > 0)
@@ -130,7 +134,15 @@ public class LevelAddition : MonoBehaviour
             {
                 Debug.LogWarning("HandDrawing.Instance not found! Obstacles will appear without drawing animation.");
             }
+
+            // Wait a bit to simulate drawing time if no hand drawing system
+            yield return new WaitForSeconds(2f);
         }
+
+        // Wait for camera to return to original position
+        bool cameraReturnComplete = false;
+        StartCoroutine(ReturnCameraToOriginal(() => cameraReturnComplete = true));
+        yield return new WaitUntil(() => cameraReturnComplete);
 
         // Small delay before resuming gameplay
         yield return new WaitForSeconds(0.3f);
@@ -142,7 +154,6 @@ public class LevelAddition : MonoBehaviour
 
     private void PauseGameSystems(bool pause)
     {
-
         // Pause/Resume PlainController
         if (PlainController.Instance != null)
         {
@@ -152,12 +163,17 @@ public class LevelAddition : MonoBehaviour
             {
                 // Stop player movement and set gravity to 0 to freeze in place
                 PlainController.Instance.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+                PlainController.Instance.GetComponent<Rigidbody2D>().angularVelocity = 0f;
                 PlainController.Instance.GetComponent<Rigidbody2D>().gravityScale = 0f;
+
+                // Disable player input during drawing
+                PlainController.Instance.enabled = false;
             }
             else
             {
-                // Restore gravity
+                // Restore gravity and re-enable player
                 PlainController.Instance.GetComponent<Rigidbody2D>().gravityScale = PlainController.Instance.gravity;
+                PlainController.Instance.enabled = true;
             }
         }
 
@@ -196,5 +212,38 @@ public class LevelAddition : MonoBehaviour
         // You can add more specific obstacle types here if needed
         // For example, if there are other Update-based animations
     }
+
+    private Camera storedCamera;
+    private PlayerFollow storedPlayerFollow;
+    private CameraZoom storedCameraZoom;
+    private Vector3 storedOriginalPosition;
+    private float storedOriginalFOV;
+
+    private IEnumerator AnimateCameraOverview(System.Action onComplete)
+    {
+        yield return new WaitForSeconds(3f);
+
+        onComplete?.Invoke();
+    }
+
+    private IEnumerator ReturnCameraToOriginal(System.Action onComplete)
+    {
+        if (storedCamera == null)
+        {
+            onComplete?.Invoke();
+            yield break;
+        }
+
+
+        // Wait for the sequence to complete
+        yield return new WaitForSeconds(2f);
+
+        // Re-enable camera components when animation completes
+        if (storedPlayerFollow != null) storedPlayerFollow.enabled = true;
+        if (storedCameraZoom != null) storedCameraZoom.enabled = true;
+
+        onComplete?.Invoke();
+    }
+
     public bool IsDrawingLevel => isDrawingLevel;
 }
