@@ -44,21 +44,21 @@ public class LevelManager : MonoBehaviour
         Sequence cameraSequence = DOTween.Sequence();
 
         // Move camera to overview position with smooth easing
-        cameraSequence.Append(cam.transform.DOMove(new Vector3(0, 0, GameObject.FindAnyObjectByType<PlainController>().transform.position.z - 10), 1.5f)
+        cameraSequence.Append(cam.transform.DOMove(new Vector3(0, -3f, GameObject.FindAnyObjectByType<PlainController>().transform.position.z - 10), 1.5f)
             .SetEase(Ease.InOutQuart));
 
         // Zoom out with smooth easing
-        cameraSequence.Join(cam.DOFieldOfView(88f, 1.5f)
+        cameraSequence.Join(cam.DOFieldOfView(88f, 1f)
             .SetEase(Ease.InOutQuart));
 
         // Hold the overview for a moment
-        cameraSequence.AppendInterval(1f);
+        cameraSequence.AppendInterval(0.5f);
 
         // Return to original position and FOV
-        cameraSequence.Append(cam.transform.DOMove(originalPosition, 1.5f)
+        cameraSequence.Append(cam.transform.DOMove(originalPosition, 1f)
             .SetEase(Ease.InOutQuart));
 
-        cameraSequence.Join(cam.DOFieldOfView(originalFOV, 1.5f)
+        cameraSequence.Join(cam.DOFieldOfView(originalFOV, 1f)
             .SetEase(Ease.InOutQuart));
 
         // Re-enable camera components when animation completes

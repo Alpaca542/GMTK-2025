@@ -49,15 +49,21 @@ public class Basket : MonoBehaviour
         {
             hint3.SetActive(showHint);
         }
-        if (cowPrefab != null)
+
+        // Position cow relative to basket
+        if (cow != null)
         {
             currentOffset += cowOffsetY;
-            cow.transform.position = new Vector3(transform.position.x + currentOffset, transform.position.y, transform.position.z);
+            // Position cow relative to the basket, not using absolute world position
+            cow.transform.localPosition = new Vector3(currentOffset, 0, 0);
+
             SpriteRenderer sr = cow.GetComponent<SpriteRenderer>();
             if (sr != null)
             {
-                sr.sortingOrder = (int)myCows;
+                sr.sortingOrder = (int)myCows + 1; // Make sure cows are in front of basket
             }
+
+            Debug.Log($"Basket: Cow {cow.name} positioned at local offset {currentOffset}, total cows: {myCows}");
         }
     }
     private void OnTriggerEnter2D(Collider2D other)
@@ -163,6 +169,8 @@ public class Basket : MonoBehaviour
     {
         used = false;
         attachedToPlayer = false;
+        myCows = 0f;
+        currentOffset = 0f;
         transform.SetParent(null);
 
         // Reset magnet state when basket is reset
@@ -177,7 +185,7 @@ public class Basket : MonoBehaviour
         if (basketRb != null)
         {
             basketRb.bodyType = RigidbodyType2D.Dynamic;
-            Debug.Log($"Basket ({gameObject.name}): Rigidbody restored to dynamic");
+            Debug.Log($"Basket ({gameObject.name}): Rigidbody restored to dynamic, cow count reset");
         }
     }
 

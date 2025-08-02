@@ -6,7 +6,7 @@ public class chainHolder : MonoBehaviour
     public MagnetScript magnetScript;
     public SpringJoint2D magnetSpringJoint;
     public bool isChainDeployed = false;
-    public GameObject[] cainObjects;
+    public GameObject[] chainObjects;
     private Rigidbody2D rb;
 
     void Start()
@@ -55,7 +55,7 @@ public class chainHolder : MonoBehaviour
     }
     public void setPiecesOn(bool value)
     {
-        foreach (GameObject obj in cainObjects)
+        foreach (GameObject obj in chainObjects)
         {
             if (obj != null)
             {
@@ -88,10 +88,6 @@ public class chainHolder : MonoBehaviour
         return magnetScript != null && !magnetScript.Taken;
     }
 
-    public bool IsChainDeployed()
-    {
-        return magnetSpringJoint != null && !magnetSpringJoint.enabled;
-    }
 
     public bool IsChainRetracted()
     {
