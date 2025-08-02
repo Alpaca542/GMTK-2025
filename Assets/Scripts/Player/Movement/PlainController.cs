@@ -29,12 +29,15 @@ public class PlainController : MonoBehaviour
     [Header("Cow Detection & Time Slow")]
     public float cowDetectionRadius = 2f;
     public float basketDetectionRadius = 2f;
+    public float detectionCapsuleWidth = 4f;  // Width of the horizontal capsule
+    public float detectionCapsuleHeight = 1f; // Height of the horizontal capsule
     public float timeSlowScale = 0.5f;
     public float timeSlowDuration = 1f;
     public float cowPickupBoostForce = 5f;
     public LayerMask cowLayer = -1;
     public LayerMask basketLayer = -1;
     [SerializeField] private Transform cowCheckTransform;
+    [SerializeField] private Transform cowCheckTransformUpsideDown;
     [SerializeField] private chainHolder chainController;
 
     private Rigidbody2D rb;
@@ -59,11 +62,19 @@ public class PlainController : MonoBehaviour
     // Cow detection and time slow variables
     private bool isTimeSlowed = false;
     private float timeSlowTimer = 0f;
+    private float timeSlowCooldownTimer = 0f;
+    private bool isOnTimeSlowCooldown = false;
+    [SerializeField] private float timeSlowCooldownDuration = 1f;
     private GameObject detectedCow = null;
     private GameObject detectedBasket = null;
     private bool cowPickedUp = false;
     private bool cowDelivered = false;
     private bool isChainDeployed = false;
+    private bool isCarryingBasket = false;
+
+    // Basket positioning variables
+    [SerializeField] private Vector3 basketCarryOffset = new Vector3(0, 1.5f, 0);
+    private Transform carriedBasket = null;
 
     [SerializeField] private GameObject chain;
     [SerializeField] private GameObject bound1;
@@ -88,8 +99,20 @@ public class PlainController : MonoBehaviour
         {
             ResetPlayer();
         }
-        // Remove manual chain control as per requirements
-        // Players should have no control over the rope
+
+        // Handle spacebar for rope extraction (only during time slow)
+        if (isTimeSlowed && Input.GetKeyDown(KeyCode.Space))
+        {
+            if (!isChainDeployed && chainController != null)
+            {
+                Debug.Log("Player pressed spacebar during time slow - deploying chain");
+                chainController.DeployChain();
+                isChainDeployed = true;
+            }
+        }
+
+        // Update basket position if carrying one
+        UpdateBasketPosition();
     }
     void Awake()
     {
@@ -160,6 +183,20 @@ public class PlainController : MonoBehaviour
         {
             Debug.LogWarning("chainHolder not found! Chain deployment/retraction will not work.");
         }
+
+        // Validate cow check transforms
+        if (cowCheckTransform == null)
+        {
+            Debug.LogWarning("cowCheckTransform is not assigned! Normal orientation cow detection will not work.");
+        }
+        if (cowCheckTransformUpsideDown == null)
+        {
+            Debug.LogWarning("cowCheckTransformUpsideDown is not assigned! Upside down cow detection will not work.");
+        }
+        if (cowCheckTransform == null && cowCheckTransformUpsideDown == null)
+        {
+            Debug.LogError("Both cow check transforms are missing! Cow detection will not work at all.");
+        }
     }
 
     void FixedUpdate()
@@ -199,13 +236,16 @@ public class PlainController : MonoBehaviour
         }
 
         // Check for cows, baskets, and manage time slow system
-        if (!isTimeSlowed && started)
+        if (!isTimeSlowed && !isOnTimeSlowCooldown && started)
         {
             CheckForNearbyObjects();
         }
 
         // Handle time slow timer
         HandleTimeSlowSystem();
+
+        // Handle time slow cooldown
+        HandleTimeSlowCooldown();
 
         HandleInput();
         HandleRotation();
@@ -347,13 +387,50 @@ public class PlainController : MonoBehaviour
         MagnetScript magnetScript = FindFirstObjectByType<MagnetScript>();
         bool magnetHasCow = magnetScript != null && magnetScript.Taken;
 
-        // Check for cows first (only if magnet doesn't have a cow)
-        if (!magnetHasCow)
+        // Determine which cow check transform to use based on plane orientation
+        Transform activeCowCheck = GetActiveCowCheckTransform();
+        if (activeCowCheck == null)
         {
-            Collider2D cowCollider = Physics2D.OverlapCircle(cowCheckTransform.position, cowDetectionRadius, cowLayer);
+            Debug.LogWarning("No cow check transform available!");
+            return;
+        }
+
+        // Create capsule detection area (horizontal capsule)
+        // Calculate capsule rotation relative to gameobject's rotation
+        // When gameobject is at -90z, capsule should be at 0 degrees (horizontal)
+        // When gameobject is at 0z, capsule should be at 90 degrees
+        float gameObjectRotationZ = transform.eulerAngles.z;
+        float capsuleAngle = gameObjectRotationZ + 90f;
+
+        Vector2 capsuleSize = new Vector2(detectionCapsuleWidth, detectionCapsuleHeight);
+
+        // Check for cows first (only if magnet doesn't have a cow AND not carrying a basket)
+        if (!magnetHasCow && !isCarryingBasket)
+        {
+            Collider2D cowCollider = Physics2D.OverlapCapsule(
+                activeCowCheck.position,
+                capsuleSize,
+                CapsuleDirection2D.Horizontal,
+                capsuleAngle,
+                cowLayer
+            );
+
+            // Draw debug visualization for cow detection
+#if UNITY_EDITOR
+            // Draw horizontal capsule outline
+            Vector3 center = activeCowCheck.position;
+            float halfWidth = detectionCapsuleWidth * 0.5f;
+            float halfHeight = detectionCapsuleHeight * 0.5f;
+
+            UnityEngine.Debug.DrawLine(center + new Vector3(-halfWidth, halfHeight, 0), center + new Vector3(halfWidth, halfHeight, 0), Color.yellow, 0.1f);
+            UnityEngine.Debug.DrawLine(center + new Vector3(-halfWidth, -halfHeight, 0), center + new Vector3(halfWidth, -halfHeight, 0), Color.yellow, 0.1f);
+            UnityEngine.Debug.DrawLine(center + new Vector3(-halfWidth, halfHeight, 0), center + new Vector3(-halfWidth, -halfHeight, 0), Color.yellow, 0.1f);
+            UnityEngine.Debug.DrawLine(center + new Vector3(halfWidth, halfHeight, 0), center + new Vector3(halfWidth, -halfHeight, 0), Color.yellow, 0.1f);
+#endif
+
             if (cowCollider != null && cowCollider.CompareTag("Cow"))
             {
-                Debug.Log($"Cow detected nearby: {cowCollider.name}. Starting time slow effect and deploying chain.");
+                Debug.Log($"Cow detected nearby with capsule: {cowCollider.name}. Starting time slow effect.");
                 StartTimeSlowEffect(cowCollider.gameObject, null);
                 return;
             }
@@ -362,14 +439,45 @@ public class PlainController : MonoBehaviour
         // Check for baskets (only if magnet has a cow to deliver)
         if (magnetHasCow)
         {
-            Collider2D basketCollider = Physics2D.OverlapCircle(cowCheckTransform.position, basketDetectionRadius, basketLayer);
+            Collider2D basketCollider = Physics2D.OverlapCapsule(
+                activeCowCheck.position,
+                capsuleSize,
+                CapsuleDirection2D.Horizontal,
+                capsuleAngle,
+                basketLayer
+            );
+
             if (basketCollider != null && basketCollider.CompareTag("Basket"))
             {
-                Debug.Log($"Basket detected nearby with cow ready for delivery: {basketCollider.name}. Starting time slow effect and deploying chain.");
+                Debug.Log($"Basket detected nearby with capsule: {basketCollider.name}. Starting time slow effect.");
                 StartTimeSlowEffect(null, basketCollider.gameObject);
                 return;
             }
         }
+    }
+
+    Transform GetActiveCowCheckTransform()
+    {
+        // Determine if plane is upside down based on rotation
+        float currentRotation = transform.eulerAngles.z;
+
+        // Normalize rotation to -180 to 180 range
+        if (currentRotation > 180f) currentRotation -= 360f;
+
+        // If plane is rotated more than 90 degrees (upside down), use upside down transform
+        bool isUpsideDown = currentRotation >= 0f && currentRotation <= 180f;
+
+        if (isUpsideDown && cowCheckTransformUpsideDown != null)
+        {
+            return cowCheckTransformUpsideDown;
+        }
+        else if (!isUpsideDown && cowCheckTransform != null)
+        {
+            return cowCheckTransform;
+        }
+
+        // Fallback to whichever transform is available
+        return cowCheckTransform != null ? cowCheckTransform : cowCheckTransformUpsideDown;
     }
 
     void StartTimeSlowEffect(GameObject cow, GameObject basket)
@@ -383,13 +491,10 @@ public class PlainController : MonoBehaviour
         detectedBasket = basket;
         cowPickedUp = false;
         cowDelivered = false;
-        isChainDeployed = true;
+        isChainDeployed = false; // Chain is NOT deployed automatically anymore
 
-        // Deploy the chain automatically
-        if (chainController != null)
-        {
-            chainController.DeployChain();
-        }
+        // NOTE: Chain deployment is now controlled by spacebar during time slow
+        // No automatic deployment: if (chainController != null) chainController.DeployChain();
 
         DOTween.To(() => Time.timeScale, x => Time.timeScale = x, timeSlowScale, 0.2f);
     }
@@ -491,7 +596,73 @@ public class PlainController : MonoBehaviour
         cowDelivered = false;
         isChainDeployed = false;
 
+        // Start cooldown after time slow ends
+        StartTimeSlowCooldown();
+
         DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1f, 0.2f);
+    }
+
+    void StartTimeSlowCooldown()
+    {
+        isOnTimeSlowCooldown = true;
+        timeSlowCooldownTimer = timeSlowCooldownDuration;
+        Debug.Log($"Time slow cooldown started for {timeSlowCooldownDuration} seconds");
+    }
+
+    void HandleTimeSlowCooldown()
+    {
+        if (!isOnTimeSlowCooldown) return;
+
+        timeSlowCooldownTimer -= Time.unscaledDeltaTime;
+
+        if (timeSlowCooldownTimer <= 0f)
+        {
+            isOnTimeSlowCooldown = false;
+            timeSlowCooldownTimer = 0f;
+            Debug.Log("Time slow cooldown ended - can detect objects again");
+        }
+    }
+
+    // Called when player picks up a basket
+    public void OnBasketPickedUp(Transform basket)
+    {
+        if (basket != null)
+        {
+            Debug.Log($"Player picked up basket: {basket.name}");
+            isCarryingBasket = true;
+            carriedBasket = basket;
+
+            // Set proper parent and position
+            basket.SetParent(transform);
+            basket.localPosition = basketCarryOffset;
+
+            // Disable any physics on the basket while carrying
+            Rigidbody2D basketRb = basket.GetComponent<Rigidbody2D>();
+            if (basketRb != null)
+            {
+                basketRb.bodyType = RigidbodyType2D.Kinematic;
+            }
+        }
+    }
+
+    // Called when basket is delivered/used
+    public void OnBasketDelivered()
+    {
+        Debug.Log("Basket delivered - player no longer carrying basket");
+        isCarryingBasket = false;
+        carriedBasket = null;
+    }
+
+    void UpdateBasketPosition()
+    {
+        if (isCarryingBasket && carriedBasket != null)
+        {
+            // Keep basket positioned correctly relative to the plane
+            carriedBasket.localPosition = basketCarryOffset;
+
+            // Optionally match rotation (or keep it upright)
+            carriedBasket.localRotation = Quaternion.identity;
+        }
     }
 
     public void DieBySpike()
@@ -523,6 +694,12 @@ public class PlainController : MonoBehaviour
         EndTimeSlowEffect();
         isChainDeployed = false;
         cowDelivered = false;
+        isOnTimeSlowCooldown = false;
+        timeSlowCooldownTimer = 0f;
+
+        // Reset basket carrying state
+        isCarryingBasket = false;
+        carriedBasket = null;
 
         // Force reset chain state
         if (chainController != null)
@@ -540,16 +717,62 @@ public class PlainController : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        // Draw cow detection radius
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(cowCheckTransform != null ? cowCheckTransform.position : transform.position, cowDetectionRadius);
+        // Determine which cow check is currently active
+        Transform activeCowCheck = GetActiveCowCheckTransform();
 
-        // Draw basket detection radius
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(cowCheckTransform != null ? cowCheckTransform.position : transform.position, basketDetectionRadius);
+        // Draw both cow check areas, highlighting the active one
+        DrawCowCheckGizmo(cowCheckTransform, "Normal", activeCowCheck == cowCheckTransform);
+        DrawCowCheckGizmo(cowCheckTransformUpsideDown, "Upside Down", activeCowCheck == cowCheckTransformUpsideDown);
 
         // Draw wall detection ray
         Gizmos.color = Color.red;
         Gizmos.DrawRay(transform.position, transform.up * wallDetectionDistance);
+    }
+
+    void DrawCowCheckGizmo(Transform cowCheck, string label, bool isActive)
+    {
+        if (cowCheck == null) return;
+
+        Vector3 center = cowCheck.position;
+
+        // Choose color based on state and whether this check is active
+        Color gizmoColor;
+        if (!isActive)
+        {
+            gizmoColor = Color.gray; // Gray for inactive cow check
+        }
+        else if (isOnTimeSlowCooldown)
+        {
+            gizmoColor = Color.red; // Red when on cooldown
+        }
+        else if (isTimeSlowed)
+        {
+            gizmoColor = Color.green; // Green when time is slowed
+        }
+        else
+        {
+            gizmoColor = Color.yellow; // Yellow when ready to detect
+        }
+
+        Vector3 capsuleSize = new Vector3(detectionCapsuleWidth, detectionCapsuleHeight, 0.1f);
+
+        // Draw wire frame
+        Gizmos.color = gizmoColor;
+        Gizmos.DrawWireCube(center, capsuleSize);
+
+        // Draw filled version with transparency (only for active check)
+        if (isActive)
+        {
+            Color fillColor = gizmoColor;
+            fillColor.a = 0.2f;
+            Gizmos.color = fillColor;
+            Gizmos.DrawCube(center, capsuleSize);
+        }
+
+#if UNITY_EDITOR
+        // Draw label for identification
+        UnityEditor.Handles.color = gizmoColor;
+        UnityEditor.Handles.Label(center + Vector3.up * 0.8f, $"{label} Cow Check {(isActive ? "(ACTIVE)" : "")}");
+#endif
     }
 }

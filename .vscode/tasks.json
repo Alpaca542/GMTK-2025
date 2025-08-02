@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build Game",
+			"type": "shell",
+			"command": "echo",
+			"args": [
+				"'Unity project - build through Unity Editor'"
+			],
+			"group": "build"
+		}
+	]
+}

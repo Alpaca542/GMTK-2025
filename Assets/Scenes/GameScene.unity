@@ -3152,7 +3152,7 @@ MonoBehaviour:
   accelerationSmoothing: 5
   momentumDrag: 0.4
   additionalRotationSmoothing: 0.5
-  liftCoefficient: 101
+  liftCoefficient: 10
   minLiftSpeed: 1
   maxLiftSpeed: 1
   wallDetectionDistance: 1.2
@@ -3162,8 +3162,10 @@ MonoBehaviour:
   wallLayer:
     serializedVersion: 2
     m_Bits: 550
-  cowDetectionRadius: 14
-  basketDetectionRadius: 2
+  cowDetectionRadius: 3.5
+  basketDetectionRadius: 3.5
+  detectionCapsuleWidth: 4
+  detectionCapsuleHeight: 2.53
   timeSlowScale: 0.5
   timeSlowDuration: 1
   cowPickupBoostForce: 5
@@ -3174,6 +3176,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2048
   cowCheckTransform: {fileID: 724013377}
+  cowCheckTransformUpsideDown: {fileID: 770526456}
   chainController: {fileID: 965955931}
   fuelManager: {fileID: 683359664}
   started: 1
@@ -3183,6 +3186,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 562
+  timeSlowCooldownDuration: 1
+  basketCarryOffset: {x: 0, y: 1.5, z: 0}
   chain: {fileID: 965955928}
   bound1: {fileID: 170608059}
 --- !u!50 &461157638
@@ -3282,6 +3287,7 @@ Transform:
   m_Children:
   - {fileID: 327870751}
   - {fileID: 724013377}
+  - {fileID: 770526456}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!1001 &497790923
@@ -4694,7 +4700,7 @@ Transform:
   m_GameObject: {fileID: 724013376}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 26.04, y: 0.08, z: 0}
+  m_LocalPosition: {x: 20, y: 23.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5008,6 +5014,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 756874923}
   m_CullTransparentMesh: 1
+--- !u!1 &770526455
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 770526456}
+  m_Layer: 7
+  m_Name: cowcheck (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &770526456
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 770526455}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -16.5, y: 25, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 461157640}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &771583030
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5150,8 +5187,9 @@ GameObject:
   m_Component:
   - component: {fileID: 791005712}
   - component: {fileID: 791005715}
-  - component: {fileID: 791005714}
   - component: {fileID: 791005713}
+  - component: {fileID: 791005716}
+  - component: {fileID: 791005717}
   m_Layer: 11
   m_Name: BackPos1
   m_TagString: Basket
@@ -5191,44 +5229,8 @@ MonoBehaviour:
   minCows: 1
   currentOffset: 0
   cowCountText: {fileID: 0}
-  cowPrefab: {fileID: 0}
+  cowPrefab: {fileID: 7878303405282915607, guid: eec01d53e9a3a47138ce80854350913c, type: 3}
   cowOffsetY: 0.5
---- !u!58 &791005714
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 791005711}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.50000006
 --- !u!212 &791005715
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5284,6 +5286,70 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!70 &791005716
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 791005711}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.0000000073961104, y: 0.06204308}
+  m_Size: {x: 11.630002, y: 2.9452162}
+  m_Direction: 1
+--- !u!50 &791005717
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 791005711}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &845201972
 GameObject:
   m_ObjectHideFlags: 0
@@ -6121,7 +6187,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: d0c6d836cadf64f4789f7a97b17751f3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6936,7 +7002,7 @@ SpringJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 0.005
   m_DampingRatio: 0
-  m_Frequency: 2
+  m_Frequency: 5
 --- !u!1 &977799571
 GameObject:
   m_ObjectHideFlags: 0
@@ -7152,7 +7218,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: d0c6d836cadf64f4789f7a97b17751f3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10103,7 +10169,7 @@ Transform:
   m_GameObject: {fileID: 1427726803}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.6730952, y: 2.370892, z: 5.2}
+  m_LocalPosition: {x: 0.97, y: 2.370892, z: 4.836}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

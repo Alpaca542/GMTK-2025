@@ -163,6 +163,13 @@ public class LevelManager : MonoBehaviour
             Destroy(basket.gameObject);
         }
 
+        // Notify player controller to reset basket state
+        PlainController playerController = player.GetComponent<PlainController>();
+        if (playerController != null)
+        {
+            playerController.OnBasketDelivered(); // This resets carrying state
+        }
+
         // Clean up any remaining cows from previous level
         GameObject[] remainingCows = GameObject.FindGameObjectsWithTag("Cow");
         foreach (GameObject cow in remainingCows)

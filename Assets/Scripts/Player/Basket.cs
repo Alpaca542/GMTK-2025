@@ -12,6 +12,11 @@ public class Basket : MonoBehaviour
     public TMP_Text cowCountText;
     void Update()
     {
+        if (cowCountText == null)
+        {
+            Debug.LogError("Basket: cowCountText is not assigned!");
+            return;
+        }
         cowCountText.text = myCows.ToString();
         cowCountText.color = myCows >= minCows ? Color.green : Color.red;
     }
@@ -46,9 +51,21 @@ public class Basket : MonoBehaviour
         {
             Debug.Log($"Basket ({gameObject.name}): Player touched basket, attaching and opening second half");
 
-            // Attach basket as child to player
-            transform.SetParent(other.transform);
-            transform.localPosition = Vector3.zero; // Or adjust to desired offset
+            // Disable rigidbody physics before attaching
+            Rigidbody2D basketRb = GetComponent<Rigidbody2D>();
+            if (basketRb != null)
+            {
+                basketRb.bodyType = RigidbodyType2D.Kinematic;
+                Debug.Log($"Basket ({gameObject.name}): Rigidbody set to kinematic for carrying");
+            }
+
+            // Notify PlainController that basket is picked up
+            PlainController playerController = other.GetComponent<PlainController>();
+            if (playerController != null)
+            {
+                playerController.OnBasketPickedUp(transform);
+            }
+
             attachedToPlayer = true;
 
             // Open the way to second half
@@ -102,6 +119,14 @@ public class Basket : MonoBehaviour
         used = false;
         attachedToPlayer = false;
         transform.SetParent(null);
+
+        // Restore rigidbody physics when reset
+        Rigidbody2D basketRb = GetComponent<Rigidbody2D>();
+        if (basketRb != null)
+        {
+            basketRb.bodyType = RigidbodyType2D.Dynamic;
+            Debug.Log($"Basket ({gameObject.name}): Rigidbody restored to dynamic");
+        }
     }
 
     public void DestroyBasket()

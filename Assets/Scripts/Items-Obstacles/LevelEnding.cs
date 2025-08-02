@@ -18,6 +18,13 @@ public class LevelEnding : MonoBehaviour
                 if (basket != null)
                 {
                     basket.used = true;
+
+                    // Notify player controller that basket is delivered
+                    PlainController playerController = FindFirstObjectByType<PlainController>();
+                    if (playerController != null)
+                    {
+                        playerController.OnBasketDelivered();
+                    }
                 }
 
                 // Proceed to next level
