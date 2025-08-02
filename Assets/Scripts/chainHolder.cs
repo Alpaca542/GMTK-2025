@@ -5,6 +5,7 @@ public class chainHolder : MonoBehaviour
     public Rigidbody2D planeRb;
     public MagnetScript magnetScript;
     public SpringJoint2D magnetSpringJoint;
+    public bool isChainDeployed = false;
 
     private Rigidbody2D rb;
 
@@ -42,6 +43,7 @@ public class chainHolder : MonoBehaviour
     {
         if (magnetSpringJoint != null)
         {
+            isChainDeployed = true;
             magnetSpringJoint.enabled = false;
             Debug.Log("Chain deployed - Spring joint disabled");
         }
@@ -55,6 +57,7 @@ public class chainHolder : MonoBehaviour
     {
         if (magnetSpringJoint != null)
         {
+            isChainDeployed = false;
             magnetSpringJoint.enabled = true;
             Debug.Log("Chain retracted - Spring joint enabled");
         }

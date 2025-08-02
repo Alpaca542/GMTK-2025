@@ -3164,8 +3164,8 @@ MonoBehaviour:
     m_Bits: 550
   cowDetectionRadius: 3.5
   basketDetectionRadius: 3.5
-  detectionCapsuleWidth: 6.34
-  detectionCapsuleHeight: 3.01
+  detectionCapsuleWidth: 4.59
+  detectionCapsuleHeight: 2.82
   timeSlowScale: 0.5
   timeSlowDuration: 1.6
   cowPickupBoostForce: 7
@@ -4700,7 +4700,7 @@ Transform:
   m_GameObject: {fileID: 724013376}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 21.3, y: 25, z: 0}
+  m_LocalPosition: {x: 16.1, y: 22.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5039,7 +5039,7 @@ Transform:
   m_GameObject: {fileID: 770526455}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -18.7, y: 25, z: 0}
+  m_LocalPosition: {x: -16.1, y: 22.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5206,7 +5206,7 @@ Transform:
   m_GameObject: {fileID: 791005711}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -13.728, y: -7.385, z: 0}
+  m_LocalPosition: {x: -13.37, y: -11.01, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5331,7 +5331,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 791005711}
-  m_BodyType: 2
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -6741,6 +6741,7 @@ MonoBehaviour:
   planeRb: {fileID: 461157638}
   magnetScript: {fileID: 972063966}
   magnetSpringJoint: {fileID: 972063967}
+  isChainDeployed: 0
 --- !u!61 &965955932
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7828,7 +7829,7 @@ Transform:
   m_GameObject: {fileID: 1089716445}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.2, y: -4.1, z: 0}
+  m_LocalPosition: {x: -15.12, y: -4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10048,7 +10049,7 @@ Transform:
   m_GameObject: {fileID: 1427392944}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.49, y: -17.07, z: 0}
+  m_LocalPosition: {x: 5.39, y: -17.69, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -400,7 +400,8 @@ public class PlainController : MonoBehaviour
         // When gameobject is at -90z, capsule should be at 0 degrees (horizontal)
         // When gameobject is at 0z, capsule should be at 90 degrees
         float gameObjectRotationZ = transform.eulerAngles.z;
-        float capsuleAngle = gameObjectRotationZ + 90f;
+        float capsuleAngle = 0f;
+        //gameObjectRotationZ + 90f;
 
         Vector2 capsuleSize = new Vector2(detectionCapsuleWidth, detectionCapsuleHeight);
 

@@ -16,7 +16,7 @@ public class Cow : MonoBehaviour
             other.GetComponent<MagnetScript>().Taken = true;
             GameObject.FindAnyObjectByType<PlainController>().OnCowRescuedHandler(gameObject);
         }
-        else if (other.CompareTag("Basket"))
+        else if (other.CompareTag("Basket") && GameObject.FindAnyObjectByType<chainHolder>().isChainDeployed == true)
         {
             // Reset magnet state
             MagnetScript magnetScript = GameObject.FindAnyObjectByType<MagnetScript>();
@@ -42,10 +42,7 @@ public class Cow : MonoBehaviour
             }
 
             Basket basket = other.GetComponent<Basket>();
-            if (basket != null)
-            {
-                basket.myCows += 1f;
-            }
+            basket.PickupCow(gameObject);
         }
     }
 }
