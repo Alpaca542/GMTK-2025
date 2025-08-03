@@ -144,7 +144,8 @@ public class LevelManager : MonoBehaviour
         }
 
         // Create the old plane effect
-        Instantiate(oldPlane, player.transform.position, player.transform.rotation);
+        GameObject dead = Instantiate(oldPlane, player.transform.position, player.transform.rotation);
+        dead.GetComponent<FadeOut>().FadeMeOut();
         // Reset player position
         // if (startPoint != null)
         // {
@@ -159,8 +160,9 @@ public class LevelManager : MonoBehaviour
         //         // Keep isinanim true during transition - will be reset by LevelAddition
         //     }
         // }
-        player.SetActive(false);
+        // player.SetActive(false);
         // Save progress
+        player.GetComponent<PlainController>().CleanUp();
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);
         PlayerPrefs.Save();
 

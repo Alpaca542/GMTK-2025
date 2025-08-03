@@ -46,7 +46,7 @@ public class Basket : MonoBehaviour
             Transform magnetTransform = transform.parent;
             if (magnetTransform != null)
             {
-                // Update position relative to the magnet
+                transform.localRotation = Quaternion.Euler(0, 0, 90);
                 Vector2 targetPosition = magnetOffset;
                 transform.localPosition = targetPosition;
             }
@@ -67,7 +67,10 @@ public class Basket : MonoBehaviour
         }
         else
         {
-            GameObject.FindAnyObjectByType<PlainController>().maxSpeed = 7f;
+            if (GameObject.FindAnyObjectByType<PlainController>() != null)
+                GameObject.FindAnyObjectByType<PlainController>().maxSpeed = 7f;
+            else
+                Debug.LogWarning("PlainController not found, setting default max speed to 7f");
         }
 
         // Initialize all cow textures as disabled

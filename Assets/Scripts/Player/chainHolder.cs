@@ -122,7 +122,7 @@ public class chainHolder : MonoBehaviour
         }
         if (magnetScript != null)
         {
-            magnetScript.Taken = false;
+            // magnetScript.Taken = false;
             Debug.Log("Magnet state reset - Taken = false");
         }
     }
