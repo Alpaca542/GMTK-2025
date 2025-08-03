@@ -909,6 +909,7 @@ GameObject:
   m_Component:
   - component: {fileID: 194335390}
   - component: {fileID: 194335391}
+  - component: {fileID: 194335392}
   m_Layer: 0
   m_Name: Untitled_Artwork 20_1
   m_TagString: Obstacle
@@ -986,6 +987,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &194335392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 194335389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &203310477
 GameObject:
   m_ObjectHideFlags: 0
@@ -1492,6 +1505,7 @@ GameObject:
   m_Component:
   - component: {fileID: 234255658}
   - component: {fileID: 234255659}
+  - component: {fileID: 234255660}
   m_Layer: 0
   m_Name: Untitled_Artwork 20_0
   m_TagString: Obstacle
@@ -1569,6 +1583,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &234255660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234255657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &235301792
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2481,6 +2507,7 @@ MonoBehaviour:
   cowTexture2: {fileID: 0}
   cowTexture3: {fileID: 0}
   cowTexture4: {fileID: 0}
+  magnetOffset: {x: 0, y: -1}
 --- !u!58 &312296724
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2631,6 +2658,7 @@ MonoBehaviour:
   cowTexture2: {fileID: 0}
   cowTexture3: {fileID: 0}
   cowTexture4: {fileID: 0}
+  magnetOffset: {x: 0, y: -1}
 --- !u!58 &318040736
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2820,9 +2848,10 @@ GameObject:
   - component: {fileID: 347059021}
   - component: {fileID: 347059023}
   - component: {fileID: 347059022}
+  - component: {fileID: 347059024}
   m_Layer: 11
   m_Name: Text (TMP)
-  m_TagString: Untagged
+  m_TagString: Text
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2843,8 +2872,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.58, y: 0.13}
-  m_SizeDelta: {x: 1.8081, y: 1}
+  m_AnchoredPosition: {x: 2.0748, y: -0.0399}
+  m_SizeDelta: {x: 2.7977, y: 1.3398}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &347059022
 MonoBehaviour:
@@ -2945,6 +2974,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 347059020}
   m_CullTransparentMesh: 1
+--- !u!114 &347059024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 347059020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &347350024
 GameObject:
   m_ObjectHideFlags: 0
@@ -3047,6 +3088,7 @@ GameObject:
   m_Component:
   - component: {fileID: 377764974}
   - component: {fileID: 377764975}
+  - component: {fileID: 377764976}
   m_Layer: 0
   m_Name: Untitled_Artwork 28_2
   m_TagString: Obstacle
@@ -3124,6 +3166,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &377764976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 377764973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &388232798
 GameObject:
   m_ObjectHideFlags: 0
@@ -3604,6 +3658,8 @@ MonoBehaviour:
   timeSlowCooldownDuration: 1
   chain: {fileID: 965955928}
   bound1: {fileID: 170608059}
+  deathParticlesPrefab: {fileID: 0}
+  deathRespawnDelay: 2
 --- !u!50 &461157638
 Rigidbody2D:
   serializedVersion: 5
@@ -4039,6 +4095,7 @@ GameObject:
   - component: {fileID: 529455160}
   - component: {fileID: 529455161}
   - component: {fileID: 529455162}
+  - component: {fileID: 529455163}
   m_Layer: 9
   m_Name: Untitled_Artwork 17_1
   m_TagString: Obstacle
@@ -4179,6 +4236,18 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0.44120866}
   m_Radius: 4.6837907
+--- !u!114 &529455163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529455158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &531295211
 GameObject:
   m_ObjectHideFlags: 0
@@ -5796,6 +5865,7 @@ GameObject:
   - component: {fileID: 791005713}
   - component: {fileID: 791005716}
   - component: {fileID: 791005717}
+  - component: {fileID: 791005718}
   m_Layer: 11
   m_Name: Basket
   m_TagString: Basket
@@ -5848,6 +5918,7 @@ MonoBehaviour:
   cowTexture2: {fileID: 1049318230}
   cowTexture3: {fileID: 819104768}
   cowTexture4: {fileID: 46903037}
+  magnetOffset: {x: 0, y: -1}
 --- !u!212 &791005715
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5967,6 +6038,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &791005718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 791005711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &812156232
 GameObject:
   m_ObjectHideFlags: 0
@@ -5978,6 +6061,7 @@ GameObject:
   - component: {fileID: 812156233}
   - component: {fileID: 812156234}
   - component: {fileID: 812156235}
+  - component: {fileID: 812156236}
   m_Layer: 0
   m_Name: Untitled_Artwork 20_9
   m_TagString: Obstacle
@@ -6070,6 +6154,18 @@ MonoBehaviour:
   minScale: 0.95
   maxScale: 1.05
   duration: 1
+--- !u!114 &812156236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812156232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &819104768
 GameObject:
   m_ObjectHideFlags: 0
@@ -6207,7 +6303,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handTransform: {fileID: 845201973}
   drawingSpeed: 3
-  shakingIntensity: 2
+  shakingIntensity: 4
   shakingFrequency: 25
   minShakeTime: 0.3
   maxShakeTime: 10
@@ -8181,6 +8277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cfc2904d5830be4aa4669e6a91c7105, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FirstLevel: 1
   levelObjects:
   - {fileID: 575970934}
   - {fileID: 388232798}
@@ -8709,6 +8806,7 @@ MonoBehaviour:
   cowTexture2: {fileID: 0}
   cowTexture3: {fileID: 0}
   cowTexture4: {fileID: 0}
+  magnetOffset: {x: 0, y: -1}
 --- !u!58 &1073681669
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -9015,6 +9113,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1113014638}
   - component: {fileID: 1113014639}
+  - component: {fileID: 1113014640}
   m_Layer: 0
   m_Name: Untitled_Artwork 28_1 (1)
   m_TagString: Untagged
@@ -9092,6 +9191,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1113014640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1113014637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1130560987
 GameObject:
   m_ObjectHideFlags: 0
@@ -9662,6 +9773,7 @@ MonoBehaviour:
   cowTexture2: {fileID: 0}
   cowTexture3: {fileID: 0}
   cowTexture4: {fileID: 0}
+  magnetOffset: {x: 0, y: -1}
 --- !u!58 &1229466568
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -10181,6 +10293,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1277508636}
   - component: {fileID: 1277508637}
+  - component: {fileID: 1277508638}
   m_Layer: 0
   m_Name: Untitled_Artwork 20_7
   m_TagString: Untagged
@@ -10258,6 +10371,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1277508638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277508635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1301311356
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10400,6 +10525,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1347521014}
   - component: {fileID: 1347521015}
+  - component: {fileID: 1347521016}
   m_Layer: 0
   m_Name: Untitled_Artwork 28_0
   m_TagString: Obstacle
@@ -10477,6 +10603,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1347521016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1347521013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1352152950
 GameObject:
   m_ObjectHideFlags: 0
@@ -10616,6 +10754,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1381543471}
   - component: {fileID: 1381543472}
+  - component: {fileID: 1381543473}
   m_Layer: 0
   m_Name: Untitled_Artwork 29_2
   m_TagString: Untagged
@@ -10697,6 +10836,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1381543473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381543470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1391435955
 GameObject:
   m_ObjectHideFlags: 0
@@ -10912,6 +11063,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1405618911}
   - component: {fileID: 1405618912}
+  - component: {fileID: 1405618913}
   m_Layer: 0
   m_Name: Untitled_Artwork 28_1
   m_TagString: Obstacle
@@ -10989,6 +11141,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1405618913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1405618910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1414494832
 GameObject:
   m_ObjectHideFlags: 0
@@ -11488,6 +11652,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1426717198}
   - component: {fileID: 1426717199}
+  - component: {fileID: 1426717200}
   m_Layer: 0
   m_Name: Untitled_Artwork 29_5
   m_TagString: Untagged
@@ -11565,6 +11730,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1426717200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426717197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1426920773
 GameObject:
   m_ObjectHideFlags: 0
@@ -11624,6 +11801,7 @@ MonoBehaviour:
   cowTexture2: {fileID: 0}
   cowTexture3: {fileID: 0}
   cowTexture4: {fileID: 0}
+  magnetOffset: {x: 0, y: -1}
 --- !u!58 &1426920776
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -12148,6 +12326,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1512234478}
   - component: {fileID: 1512234479}
+  - component: {fileID: 1512234480}
   m_Layer: 0
   m_Name: Untitled_Artwork 28_1
   m_TagString: Untagged
@@ -12228,6 +12407,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1512234480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1512234477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1515963925
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12398,11 +12589,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8001290113460616350, guid: eec01d53e9a3a47138ce80854350913c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -12.79
+      value: -11.99
       objectReference: {fileID: 0}
     - target: {fileID: 8001290113460616350, guid: eec01d53e9a3a47138ce80854350913c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.7
+      value: -4.75
       objectReference: {fileID: 0}
     - target: {fileID: 8001290113460616350, guid: eec01d53e9a3a47138ce80854350913c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -12457,6 +12648,7 @@ GameObject:
   - component: {fileID: 1553159916}
   - component: {fileID: 1553159917}
   - component: {fileID: 1553159918}
+  - component: {fileID: 1553159919}
   m_Layer: 0
   m_Name: Untitled_Artwork 29_0
   m_TagString: Untagged
@@ -12549,6 +12741,18 @@ MonoBehaviour:
   minScale: 0.95
   maxScale: 1.05
   duration: 1
+--- !u!114 &1553159919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1553159915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1561532962
 GameObject:
   m_ObjectHideFlags: 0
@@ -13808,6 +14012,7 @@ GameObject:
   - component: {fileID: 1773829436}
   - component: {fileID: 1773829437}
   - component: {fileID: 1773829438}
+  - component: {fileID: 1773829439}
   m_Layer: 9
   m_Name: Untitled_Artwork 17_0
   m_TagString: Obstacle
@@ -13824,7 +14029,7 @@ Transform:
   m_GameObject: {fileID: 1773829434}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.73, y: -6.84, z: 0}
+  m_LocalPosition: {x: -9.96, y: -6.55, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13948,6 +14153,18 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 3.4699998
+--- !u!114 &1773829439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1773829434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1776374997
 GameObject:
   m_ObjectHideFlags: 0
@@ -14138,6 +14355,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1777002489}
   - component: {fileID: 1777002490}
+  - component: {fileID: 1777002491}
   m_Layer: 0
   m_Name: Untitled_Artwork 29_3
   m_TagString: Untagged
@@ -14215,6 +14433,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1777002491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777002488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1778124630
 GameObject:
   m_ObjectHideFlags: 0
@@ -14227,6 +14457,7 @@ GameObject:
   - component: {fileID: 1778124632}
   - component: {fileID: 1778124633}
   - component: {fileID: 1778124634}
+  - component: {fileID: 1778124635}
   m_Layer: 9
   m_Name: Untitled_Artwork 17_2
   m_TagString: Obstacle
@@ -14376,6 +14607,18 @@ EdgeCollider2D:
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
+--- !u!114 &1778124635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778124630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1793448263
 GameObject:
   m_ObjectHideFlags: 0
@@ -14567,6 +14810,7 @@ GameObject:
   - component: {fileID: 1800148063}
   - component: {fileID: 1800148064}
   - component: {fileID: 1800148065}
+  - component: {fileID: 1800148066}
   m_Layer: 0
   m_Name: Untitled_Artwork 20_6
   m_TagString: Untagged
@@ -14659,6 +14903,18 @@ MonoBehaviour:
   minScale: 1
   maxScale: 1.2
   duration: 0.8
+--- !u!114 &1800148066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800148062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1813925630
 GameObject:
   m_ObjectHideFlags: 0
@@ -14669,6 +14925,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1813925631}
   - component: {fileID: 1813925632}
+  - component: {fileID: 1813925633}
   m_Layer: 0
   m_Name: Untitled_Artwork 29_4
   m_TagString: Untagged
@@ -14746,6 +15003,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1813925633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813925630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1821320995
 GameObject:
   m_ObjectHideFlags: 0
@@ -15036,6 +15305,7 @@ MonoBehaviour:
   cowTexture2: {fileID: 0}
   cowTexture3: {fileID: 0}
   cowTexture4: {fileID: 0}
+  magnetOffset: {x: 0, y: -1}
 --- !u!58 &1880020349
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -15139,6 +15409,7 @@ GameObject:
   - component: {fileID: 1880447450}
   - component: {fileID: 1880447448}
   - component: {fileID: 1880447451}
+  - component: {fileID: 1880447452}
   m_Layer: 0
   m_Name: LevelEnd
   m_TagString: LevelEnding
@@ -15277,6 +15548,18 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1880447452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1880447446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1885504524
 GameObject:
   m_ObjectHideFlags: 0
@@ -15478,6 +15761,7 @@ MonoBehaviour:
   cowTexture2: {fileID: 0}
   cowTexture3: {fileID: 0}
   cowTexture4: {fileID: 0}
+  magnetOffset: {x: 0, y: -1}
 --- !u!58 &1900297933
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -15721,6 +16005,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1959956900}
   - component: {fileID: 1959956901}
+  - component: {fileID: 1959956902}
   m_Layer: 0
   m_Name: Untitled_Artwork 20_8
   m_TagString: Untagged
@@ -15798,6 +16083,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1959956902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1959956899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1997051651
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15905,6 +16202,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2030623087}
   - component: {fileID: 2030623088}
+  - component: {fileID: 2030623089}
   m_Layer: 0
   m_Name: Untitled_Artwork 29_4 (1)
   m_TagString: Untagged
@@ -15982,6 +16280,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2030623089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030623086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bda76c4f0104d5ba7ef66ffb3c2e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2037008586
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,5 +1,7 @@
 using UnityEngine;
 using DG.Tweening; // Make sure you have DOTween imported
+using EZCameraShake; // For camera shake effects
+using System.Collections;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlainController : MonoBehaviour
 {
@@ -76,6 +78,10 @@ public class PlainController : MonoBehaviour
 
     [SerializeField] private GameObject chain;
     [SerializeField] private GameObject bound1;
+
+    [Header("Death Effects")]
+    [SerializeField] private GameObject deathParticlesPrefab; // Explosion particle effect
+    [SerializeField] private float deathRespawnDelay = 2f; // Delay before respawning
     void OnCollisionEnter2D(Collision2D collision)
     {
         Debug.Log("Collision detected with: " + collision.gameObject.name);
@@ -655,20 +661,123 @@ public class PlainController : MonoBehaviour
 
     public void DieBySpike()
     {
-        Debug.Log("Player has died by spike.");
+        Debug.Log("Player has died by spike - starting death sequence.");
+
+        // Prevent multiple death calls
+        if (isdead) return;
+
         isdead = true;
-        rb.gravityScale = 0f;
         started = false;
+        rb.gravityScale = 0f;
+
+        // Stop all movement immediately
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+
+        // End any active time slow effects
+        EndTimeSlowEffect();
+
+        // Start death sequence
+        StartCoroutine(DeathSequence());
+    }
+
+    private IEnumerator DeathSequence()
+    {
+        // 1. Spawn death particles at player position
+        if (deathParticlesPrefab != null)
+        {
+            GameObject particles = Instantiate(deathParticlesPrefab, transform.position, transform.rotation);
+            Debug.Log("Death particles spawned");
+
+            // Destroy particles after a few seconds
+            Destroy(particles, 3f);
+        }
+
+        // 2. Add camera shake for dramatic effect
+        if (CameraShaker.Instance != null)
+        {
+            CameraShaker.Instance.Shake(CameraShakePresets.Explosion);
+            Debug.Log("Camera shake triggered");
+        }
+
+        // 3. Hide the player temporarily
+        GetComponent<Renderer>().enabled = false;
+
+        // 4. Clean up chain state
+        if (chainController != null)
+        {
+            chainController.RetractChain();
+            chainController.ResetChainState();
+        }
+
+        // 5. Reset magnet state
+        MagnetScript magnetScript = FindFirstObjectByType<MagnetScript>();
+        if (magnetScript != null)
+        {
+            magnetScript.Taken = false;
+            Debug.Log("Magnet state reset after death");
+        }
+
+        // 6. Clean up any carried baskets
+        if (isCarryingBasket && carriedBasket != null)
+        {
+            carriedBasket.SetParent(null);
+            isCarryingBasket = false;
+            carriedBasket = null;
+        }
+
+        // 7. Wait for respawn delay
+        yield return new WaitForSeconds(deathRespawnDelay);
+
+        // 8. Respawn player
+        RespawnPlayer();
+    }
+
+    private void RespawnPlayer()
+    {
+        Debug.Log("Respawning player");
+
+        // Get spawn point from LevelManager
+        if (LevelManager.Instance != null && LevelManager.Instance.startPoint != null)
+        {
+            transform.position = new Vector3(
+                LevelManager.Instance.startPoint.position.x,
+                LevelManager.Instance.startPoint.position.y,
+                -44.3f
+            );
+            transform.rotation = Quaternion.identity;
+            Debug.Log($"Player respawned at spawn point: {transform.position}");
+        }
+        else
+        {
+            Debug.LogWarning("No spawn point found! Respawning at current position.");
+        }
+
+        // Show the player again
+        GetComponent<Renderer>().enabled = true;
+
+        // Reset all player states
+        ResetPlayer();
+
+        Debug.Log("Player respawn complete");
     }
     public void ResetPlayer()
     {
+        Debug.Log("Resetting player state");
+
+        // Reset physics
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
         rb.rotation = 0f;
         rb.linearDamping = baseDrag;
+        rb.gravityScale = gravity; // Restore normal gravity
+
+        // Reset input and movement state
         inputDirection = Vector2.zero;
         targetInput = Vector2.zero;
         currentThrust = 0f;
+
+        // Reset game state flags
         started = false;
         isdead = false;
         isinanim = false;
@@ -702,6 +811,7 @@ public class PlainController : MonoBehaviour
             chainController.ResetChainState();
         }
 
+        Debug.Log("Player reset complete");
     }
 
     // void DelayedReset()

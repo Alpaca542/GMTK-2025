@@ -3,13 +3,26 @@ using DG.Tweening;
 
 public class Cow : MonoBehaviour
 {
-    // void Start()
-    // {
-    //     // Make the cow oscillate up and down
-    //     transform.DOMoveY(transform.position.y + 0.2f, 2f)
-    //         .SetEase(Ease.InOutSine)
-    //         .SetLoops(-1, LoopType.Yoyo);
-    // }
+    public bool isMagnetized = false;
+    public Vector3 magnetOffset = new Vector3(0, -1f, 0f);
+    private void Update()
+    {
+        if (isMagnetized)
+        {
+            Transform magnetTransform = transform.parent;
+            if (magnetTransform != null)
+            {
+                // Update position relative to the magnet
+                Vector3 targetPosition = magnetOffset;
+                transform.localPosition = targetPosition;
+            }
+            else
+            {
+                Debug.LogError("Cow is magnetized but no parent magnet found!");
+                isMagnetized = false; // Reset state if no parent found
+            }
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -45,6 +58,7 @@ public class Cow : MonoBehaviour
             {
                 basketScript.SetFirstHint();
             }
+            isMagnetized = true;
             transform.position = other.transform.position;
             transform.parent = other.transform;
             magnetScript.Taken = true;

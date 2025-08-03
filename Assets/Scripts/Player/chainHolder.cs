@@ -80,7 +80,6 @@ public class chainHolder : MonoBehaviour
         if (magnetSpringJoint != null)
         {
             Invoke(nameof(SetPiecesOff), 0.3f);
-            isChainDeployed = false;
             magnetSpringJoint.enabled = true;
             Debug.Log("Chain retracted - Spring joint enabled");
         }
@@ -93,6 +92,7 @@ public class chainHolder : MonoBehaviour
     private void SetPiecesOff()
     {
         SetPiecesOn(false);
+        isChainDeployed = false;
     }
 
     public bool CanRetractChain()

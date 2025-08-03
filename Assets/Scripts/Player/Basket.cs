@@ -38,7 +38,25 @@ public class Basket : MonoBehaviour
             SetCowTexturesVisibility();
             lastCowCount = myCows;
         }
+
+        if (attachedToPlayer)
+        {
+            Transform magnetTransform = transform.parent;
+            if (magnetTransform != null)
+            {
+                // Update position relative to the magnet
+                Vector2 targetPosition = (Vector2)magnetTransform.position + magnetOffset;
+                transform.position = targetPosition;
+            }
+            else
+            {
+                Debug.LogError("Cow is magnetized but no parent magnet found!");
+                attachedToPlayer = false;
+            }
+        }
     }
+
+    public Vector2 magnetOffset = new Vector2(0, -1f);
     void Start()
     {
         if (showHint)

@@ -14,6 +14,7 @@ TagManager:
   - Cow
   - Basket
   - LevelEnding
+  - Text
   layers:
   - Default
   - TransparentFX

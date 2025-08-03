@@ -6,7 +6,7 @@ using DG.Tweening;
 public class LevelAddition : MonoBehaviour
 {
     public static LevelAddition Instance;
-
+    public bool FirstLevel = true;
     [SerializeField] private List<GameObject> levelObjects = new List<GameObject>();
     private bool isDrawingLevel = false;
     void Reset()
@@ -58,11 +58,21 @@ public class LevelAddition : MonoBehaviour
         Debug.Log($"Switching to level {level}");
 
         // First, deactivate all levels
-        for (int i = 0; i < levelObjects.Count; i++)
+        if (FirstLevel)
         {
-            levelObjects[i].SetActive(false);
+            foreach (GameObject obj in levelObjects)
+            {
+                obj.SetActive(false);
+            }
         }
-
+        else
+        {
+            foreach (FadeOut fd in FindObjectsByType<FadeOut>(FindObjectsSortMode.None))
+            {
+                fd.FadeMeOut();
+            }
+        }
+        FirstLevel = false;
         // Check if level exists
         if (level >= 0 && level < levelObjects.Count)
         {

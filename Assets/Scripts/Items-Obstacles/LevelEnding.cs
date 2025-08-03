@@ -43,6 +43,7 @@ public class LevelEnding : MonoBehaviour
                     {
                         playerController.OnBasketDelivered();
                     }
+                    playerController.GetComponent<Rigidbody2D>().AddForce(transform.position - playerController.transform.position * 10f, ForceMode2D.Impulse);
                 }
 
                 // Proceed to next level

@@ -179,12 +179,14 @@ public class HandDrawing : MonoBehaviour
 
     /// <summary>
     /// Calculates appropriate shaking intensity based on object size
-    /// Uses a logarithmic curve to prevent excessive shaking for large objects
+    /// Uses a more conservative approach to prevent excessive movement
     /// </summary>
     private float CalculateShakingIntensity(float objectSize)
     {
-        // Use a more noticeable shaking intensity that scales with object size
-        return shakingIntensity * Mathf.Clamp(objectSize * 0.5f, 0.5f, 2.0f);
+        // Use a much more conservative intensity that doesn't grow too large
+        float baseIntensity = shakingIntensity * 0.3f; // Reduce base intensity
+        float sizeMultiplier = Mathf.Clamp(objectSize * 0.2f, 0.3f, 1.2f); // Limit size influence
+        return baseIntensity * sizeMultiplier;
     }
 
     private Vector3[] CalculateDrawingPath(Bounds bounds)
@@ -192,22 +194,20 @@ public class HandDrawing : MonoBehaviour
         Vector3 center = bounds.center;
         Vector3 size = bounds.size;
 
-        // Create a proper diagonal movement across the entire object
-        // Start from top-left corner, move to bottom-right corner
-        // Ensure minimum movement distance for small objects
-        float minMovement = 0.5f;
-        float xOffset = Mathf.Max(size.x * 0.6f, minMovement);
-        float yOffset = Mathf.Max(size.y * 0.6f, minMovement);
+        // Create a more conservative diagonal movement that respects object size
+        // Use smaller multipliers for better proportional movement
+        float xMultiplier = Mathf.Clamp(size.x * 0.4f, 0.2f, 1.0f); // Max 1 unit movement
+        float yMultiplier = Mathf.Clamp(size.y * 0.4f, 0.2f, 1.0f); // Max 1 unit movement
 
         Vector3 startPoint = new Vector3(
-            center.x - xOffset,
-            center.y + yOffset,
+            center.x - xMultiplier,
+            center.y + yMultiplier,
             center.z - drawingHeight
         );
 
         Vector3 endPoint = new Vector3(
-            center.x + xOffset,
-            center.y - yOffset,
+            center.x + xMultiplier,
+            center.y - yMultiplier,
             center.z - drawingHeight
         );
 

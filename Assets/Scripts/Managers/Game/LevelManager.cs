@@ -27,46 +27,6 @@ public class LevelManager : MonoBehaviour
     {
         FirstHalfDone = true;
         GameObject.FindAnyObjectByType<LevelEnding>().Activate(true);
-
-        // Store current camera state
-        Camera cam = Camera.main;
-        PlayerFollow playerFollow = cam.GetComponent<PlayerFollow>();
-        CameraZoom cameraZoom = cam.GetComponent<CameraZoom>();
-
-        Vector3 originalPosition = cam.transform.position;
-        float originalFOV = cam.fieldOfView;
-
-        // Disable camera components
-        playerFollow.enabled = false;
-        cameraZoom.enabled = false;
-
-        // Create smooth animation sequence
-        Sequence cameraSequence = DOTween.Sequence();
-
-        // Move camera to overview position with smooth easing
-        cameraSequence.Append(cam.transform.DOMove(new Vector3(0, -3f, GameObject.FindAnyObjectByType<PlainController>().transform.position.z - 10), 1.5f)
-            .SetEase(Ease.InOutQuart));
-
-        // Zoom out with smooth easing
-        cameraSequence.Join(cam.DOFieldOfView(88f, 1f)
-            .SetEase(Ease.InOutQuart));
-
-        // Hold the overview for a moment
-        cameraSequence.AppendInterval(0.5f);
-
-        // Return to original position and FOV
-        cameraSequence.Append(cam.transform.DOMove(originalPosition, 1f)
-            .SetEase(Ease.InOutQuart));
-
-        cameraSequence.Join(cam.DOFieldOfView(originalFOV, 1f)
-            .SetEase(Ease.InOutQuart));
-
-        // Re-enable camera components when animation completes
-        cameraSequence.OnComplete(() =>
-        {
-            playerFollow.enabled = true;
-            cameraZoom.enabled = true;
-        });
     }
 
     private void Awake()
