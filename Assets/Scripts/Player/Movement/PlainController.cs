@@ -694,20 +694,20 @@ public class PlainController : MonoBehaviour
         }
 
         // 5. Reset magnet state
-        MagnetScript magnetScript = FindFirstObjectByType<MagnetScript>();
-        if (magnetScript != null)
-        {
-            magnetScript.Taken = false;
-            Debug.Log("Magnet state reset after death");
-        }
+        // MagnetScript magnetScript = FindFirstObjectByType<MagnetScript>();
+        // if (magnetScript != null)
+        // {
+        //     magnetScript.Taken = false;
+        //     Debug.Log("Magnet state reset after death");
+        // }
 
         // 6. Clean up any carried baskets
-        if (isCarryingBasket && carriedBasket != null)
-        {
-            carriedBasket.SetParent(null);
-            isCarryingBasket = false;
-            carriedBasket = null;
-        }
+        // if (isCarryingBasket && carriedBasket != null)
+        // {
+        //     carriedBasket.SetParent(null);
+        //     isCarryingBasket = false;
+        //     carriedBasket = null;
+        // }
 
         // 8. Respawn player
         RespawnPlayer();
@@ -726,6 +726,7 @@ public class PlainController : MonoBehaviour
                 -44.3f
             );
             transform.rotation = Quaternion.identity;
+            chainController.transform.position = transform.position;
             Debug.Log($"Player respawned at spawn point: {transform.position}");
         }
         else
