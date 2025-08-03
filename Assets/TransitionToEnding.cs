@@ -17,7 +17,7 @@ public class TransitionToEnding : MonoBehaviour
         if (!hasStarted)
         {
             hasStarted = true;
-            spriteRenderer.DOFade(0f, 1f).OnComplete(() => SceneManager.LoadScene("End"));
+            spriteRenderer.DOFade(1f, 1f).OnComplete(() => SceneManager.LoadScene("End"));
         }
     }
 }
