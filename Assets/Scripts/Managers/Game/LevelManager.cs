@@ -195,10 +195,7 @@ public class LevelManager : MonoBehaviour
         // Wait for the level drawing to complete
         yield return new WaitUntil(() => LevelAddition.Instance != null && !LevelAddition.Instance.IsDrawingLevel);
 
-        // Small delay to ensure everything is properly set up
-        yield return new WaitForSeconds(0.1f);
-
-        // Now spawn cows
+        // Spawn cows immediately - no unnecessary delay
         SpawnCows();
     }
 

@@ -51,6 +51,7 @@ public class chainHolder : MonoBehaviour
     {
         if (magnetSpringJoint != null)
         {
+            CancelInvoke(nameof(SetPiecesOff));
             SetPiecesOn(true);
             isChainDeployed = true;
             magnetSpringJoint.enabled = false;

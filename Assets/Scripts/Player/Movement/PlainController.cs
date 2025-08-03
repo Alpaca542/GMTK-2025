@@ -389,19 +389,6 @@ public class PlainController : MonoBehaviour
                 cowLayer
             );
 
-            // Draw debug visualization for cow detection
-#if UNITY_EDITOR
-            // Draw horizontal capsule outline
-            Vector3 center = activeCowCheck.position;
-            float halfWidth = detectionCapsuleWidth * 0.5f;
-            float halfHeight = detectionCapsuleHeight * 0.5f;
-
-            UnityEngine.Debug.DrawLine(center + new Vector3(-halfWidth, halfHeight, 0), center + new Vector3(halfWidth, halfHeight, 0), Color.yellow, 0.1f);
-            UnityEngine.Debug.DrawLine(center + new Vector3(-halfWidth, -halfHeight, 0), center + new Vector3(halfWidth, -halfHeight, 0), Color.yellow, 0.1f);
-            UnityEngine.Debug.DrawLine(center + new Vector3(-halfWidth, halfHeight, 0), center + new Vector3(-halfWidth, -halfHeight, 0), Color.yellow, 0.1f);
-            UnityEngine.Debug.DrawLine(center + new Vector3(halfWidth, halfHeight, 0), center + new Vector3(halfWidth, -halfHeight, 0), Color.yellow, 0.1f);
-#endif
-
             if (cowCollider != null && cowCollider.CompareTag("Cow"))
             {
                 Debug.Log($"Cow detected nearby with capsule: {cowCollider.name}. Starting time slow effect.");
@@ -818,64 +805,4 @@ public class PlainController : MonoBehaviour
     //     BackAtStart.Instance.ResetPlayerPosition(gameObject);
     // }
 
-    void OnDrawGizmosSelected()
-    {
-        // Determine which cow check is currently active
-        Transform activeCowCheck = GetActiveCowCheckTransform();
-
-        // Draw both cow check areas, highlighting the active one
-        DrawCowCheckGizmo(cowCheckTransform, "Normal", activeCowCheck == cowCheckTransform);
-        DrawCowCheckGizmo(cowCheckTransformUpsideDown, "Upside Down", activeCowCheck == cowCheckTransformUpsideDown);
-
-        // Draw wall detection ray
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, transform.up * wallDetectionDistance);
-    }
-
-    void DrawCowCheckGizmo(Transform cowCheck, string label, bool isActive)
-    {
-        if (cowCheck == null) return;
-
-        Vector3 center = cowCheck.position;
-
-        // Choose color based on state and whether this check is active
-        Color gizmoColor;
-        if (!isActive)
-        {
-            gizmoColor = Color.gray; // Gray for inactive cow check
-        }
-        else if (isOnTimeSlowCooldown)
-        {
-            gizmoColor = Color.red; // Red when on cooldown
-        }
-        else if (isTimeSlowed)
-        {
-            gizmoColor = Color.green; // Green when time is slowed
-        }
-        else
-        {
-            gizmoColor = Color.yellow; // Yellow when ready to detect
-        }
-
-        Vector3 capsuleSize = new Vector3(detectionCapsuleWidth, detectionCapsuleHeight, 0.1f);
-
-        // Draw wire frame
-        Gizmos.color = gizmoColor;
-        Gizmos.DrawWireCube(center, capsuleSize);
-
-        // Draw filled version with transparency (only for active check)
-        if (isActive)
-        {
-            Color fillColor = gizmoColor;
-            fillColor.a = 0.2f;
-            Gizmos.color = fillColor;
-            Gizmos.DrawCube(center, capsuleSize);
-        }
-
-#if UNITY_EDITOR
-        // Draw label for identification
-        UnityEditor.Handles.color = gizmoColor;
-        UnityEditor.Handles.Label(center + Vector3.up * 0.8f, $"{label} Cow Check {(isActive ? "(ACTIVE)" : "")}");
-#endif
-    }
 }

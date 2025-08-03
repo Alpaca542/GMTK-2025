@@ -5,28 +5,31 @@ public class CameraZoom : MonoBehaviour
 {
     public float zoomedInSize = 43f;
     public float zoomedOutSize = 88f;
-    public float zoomSpeed = 2f;
+    public float zoomSpeed = 1.5f; // Made faster for better responsiveness
 
     private bool isLevelTransitioning = false;
+    private bool hasStartedInitialZoom = false;
 
     void Start()
     {
         Camera.main.orthographicSize = zoomedOutSize;
-        Invoke(nameof(StartZoom), 1f);
+        // Start zoom immediately instead of waiting
+        StartZoom();
     }
 
     void StartZoom()
     {
         // Check if we're in a level transition - if so, don't interfere
-        if (LevelAddition.Instance != null && LevelAddition.Instance.IsDrawingLevel)
+        if (isLevelTransitioning || (LevelAddition.Instance != null && LevelAddition.Instance.IsDrawingLevel))
         {
-            // Reschedule for later
-            Invoke(nameof(StartZoom), 0.5f);
+            // Don't reschedule - let the transition system handle it
             return;
         }
 
-        // Tween the orthographic size using DOTween (corrected from DOFieldOfView)
-        Camera.main.DOOrthoSize(zoomedInSize, zoomSpeed);
+        hasStartedInitialZoom = true;
+        // Tween the orthographic size using DOTween with better easing
+        Camera.main.DOOrthoSize(zoomedInSize, zoomSpeed)
+            .SetEase(Ease.OutQuart);
     }
 
     // Method to be called by LevelAddition to prevent interference
@@ -46,7 +49,15 @@ public class CameraZoom : MonoBehaviour
     {
         if (!isLevelTransitioning)
         {
-            Camera.main.DOOrthoSize(zoomedInSize, zoomSpeed);
+            Camera.main.DOOrthoSize(zoomedInSize, zoomSpeed)
+                .SetEase(Ease.OutQuart);
         }
+    }
+
+    // Method to immediately set zoom without animation (for instant transitions)
+    public void SetZoomImmediate(float size)
+    {
+        Camera.main.DOKill();
+        Camera.main.orthographicSize = size;
     }
 }

@@ -38,11 +38,7 @@ public class LevelAddition : MonoBehaviour
         // Wait for LevelManager to be ready
         yield return new WaitUntil(() => LevelManager.Instance != null);
 
-        // Wait a short moment for everything to initialize
-        yield return new WaitForSeconds(0.1f);
-
-        // For the first level, we want a smooth introduction
-        // Set up the first level without the full transition animation
+        // Immediate initialization - no unnecessary waiting
         Debug.Log($"Initializing first level {LevelManager.Instance.currentLevel}");
 
         // First, deactivate all levels
@@ -226,30 +222,30 @@ public class LevelAddition : MonoBehaviour
 
         Debug.Log("Starting level transition - Camera zoom out phase");
 
-        // Phase 1: Camera zoom out to overview
+        // Phase 1: Camera zoom out to overview (faster, more responsive)
         bool cameraZoomComplete = false;
 
-        // Move camera to zoom out position and adjust FOV with smooth easing
+        // Move camera to zoom out position and adjust FOV with faster, more responsive easing
         if (LevelManager.Instance.zoomedOutPosition != null)
         {
-            mainCamera.transform.DOMove(LevelManager.Instance.zoomedOutPosition.position, 2.0f)
-                .SetEase(Ease.OutCubic);
+            mainCamera.transform.DOMove(LevelManager.Instance.zoomedOutPosition.position, 1.2f)
+                .SetEase(Ease.OutQuart);
         }
 
-        mainCamera.DOOrthoSize(LevelManager.Instance.zoomedOutFOV, 2.0f)
-            .SetEase(Ease.OutCubic)
+        mainCamera.DOOrthoSize(LevelManager.Instance.zoomedOutFOV, 1.2f)
+            .SetEase(Ease.OutQuart)
             .OnComplete(() => cameraZoomComplete = true);
 
         // Wait for camera animation to complete
         yield return new WaitUntil(() => cameraZoomComplete);
-        yield return new WaitForSeconds(0.8f); // Longer pause for player to see overview
+        // Reduced pause time for better pacing
+        yield return new WaitForSeconds(0.3f);
 
         Debug.Log("Camera zoom out complete - Starting level fade out");
 
         // Phase 2: Fade out current level (only if not first level)
         if (!FirstLevel)
         {
-            // Count how many objects will fade out
             FadeOut[] fadeOuts = FindObjectsByType<FadeOut>(FindObjectsSortMode.None);
 
             if (fadeOuts.Length > 0)
@@ -258,7 +254,6 @@ public class LevelAddition : MonoBehaviour
 
                 bool fadeOutComplete = false;
 
-                // Create callback for fade out completion
                 System.Action onFadeOutComplete = null;
                 onFadeOutComplete = () =>
                 {
@@ -267,22 +262,20 @@ public class LevelAddition : MonoBehaviour
                 };
                 FadeOut.OnFadeOutComplete += onFadeOutComplete;
 
-                // Reset counter and trigger all fade outs
                 FadeOut.ResetFadeOutCounter();
                 foreach (FadeOut fd in fadeOuts)
                 {
                     fd.FadeMeOut();
                 }
 
-                // Wait for fade outs to complete
+                // Wait for fade outs to complete - no additional buffer time
                 yield return new WaitUntil(() => fadeOutComplete);
-                yield return new WaitForSeconds(0.2f); // Small buffer time
             }
 
             Debug.Log("Level fade out complete");
         }
 
-        // Phase 3: Prepare new level obstacles
+        // Phase 3: Prepare new level obstacles immediately
         List<GameObject> obstacles = new List<GameObject>();
         Transform[] allTransforms = levelObject.GetComponentsInChildren<Transform>(true);
 
@@ -290,7 +283,6 @@ public class LevelAddition : MonoBehaviour
         {
             if (t.gameObject.CompareTag("Obstacle"))
             {
-                // Initially hide the obstacle
                 t.gameObject.SetActive(false);
                 obstacles.Add(t.gameObject);
             }
@@ -305,19 +297,17 @@ public class LevelAddition : MonoBehaviour
 
             Debug.Log("Starting hand drawing animation");
 
-            // Use the hand drawing system to draw all obstacles
             HandDrawing.Instance.DrawMultipleObjects(obstacles.ToArray(), () =>
             {
                 drawingComplete = true;
                 Debug.Log("Hand drawing animation complete");
             });
 
-            // Wait for drawing to complete
             yield return new WaitUntil(() => drawingComplete);
         }
         else
         {
-            // Fallback: just activate all obstacles if hand drawing is not available
+            // Fallback: activate all obstacles immediately
             foreach (GameObject obstacle in obstacles)
             {
                 obstacle.SetActive(true);
@@ -327,28 +317,23 @@ public class LevelAddition : MonoBehaviour
             {
                 Debug.LogWarning("HandDrawing.Instance not found! Obstacles will appear without drawing animation.");
             }
-
-            // Wait a bit to simulate drawing time if no hand drawing system
-            yield return new WaitForSeconds(2f);
+            // No artificial delay - proceed immediately
         }
 
         Debug.Log("Obstacles drawn - Starting camera zoom in");
-        Debug.Log($"Camera original position: {originalCameraPosition}, original size: {originalCameraSize}");
-        Debug.Log($"Camera current position: {mainCamera.transform.position}, current size: {mainCamera.orthographicSize}");
 
-        // Phase 5: Camera zoom back in to gameplay view
+        // Phase 5: Camera zoom back in to gameplay view (faster, more responsive)
         bool cameraZoomInComplete = false;
 
         // Kill any remaining camera animations before starting zoom in
         mainCamera.DOKill();
 
-        // Return camera to original position and size with smooth easing
-        var positionTween = mainCamera.transform.DOMove(originalCameraPosition, 2.0f)
-            .SetEase(Ease.InOutCubic)
-            .OnComplete(() => Debug.Log("Camera position animation completed"));
+        // Return camera to original position and size with faster, more responsive easing
+        var positionTween = mainCamera.transform.DOMove(originalCameraPosition, 1.0f)
+            .SetEase(Ease.InOutQuart);
 
-        var sizeTween = mainCamera.DOOrthoSize(originalCameraSize, 2.0f)
-            .SetEase(Ease.InOutCubic)
+        var sizeTween = mainCamera.DOOrthoSize(originalCameraSize, 1.0f)
+            .SetEase(Ease.InOutQuart)
             .OnComplete(() =>
             {
                 cameraZoomInComplete = true;
@@ -381,12 +366,9 @@ public class LevelAddition : MonoBehaviour
             mainCamera.orthographicSize = originalCameraSize;
         }
 
-        // Slightly longer delay before resuming gameplay for polish
-        yield return new WaitForSeconds(0.5f);
-
         Debug.Log("Level transition complete - Resuming gameplay");
 
-        // Resume the game systems
+        // Resume the game systems immediately
         PauseGameSystems(false);
         isDrawingLevel = false;
     }

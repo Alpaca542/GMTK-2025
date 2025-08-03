@@ -79,6 +79,7 @@ GameObject:
   - component: {fileID: 4183664839592940281}
   - component: {fileID: 8991695802498912069}
   - component: {fileID: 2430157383942984193}
+  - component: {fileID: 6163086519545912152}
   m_Layer: 0
   m_Name: Saw
   m_TagString: Untagged
@@ -248,6 +249,20 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &6163086519545912152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5806407098649147337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e27a3a70798bd4d26ac85718fa8d0963, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationAxis: {x: 0, y: 0, z: 1}
+  speed: 30
 --- !u!1 &9004448945721623206
 GameObject:
   m_ObjectHideFlags: 0

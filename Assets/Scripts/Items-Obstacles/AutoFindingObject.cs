@@ -4,6 +4,7 @@ public class AutoFindingObject : MonoBehaviour
 {
     public Transform target;
     public float speed = 5f;
+    public float detectionRadius = 10f;
     private Rigidbody2D rb;
 
     void Start()
@@ -22,6 +23,14 @@ public class AutoFindingObject : MonoBehaviour
     void FixedUpdate()
     {
         if (target == null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
+        float distanceToTarget = Vector2.Distance(rb.position, target.position);
+
+        if (distanceToTarget > detectionRadius)
         {
             rb.linearVelocity = Vector2.zero;
             return;
