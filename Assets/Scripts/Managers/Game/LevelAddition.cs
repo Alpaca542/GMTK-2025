@@ -60,7 +60,7 @@ public class LevelAddition : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene("End");
+            GameObject.FindAnyObjectByType<TransitionToEnding>().Transition();
         }
     }
 
@@ -163,7 +163,7 @@ public class LevelAddition : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene("End");
+            GameObject.FindAnyObjectByType<TransitionToEnding>().Transition();
         }
     }
 
