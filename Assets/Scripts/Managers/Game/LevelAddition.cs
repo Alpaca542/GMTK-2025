@@ -154,7 +154,7 @@ public class LevelAddition : MonoBehaviour
         }
     }
 
-    public void NextLevel(int level)
+    public void NextLevel(int level, GameObject player)
     {
         Debug.Log($"Switching to level {level}");
 
@@ -162,7 +162,7 @@ public class LevelAddition : MonoBehaviour
         if (level >= 0 && level < levelObjects.Count)
         {
             // Start the transition process - fade out first, then activate new level
-            StartCoroutine(TransitionToLevel(level));
+            StartCoroutine(TransitionToLevel(level, player));
         }
         else
         {
@@ -170,7 +170,7 @@ public class LevelAddition : MonoBehaviour
         }
     }
 
-    private IEnumerator TransitionToLevel(int level)
+    private IEnumerator TransitionToLevel(int level, GameObject player)
     {
         isDrawingLevel = true;
 
@@ -252,7 +252,7 @@ public class LevelAddition : MonoBehaviour
             bool drawingComplete = false;
 
             Debug.Log("Starting hand drawing animation");
-
+            obstacles.Add(player);
             HandDrawing.Instance.DrawMultipleObjects(obstacles.ToArray(), () =>
             {
                 drawingComplete = true;
@@ -260,6 +260,7 @@ public class LevelAddition : MonoBehaviour
             });
 
             yield return new WaitUntil(() => drawingComplete);
+
         }
         else
         {
