@@ -11,9 +11,17 @@ public class PlayerFollow : MonoBehaviour
     [SerializeField] private Transform minBounds2;
     [SerializeField] private Transform maxBounds2;
 
+    private bool isLevelTransitioning = false;
+
     private void LateUpdate()
     {
         if (player == null) return;
+
+        // Don't follow during level transitions
+        if (isLevelTransitioning || (LevelAddition.Instance != null && LevelAddition.Instance.IsDrawingLevel))
+        {
+            return;
+        }
 
         Vector3 targetPosition = player.position;
         targetPosition.z = player.transform.position.z - 10f;
@@ -27,5 +35,11 @@ public class PlayerFollow : MonoBehaviour
         targetPosition.y = Mathf.Clamp(targetPosition.y, minBounds.position.y, maxBounds.position.y);
 
         transform.position = Vector3.Lerp(transform.position, targetPosition, speed * Time.deltaTime);
+    }
+
+    // Method to be called by LevelAddition to prevent interference
+    public void SetTransitionMode(bool transitioning)
+    {
+        isLevelTransitioning = transitioning;
     }
 }

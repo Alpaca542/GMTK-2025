@@ -16,8 +16,10 @@ public class LevelManager : MonoBehaviour
     public int currentLevel = 0;
     private List<GameObject> activeCows = new();
     private int cowCount = 0;
-    [SerializeField] private LevelSwitchAnimation levelSwitchAnimation;
     public bool FirstHalfDone = false;
+    public GameObject oldPlane;
+    public float zoomedOutFOV;
+    public Transform zoomedOutPosition;
 
     // Event for cow rescue
     public static event Action<GameObject> OnCowRescued;
@@ -95,18 +97,12 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
-        if (levelSwitchAnimation != null)
-        {
-            levelSwitchAnimation.AnimateLevelSwitch();
-        }
-        else
-        {
-            Debug.LogError("LevelSwitchAnimation is not assigned in the inspector!");
-        }
         Invoke(nameof(SwitchFinal), 3f);
     }
     private void SwitchFinal()
     {
+        Debug.Log($"Starting level transition from {currentLevel} to {currentLevel + 1}");
+
         currentLevel++;
 
         // Reset cow count for new level
@@ -115,8 +111,15 @@ public class LevelManager : MonoBehaviour
         GameObject.FindAnyObjectByType<LevelEnding>().Activate(false);
 
         GameObject player = GameObject.FindAnyObjectByType<PlainController>().gameObject;
-        player.GetComponent<PlainController>().isinanim = false;
-        player.GetComponent<Rigidbody2D>().gravityScale = player.GetComponent<PlainController>().gravity;
+
+        // Ensure player is ready for transition
+        PlainController playerController = player.GetComponent<PlainController>();
+        if (playerController != null)
+        {
+            playerController.isinanim = true; // Keep player paused during transition
+            playerController.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+            playerController.GetComponent<Rigidbody2D>().angularVelocity = 0f;
+        }
 
         // Reset and delete all baskets
         Basket[] baskets = GameObject.FindObjectsByType<Basket>(FindObjectsSortMode.None);
@@ -130,7 +133,6 @@ public class LevelManager : MonoBehaviour
         }
 
         // Notify player controller to reset basket state
-        PlainController playerController = player.GetComponent<PlainController>();
         if (playerController != null)
         {
             playerController.OnBasketDelivered(); // This resets carrying state
@@ -151,29 +153,41 @@ public class LevelManager : MonoBehaviour
             magnet.Taken = false;
         }
 
+        // Create the old plane effect
+        Instantiate(oldPlane, player.transform.position, player.transform.rotation);
+
         // Reset player position
         if (startPoint != null)
         {
             player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, -44.3f);
             player.transform.rotation = Quaternion.identity;
 
-            PlainController controller = player.GetComponent<PlainController>();
-            if (controller != null)
+            if (playerController != null)
             {
-                controller.started = false;
-                controller.ResetPlayer();
-                controller.isdead = false;
+                playerController.started = false;
+                playerController.ResetPlayer();
+                playerController.isdead = false;
+                // Keep isinanim true during transition - will be reset by LevelAddition
             }
         }
 
-        // Call LevelAddition.NextLevel which will handle the drawing animation
-        LevelAddition.Instance.NextLevel(currentLevel);
+        // Save progress
+        PlayerPrefs.SetInt("CurrentLevel", currentLevel);
+        PlayerPrefs.Save();
+
+        // Start the level transition animation
+        // LevelAddition.NextLevel will handle the full animation sequence
+        if (LevelAddition.Instance != null)
+        {
+            LevelAddition.Instance.NextLevel(currentLevel);
+        }
+        else
+        {
+            Debug.LogError("LevelAddition.Instance is null!");
+        }
 
         // Spawn cows after level drawing is complete
         StartCoroutine(WaitForLevelDrawingAndSpawnCows());
-
-        PlayerPrefs.SetInt("CurrentLevel", currentLevel);
-        PlayerPrefs.Save();
     }
 
     private IEnumerator WaitForLevelDrawingAndSpawnCows()
