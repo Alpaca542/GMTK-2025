@@ -39,16 +39,6 @@ public class LevelManager : MonoBehaviour
         GameObject.FindAnyObjectByType<LevelEnding>().Activate(false);
     }
 
-    public void Start()
-    {
-        if (currentLevel == 0)
-        {
-            GameObject.FindAnyObjectByType<CutSceneManager>().StartCutScene();
-        }
-        // Don't spawn cows immediately - let LevelAddition handle the initial level setup
-        // SpawnCows(); // This will be called after the initial level drawing is complete
-    }
-
     public void SpawnIn()
     {
         SpawnCows();
@@ -155,7 +145,6 @@ public class LevelManager : MonoBehaviour
 
         // Create the old plane effect
         Instantiate(oldPlane, player.transform.position, player.transform.rotation);
-        player.SetActive(false);
         // Reset player position
         if (startPoint != null)
         {
@@ -170,7 +159,7 @@ public class LevelManager : MonoBehaviour
                 // Keep isinanim true during transition - will be reset by LevelAddition
             }
         }
-
+        player.SetActive(false);
         // Save progress
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);
         PlayerPrefs.Save();
@@ -179,7 +168,7 @@ public class LevelManager : MonoBehaviour
         // LevelAddition.NextLevel will handle the full animation sequence
         if (LevelAddition.Instance != null)
         {
-            LevelAddition.Instance.NextLevel(currentLevel);
+            LevelAddition.Instance.NextLevel(currentLevel, player);
         }
         else
         {

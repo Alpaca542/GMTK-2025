@@ -13,7 +13,7 @@ public class BulletScript : MonoBehaviour
         rb.linearVelocity = transform.right * speed;
 
         // Destroy bullet after 5 seconds if it doesn't hit anything
-        Destroy(gameObject, 5f);
+        Destroy(gameObject, 1f);
     }
 
     void OnTriggerEnter2D(Collider2D other)

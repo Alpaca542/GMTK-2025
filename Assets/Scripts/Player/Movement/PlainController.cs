@@ -664,10 +664,10 @@ public class PlainController : MonoBehaviour
         EndTimeSlowEffect();
 
         // Start death sequence
-        StartCoroutine(DeathSequence());
+        DeathSequence();
     }
 
-    private IEnumerator DeathSequence()
+    private void DeathSequence()
     {
         // 1. Spawn death particles at player position
         if (deathParticlesPrefab != null)
@@ -685,9 +685,6 @@ public class PlainController : MonoBehaviour
             CameraShaker.Instance.Shake(CameraShakePresets.Explosion);
             Debug.Log("Camera shake triggered");
         }
-
-        // 3. Hide the player temporarily
-        GetComponent<Renderer>().enabled = false;
 
         // 4. Clean up chain state
         if (chainController != null)
@@ -712,9 +709,6 @@ public class PlainController : MonoBehaviour
             carriedBasket = null;
         }
 
-        // 7. Wait for respawn delay
-        yield return new WaitForSeconds(deathRespawnDelay);
-
         // 8. Respawn player
         RespawnPlayer();
     }
@@ -738,9 +732,6 @@ public class PlainController : MonoBehaviour
         {
             Debug.LogWarning("No spawn point found! Respawning at current position.");
         }
-
-        // Show the player again
-        GetComponent<Renderer>().enabled = true;
 
         // Reset all player states
         ResetPlayer();

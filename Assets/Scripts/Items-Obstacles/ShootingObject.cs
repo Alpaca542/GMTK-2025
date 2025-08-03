@@ -2,29 +2,21 @@ using UnityEngine;
 
 public class ShootingObject : MonoBehaviour
 {
-    public Transform player;
+    public Transform target;
     public GameObject bulletPrefab;
     public float shootingRange = 10f;
     public float shootCooldown = 1f;
     public float bulletSpeed = 10f;
-    public bool lookAtPlayer = true;
+    public bool lookAtTarget = true;
 
     private float lastShootTime;
 
     void Update()
     {
-        if (player == null) return;
+        if (target == null) return;
 
-        // Look at player (optional)
-        if (lookAtPlayer)
-        {
-            Vector2 direction = player.position - transform.position;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        }
-
-        // Check if player is in range
-        float distance = Vector2.Distance(transform.position, player.position);
+        // Check if target is in range
+        float distance = Vector2.Distance(transform.position, target.position);
         if (distance <= shootingRange && Time.time >= lastShootTime + shootCooldown)
         {
             Shoot();
@@ -34,11 +26,18 @@ public class ShootingObject : MonoBehaviour
 
     void Shoot()
     {
-        GameObject bullet = Instantiate(bulletPrefab, transform.position + (Vector3)transform.right, Quaternion.identity);
+        GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+        Quaternion lookRotation = Quaternion.LookRotation(
+            target.transform.position - transform.position,
+            transform.TransformDirection(Vector3.up)
+        );
+        bullet.transform.rotation = new Quaternion(0, 0, lookRotation.z, lookRotation.w);
+
+        Vector2 direction = (target.position - transform.position).normalized;
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
         if (bulletRb != null)
         {
-            bulletRb.linearVelocity = transform.right * bulletSpeed;
+            bulletRb.AddForce(direction * bulletSpeed, ForceMode2D.Impulse);
         }
     }
 }
