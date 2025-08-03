@@ -163,7 +163,7 @@ public class LevelAddition : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"Level {level} does not exist!");
+            SceneManager.LoadScene("End");
         }
     }
 
