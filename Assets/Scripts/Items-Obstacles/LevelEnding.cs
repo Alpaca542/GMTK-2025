@@ -48,7 +48,7 @@ public class LevelEnding : MonoBehaviour
                 }
 
                 // Proceed to next level
-                GetComponent<FadeOut>().FadeMeOut();
+                GetComponent<SpriteRenderer>().enabled = false;
                 LevelManager.Instance.NextLevel();
             }
         }
