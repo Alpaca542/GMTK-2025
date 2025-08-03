@@ -5,6 +5,7 @@ public class Cow : MonoBehaviour
 {
     public bool isMagnetized = false;
     public Vector3 magnetOffset = new Vector3(0, -2f, 0f);
+    public AudioClip cowPickupSound;
     private void Update()
     {
         if (isMagnetized)
@@ -58,6 +59,7 @@ public class Cow : MonoBehaviour
             {
                 basketScript.SetFirstHint();
             }
+            GetComponent<SoundManager>().PlaySound(cowPickupSound, 0.8f, 1.2f, false, 1, false);
             isMagnetized = true;
             transform.position = other.transform.position;
             transform.parent = other.transform;
