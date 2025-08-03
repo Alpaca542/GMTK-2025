@@ -41,12 +41,14 @@ public class Basket : MonoBehaviour
 
         if (attachedToPlayer)
         {
+            GameObject hook = GameObject.FindGameObjectWithTag("Hooks");
+            hook.SetActive(true);
             Transform magnetTransform = transform.parent;
             if (magnetTransform != null)
             {
                 // Update position relative to the magnet
-                Vector2 targetPosition = (Vector2)magnetTransform.position + magnetOffset;
-                transform.position = targetPosition;
+                Vector2 targetPosition = magnetOffset;
+                transform.localPosition = targetPosition;
             }
             else
             {

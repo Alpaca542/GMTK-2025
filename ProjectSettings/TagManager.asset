@@ -15,6 +15,7 @@ TagManager:
   - Basket
   - LevelEnding
   - Text
+  - Hooks
   layers:
   - Default
   - TransparentFX
