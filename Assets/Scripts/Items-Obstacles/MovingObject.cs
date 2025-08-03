@@ -5,7 +5,7 @@ public class MovingObject : MonoBehaviour
 {
     [SerializeField] private Transform[] points;
     [SerializeField] private float speed = 2f;
-
+    public bool lookAtTarget = false;
     private Ease[] easeList = new Ease[]
     {
         Ease.Linear,
@@ -19,6 +19,8 @@ public class MovingObject : MonoBehaviour
         Ease.OutCubic,
         Ease.InOutCubic
     };
+    public Vector2 target2D;
+    public Vector2 current2D;
 
     [SerializeField] private int easeIndex = 0;
     private int currentPointIndex = 0;
@@ -39,8 +41,8 @@ public class MovingObject : MonoBehaviour
     private void MoveToNextPoint()
     {
         int nextPointIndex = (currentPointIndex + 1) % points.Length;
-        Vector2 target2D = new Vector2(points[nextPointIndex].position.x, points[nextPointIndex].position.y);
-        Vector2 current2D = new Vector2(transform.position.x, transform.position.y);
+        target2D = new Vector2(points[nextPointIndex].position.x, points[nextPointIndex].position.y);
+        current2D = new Vector2(transform.position.x, transform.position.y);
         float distance = Vector2.Distance(current2D, target2D);
         float duration = distance / speed;
 
@@ -54,5 +56,13 @@ public class MovingObject : MonoBehaviour
                 currentPointIndex = nextPointIndex;
                 MoveToNextPoint();
             });
+    }
+    void Update()
+    {
+        if (lookAtTarget)
+        {
+            transform.right = target2D - (Vector2)transform.position;
+            transform.Rotate(0, 0, 180f);
+        }
     }
 }
