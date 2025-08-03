@@ -75,9 +75,6 @@ public class LevelAddition : MonoBehaviour
     {
         isDrawingLevel = true;
 
-        // Brief pause for first level setup
-        yield return new WaitForSeconds(0.5f);
-
         // Notify camera components we're in transition mode (but don't disable them for first level)
         Camera mainCamera = Camera.main;
         PlayerFollow playerFollow = mainCamera.GetComponent<PlayerFollow>();
@@ -127,7 +124,7 @@ public class LevelAddition : MonoBehaviour
         }
         else
         {
-            // Fallback: activate all obstacles
+            // Fallback: activate all obstacles immediately - no waiting
             foreach (GameObject obstacle in obstacles)
             {
                 obstacle.SetActive(true);
@@ -137,8 +134,6 @@ public class LevelAddition : MonoBehaviour
             {
                 Debug.LogWarning("HandDrawing.Instance not found! Obstacles will appear without drawing animation.");
             }
-
-            yield return new WaitForSeconds(1f);
         }
 
         // Clear transition mode for camera components
@@ -152,14 +147,11 @@ public class LevelAddition : MonoBehaviour
             // Let CameraZoom handle its own startup zoom
         }
 
-        // Brief pause before resuming
-        yield return new WaitForSeconds(0.3f);
-
-        // Resume game systems
+        // Resume game systems immediately
         PauseGameSystems(false);
         isDrawingLevel = false;
 
-        // Now tell LevelManager to spawn cows
+        // Now tell LevelManager to spawn cows immediately
         if (LevelManager.Instance != null)
         {
             LevelManager.Instance.SpawnIn();
