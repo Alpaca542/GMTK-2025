@@ -19,6 +19,7 @@ public class AlimadPlayer : MonoBehaviour
     public float torqueLimit = 10f;
     private Vector3 offset;
     public GameObject bulletPrefab;
+    public GameObject bp;
     public Transform barrel;
     public float rst = 0.1f;
     private float timer = 0f;
@@ -42,7 +43,7 @@ public class AlimadPlayer : MonoBehaviour
         timer -= Time.deltaTime;
         if (Input.GetKey(KeyCode.Mouse0) && timer < 0)
         {
-            Bullet b = Instantiate(bulletPrefab, barrel.position, barrel.rotation).GetComponent<Bullet>();
+            Bullet b = Instantiate(bulletPrefab, barrel.position, barrel.rotation, bp.transform).GetComponent<Bullet>();
             b.initialSpeed = rb.linearVelocity;
             timer = rst;
         }

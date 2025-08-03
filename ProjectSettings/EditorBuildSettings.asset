@@ -12,11 +12,17 @@ EditorBuildSettings:
     path: Assets/Scenes/MenuScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
+    path: Assets/Scenes/The Hand Scene.unity
+    guid: b54939bdabdb942439faa08642fd3de2
+  - enabled: 1
     path: Assets/Scenes/GameScene.unity
     guid: 5818bd6add00f4abd8176b4f96b019ac
   - enabled: 1
-    path: Assets/Scenes/The Hand Scene.unity
-    guid: b54939bdabdb942439faa08642fd3de2
+    path: Assets/Scenes/MenuSceneBkp.unity
+    guid: 73c61d7c310a15f4fa426835cecdaf69
+  - enabled: 1
+    path: Assets/Scenes/AlimadGame.unity
+    guid: 3e20a246201298a4d8b2d179a1f955de
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

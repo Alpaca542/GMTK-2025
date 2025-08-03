@@ -1,15 +1,15 @@
 using EZCameraShake;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] private string gameSceneName = "GameScene";
     [SerializeField] private string menuSceneName = "MenuScene";
-    [SerializeField] private string winSceneName = "WinScene";
-    [SerializeField] private string loseSceneName = "LoseScene";
     public CameraShaker Sheker;
     public AudioSource freeeaaakkkk;
     private CameraShakeInstance shaker_I;
+    public AudioSource src;
 
     public AnimatedTransition transition;
 
@@ -27,7 +27,16 @@ public class MenuManager : MonoBehaviour
         Debug.Log("Game Started");
         TransitionToScene(gameSceneName);
     }
-
+    public void ExitMenu()
+    {
+        Debug.Log("gwahah");
+        src.Stop();
+        Invoke(nameof(ExitMenuInvoke), 1.5f);
+    }
+    void ExitMenuInvoke()
+    {
+        SceneManager.LoadSceneAsync(menuSceneName);
+    }
     public void Exit()
     {
         transition.Exit();
@@ -39,7 +48,7 @@ public class MenuManager : MonoBehaviour
         Invoke(nameof(StopFreakOut), 16);
         freeeaaakkkk.Play();
     }
-    
+
     public void StopFreakOut()
     {
         shaker_I.StartFadeOut(1f);

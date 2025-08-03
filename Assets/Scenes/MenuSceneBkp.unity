@@ -2007,12 +2007,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b3006bbcebd749f294d87da5cc03f0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameSceneName: The Hand Scene
+  gameSceneName: AlimadGame
   menuSceneName: MenuScene
-  winSceneName: WinScene
-  loseSceneName: LoseScene
   Sheker: {fileID: 519420033}
   freeeaaakkkk: {fileID: 1341953157}
+  src: {fileID: 47423313}
   transition: {fileID: 772296456}
 --- !u!4 &1398415714
 Transform:
