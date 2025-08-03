@@ -34,6 +34,7 @@ public class ShootingObject : MonoBehaviour
             bulletRb.AddForce(direction * bulletSpeed, ForceMode2D.Impulse);
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             bullet.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            bullet.transform.Rotate(0, 0, -90f);
         }
         if (bulletRb != null)
         {
