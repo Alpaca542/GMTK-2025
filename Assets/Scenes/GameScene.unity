@@ -3836,6 +3836,14 @@ PrefabInstance:
       value: TargettingMissile (1)
       objectReference: {fileID: 0}
     - target: {fileID: 6656262642811106145, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656262642811106145, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656262642811106145, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.51
       objectReference: {fileID: 0}
@@ -3877,7 +3885,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7958471570207515502, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
       propertyPath: speed
-      value: 20
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7958471570207515502, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
       propertyPath: target
@@ -3885,7 +3893,7 @@ PrefabInstance:
       objectReference: {fileID: 1338148339}
     - target: {fileID: 7958471570207515502, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
       propertyPath: detectionRadius
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3908,6 +3916,14 @@ PrefabInstance:
     - target: {fileID: 5322676935864471975, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
       propertyPath: m_Name
       value: TargettingMissile
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656262642811106145, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656262642811106145, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 6656262642811106145, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3951,7 +3967,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7958471570207515502, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
       propertyPath: speed
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7958471570207515502, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
       propertyPath: target
@@ -3959,7 +3975,7 @@ PrefabInstance:
       objectReference: {fileID: 1338148339}
     - target: {fileID: 7958471570207515502, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
       propertyPath: detectionRadius
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
