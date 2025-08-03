@@ -384,7 +384,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Bored
+  m_text: '#Bored'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ca89c1bc9bcb2eb4e8562d3ccbe2b521, type: 2}
   m_sharedMaterial: {fileID: 1318626745345316809, guid: ca89c1bc9bcb2eb4e8562d3ccbe2b521, type: 2}

@@ -108,6 +108,8 @@ public class PlainController : MonoBehaviour
             chainController.RetractChain();
             isChainDeployed = false;
         }
+        if (Input.GetKeyDown(KeyCode.F11))
+            Screen.fullScreen = !Screen.fullScreen;
 
         // Update basket position if carrying one
         UpdateBasketPosition();

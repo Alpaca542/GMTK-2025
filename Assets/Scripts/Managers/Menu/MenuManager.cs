@@ -21,6 +21,11 @@ public class MenuManager : MonoBehaviour
             Debug.LogError("AnimatedTransition not found in the scene.");
         }
     }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F11))
+            Screen.fullScreen = !Screen.fullScreen;
+    }
 
     public void Play()
     {
