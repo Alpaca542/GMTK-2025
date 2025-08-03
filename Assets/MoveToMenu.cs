@@ -10,6 +10,7 @@ public class MoveToMenu : MonoBehaviour
 
     void LoadMenuScene()
     {
+        Destroy(GameObject.FindAnyObjectByType<dontdestroy>().gameObject);
         SceneManager.LoadScene("MenuScene");
     }
 }
