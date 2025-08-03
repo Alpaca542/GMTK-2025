@@ -2,15 +2,14 @@ using UnityEngine;
 
 public class Shark : MonoBehaviour
 {
-    public float jumpForce = 10f;
+    public float jumpForce = 500f;
     public float jumpInterval = 3f;
-    public float jumpHeight = 2f;
+    public float upwardForce = 300f;
 
     private Vector3 startPos;
     private Rigidbody2D rb;
     private Transform player;
     private float timer;
-    private bool isJumping;
 
     void Start()
     {
@@ -18,7 +17,6 @@ public class Shark : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         timer = jumpInterval;
-        isJumping = false;
     }
 
     void Update()
@@ -26,30 +24,28 @@ public class Shark : MonoBehaviour
         if (player == null) return;
 
         timer -= Time.deltaTime;
-
-        if (!isJumping && timer <= 0f)
+        if (timer <= 0f)
         {
             JumpTowardsPlayer();
-            isJumping = true;
+            timer = jumpInterval;
         }
     }
 
     void JumpTowardsPlayer()
     {
-        Vector2 direction = player.position - startPos;
-        direction.y = 0; // Only move horizontally towards player
-        direction = direction.normalized;
-        Vector2 jumpVector = new Vector2(direction.x * jumpForce, jumpHeight);
-        rb.linearVelocity = Vector2.zero;
-        rb.AddForce(jumpVector, ForceMode2D.Impulse);
-        Invoke(nameof(ResetShark), 2f);
+        Vector2 direction = (player.position - transform.position).normalized;
+        direction.y = 0; // Keep horizontal only
+
+        rb.linearVelocity = Vector2.zero; // Reset velocity
+        rb.AddForce(direction * jumpForce + Vector2.up * upwardForce);
     }
 
-    void ResetShark()
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        rb.linearVelocity = Vector2.zero;
-        transform.position = startPos;
-        timer = jumpInterval;
-        isJumping = false;
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            transform.position = startPos;
+            rb.linearVelocity = Vector2.zero;
+        }
     }
 }
