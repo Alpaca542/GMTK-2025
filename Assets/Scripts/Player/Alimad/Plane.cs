@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class AlimadPlayer : MonoBehaviour
@@ -47,6 +48,8 @@ public class AlimadPlayer : MonoBehaviour
             b.initialSpeed = rb.linearVelocity;
             timer = rst;
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+            SceneManager.LoadScene("MenuScene");
     }
 
 

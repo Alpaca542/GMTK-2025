@@ -2,6 +2,7 @@ using UnityEngine;
 using DG.Tweening; // Make sure you have DOTween imported
 using EZCameraShake; // For camera shake effects
 using System.Collections;
+using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlainController : MonoBehaviour
 {
@@ -92,6 +93,8 @@ public class PlainController : MonoBehaviour
         {
             ResetPlayer();
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+            SceneManager.LoadScene("MenuScene");
 
         if (Input.GetKey(KeyCode.Space))
         {
