@@ -193,7 +193,10 @@ public class LevelAddition : MonoBehaviour
         }
 
         Debug.Log("Starting level transition - Fade out phase");
-
+        Camera.main.DOFieldOfView(88f, 0.5f).SetEase(Ease.OutQuart).OnComplete(() =>
+        {
+            Debug.Log("Camera zoomed out for level transition");
+        });
         // Phase 1: Fade out current level FIRST (only if not first level)
         if (!FirstLevel)
         {
@@ -203,24 +206,13 @@ public class LevelAddition : MonoBehaviour
             {
                 Debug.Log($"Starting fade out for {fadeOuts.Length} objects");
 
-                bool fadeOutComplete = false;
-
-                System.Action onFadeOutComplete = null;
-                onFadeOutComplete = () =>
-                {
-                    fadeOutComplete = true;
-                    FadeOut.OnFadeOutComplete -= onFadeOutComplete;
-                };
-                FadeOut.OnFadeOutComplete += onFadeOutComplete;
-
-                FadeOut.ResetFadeOutCounter();
                 foreach (FadeOut fd in fadeOuts)
                 {
                     fd.FadeMeOut();
                 }
 
                 // Wait for fade outs to complete before proceeding
-                yield return new WaitUntil(() => fadeOutComplete);
+                yield return new WaitForSeconds(1.2f); // Adjust this wait time as needed
                 Debug.Log("Level fade out complete");
             }
         }
@@ -232,7 +224,6 @@ public class LevelAddition : MonoBehaviour
                 obj.SetActive(false);
             }
         }
-
         FirstLevel = false;
 
         Debug.Log("Fade out complete - Activating new level");
@@ -299,126 +290,6 @@ public class LevelAddition : MonoBehaviour
         Debug.Log("Level transition complete - Resuming gameplay");
 
         // Resume the game systems immediately
-        PauseGameSystems(false);
-        isDrawingLevel = false;
-    }
-
-    private IEnumerator DrawLevelObstacles(GameObject levelObject)
-    {
-        isDrawingLevel = true;
-
-        // Pause the game systems first
-        PauseGameSystems(true);
-
-        // Get camera components and set transition mode (but don't disable them like first level)
-        Camera mainCamera = Camera.main;
-        PlayerFollow playerFollow = mainCamera.GetComponent<PlayerFollow>();
-        CameraZoom cameraZoom = mainCamera.GetComponent<CameraZoom>();
-
-        // Set transition mode on camera components (same as first level)
-        if (playerFollow != null)
-        {
-            playerFollow.SetTransitionMode(true);
-        }
-        if (cameraZoom != null)
-        {
-            cameraZoom.SetTransitionMode(true);
-        }
-
-        Debug.Log("Starting level transition - Fade out phase");
-
-        // Phase 1: Fade out current level (only if not first level)
-        if (!FirstLevel)
-        {
-            FadeOut[] fadeOuts = FindObjectsByType<FadeOut>(FindObjectsSortMode.None);
-
-            if (fadeOuts.Length > 0)
-            {
-                Debug.Log($"Starting fade out for {fadeOuts.Length} objects");
-
-                bool fadeOutComplete = false;
-
-                System.Action onFadeOutComplete = null;
-                onFadeOutComplete = () =>
-                {
-                    fadeOutComplete = true;
-                    FadeOut.OnFadeOutComplete -= onFadeOutComplete;
-                };
-                FadeOut.OnFadeOutComplete += onFadeOutComplete;
-
-                FadeOut.ResetFadeOutCounter();
-                foreach (FadeOut fd in fadeOuts)
-                {
-                    fd.FadeMeOut();
-                }
-
-                // Wait for fade outs to complete
-                yield return new WaitUntil(() => fadeOutComplete);
-            }
-
-            Debug.Log("Level fade out complete");
-        }
-
-        // Phase 2: Prepare new level obstacles (same as first level)
-        List<GameObject> obstacles = new List<GameObject>();
-        Transform[] allTransforms = levelObject.GetComponentsInChildren<Transform>(true);
-
-        foreach (Transform t in allTransforms)
-        {
-            if (t.gameObject.CompareTag("Obstacle"))
-            {
-                t.gameObject.SetActive(false);
-                obstacles.Add(t.gameObject);
-            }
-        }
-
-        Debug.Log($"Found {obstacles.Count} obstacles to draw in level");
-
-        // Phase 3: Hand drawing animation (same approach as first level - no camera animations)
-        if (HandDrawing.Instance != null && obstacles.Count > 0)
-        {
-            bool drawingComplete = false;
-
-            Debug.Log("Starting hand drawing animation");
-
-            HandDrawing.Instance.DrawMultipleObjects(obstacles.ToArray(), () =>
-            {
-                drawingComplete = true;
-                Debug.Log("Hand drawing animation complete");
-            });
-
-            yield return new WaitUntil(() => drawingComplete);
-        }
-        else
-        {
-            // Fallback: activate all obstacles immediately
-            foreach (GameObject obstacle in obstacles)
-            {
-                obstacle.SetActive(true);
-            }
-
-            if (HandDrawing.Instance == null)
-            {
-                Debug.LogWarning("HandDrawing.Instance not found! Obstacles will appear without drawing animation.");
-            }
-        }
-
-        Debug.Log("Obstacles drawn - Clearing transition mode");
-
-        // Clear transition mode for camera components (same as first level)
-        if (playerFollow != null)
-        {
-            playerFollow.SetTransitionMode(false);
-        }
-        if (cameraZoom != null)
-        {
-            cameraZoom.SetTransitionMode(false);
-            // Let CameraZoom handle its own behavior
-        }
-
-        Debug.Log("Level transition complete - Resuming gameplay");
-
-        // Resume the game systems immediately (same as first level)
         PauseGameSystems(false);
         isDrawingLevel = false;
     }

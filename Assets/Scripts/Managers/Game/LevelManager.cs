@@ -97,7 +97,7 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
-        Invoke(nameof(SwitchFinal), 3f);
+        Invoke(nameof(SwitchFinal), 0.5f);
     }
     private void SwitchFinal()
     {
@@ -155,7 +155,7 @@ public class LevelManager : MonoBehaviour
 
         // Create the old plane effect
         Instantiate(oldPlane, player.transform.position, player.transform.rotation);
-
+        player.SetActive(false);
         // Reset player position
         if (startPoint != null)
         {

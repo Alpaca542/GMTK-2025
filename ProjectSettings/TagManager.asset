@@ -16,6 +16,8 @@ TagManager:
   - LevelEnding
   - Text
   - Hooks
+  - FallingObject
+  - Ground
   layers:
   - Default
   - TransparentFX

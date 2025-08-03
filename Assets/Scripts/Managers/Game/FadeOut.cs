@@ -5,12 +5,9 @@ using System;
 public class FadeOut : MonoBehaviour
 {
     public static event Action OnFadeOutComplete;
-    private static int fadeOutsInProgress = 0;
 
     public void FadeMeOut()
     {
-        fadeOutsInProgress++;
-
         if (GetComponent<Collider2D>() != null)
         {
             GetComponent<Collider2D>().enabled = false;
@@ -37,7 +34,6 @@ public class FadeOut : MonoBehaviour
         }
         if (gameObject.CompareTag("Text"))
         {
-            DecrementFadeOutCounter();
             Destroy(gameObject);
             return;
         }
@@ -59,26 +55,6 @@ public class FadeOut : MonoBehaviour
     public void TurnOff()
     {
         gameObject.SetActive(false);
-        DecrementFadeOutCounter();
     }
 
-    private void DecrementFadeOutCounter()
-    {
-        fadeOutsInProgress--;
-        if (fadeOutsInProgress <= 0)
-        {
-            fadeOutsInProgress = 0;
-            OnFadeOutComplete?.Invoke();
-        }
-    }
-
-    public static void ResetFadeOutCounter()
-    {
-        fadeOutsInProgress = 0;
-    }
-
-    public static bool AnyFadeOutsInProgress()
-    {
-        return fadeOutsInProgress > 0;
-    }
 }
