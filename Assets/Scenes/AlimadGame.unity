@@ -989,29 +989,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1603204495}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce7e7edb6c576a4428464c7a6d4fb3da, type: 3}
+  m_Script: {fileID: 11500000, guid: 86d44ce28ec3c0e4985cf27c5fb38da0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0
-  thrust: 8
-  pitchForce: -20
-  pitchVelocityFactor: 0.2
-  baseDrag: 0.999
-  liftFactor: 1
-  stallSpeed: 50
-  stallHeight: 4
-  rollSpeed: 2
-  highGFactor: 2
-  turbulenceStrength: 2
-  turbulenceInterval: 2
-  torqueLimit: 15
-  bulletPrefab: {fileID: 2054587415545849261, guid: e5adb0b4f8413984b9a58c2e07d6b362, type: 3}
-  bp: {fileID: 1085770889}
-  barrel: {fileID: 233099673}
-  rst: 0.1
-  health: 100
-  body: {fileID: 1170872511}
-  cam: {fileID: 494371750}
 --- !u!4 &1603204497
 Transform:
   m_ObjectHideFlags: 0
