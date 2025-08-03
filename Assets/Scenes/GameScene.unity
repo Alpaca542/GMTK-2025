@@ -3875,6 +3875,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7958471570207515502, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
+      propertyPath: speed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7958471570207515502, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 1338148339}
+    - target: {fileID: 7958471570207515502, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
+      propertyPath: detectionRadius
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3936,6 +3948,18 @@ PrefabInstance:
     - target: {fileID: 6656262642811106145, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7958471570207515502, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
+      propertyPath: speed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7958471570207515502, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 1338148339}
+    - target: {fileID: 7958471570207515502, guid: 8b94c88900d7c4487b3d9e1f5a2336cf, type: 3}
+      propertyPath: detectionRadius
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -19290,7 +19314,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 400
-  m_Sprite: {fileID: 1535134168725310428, guid: 005405267629e48debcb02ffdb6e8275, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -19298,7 +19322,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1338148339

@@ -35,7 +35,7 @@ public class AutoFindingObject : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
             return;
         }
-
+        transform.right = target.position - transform.position;
         Vector2 direction = ((Vector2)target.position - rb.position).normalized;
         rb.linearVelocity = direction * speed;
     }

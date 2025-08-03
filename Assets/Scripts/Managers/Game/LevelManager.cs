@@ -39,16 +39,6 @@ public class LevelManager : MonoBehaviour
         GameObject.FindAnyObjectByType<LevelEnding>().Activate(false);
     }
 
-    public void Start()
-    {
-        if (currentLevel == 0)
-        {
-            GameObject.FindAnyObjectByType<CutSceneManager>().StartCutScene();
-        }
-        // Don't spawn cows immediately - let LevelAddition handle the initial level setup
-        // SpawnCows(); // This will be called after the initial level drawing is complete
-    }
-
     public void SpawnIn()
     {
         SpawnCows();
