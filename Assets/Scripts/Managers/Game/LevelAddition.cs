@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
-using UnityEditor.SearchService;
 
 public class LevelAddition : MonoBehaviour
 {
