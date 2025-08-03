@@ -48,6 +48,7 @@ public class LevelEnding : MonoBehaviour
                 }
 
                 // Proceed to next level
+                GetComponent<FadeOut>().FadeMeOut();
                 LevelManager.Instance.NextLevel();
             }
         }

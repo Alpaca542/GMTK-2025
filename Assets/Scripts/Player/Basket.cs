@@ -65,6 +65,10 @@ public class Basket : MonoBehaviour
         {
             GameObject.FindAnyObjectByType<PlainController>().maxSpeed = 5.5f;
         }
+        else
+        {
+            GameObject.FindAnyObjectByType<PlainController>().maxSpeed = 7f;
+        }
 
         // Initialize all cow textures as disabled
         SetCowTexturesVisibility();
