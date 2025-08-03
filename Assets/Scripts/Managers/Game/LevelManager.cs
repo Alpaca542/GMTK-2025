@@ -20,6 +20,7 @@ public class LevelManager : MonoBehaviour
     public GameObject oldPlane;
     public float zoomedOutFOV;
     public Transform zoomedOutPosition;
+    public GameObject player;
 
     // Event for cow rescue
     public static event Action<GameObject> OnCowRescued;
@@ -100,16 +101,15 @@ public class LevelManager : MonoBehaviour
         FirstHalfDone = false;
         GameObject.FindAnyObjectByType<LevelEnding>().Activate(false);
 
-        GameObject player = GameObject.FindAnyObjectByType<PlainController>().gameObject;
-
-        // Ensure player is ready for transition
-        PlainController playerController = player.GetComponent<PlainController>();
-        if (playerController != null)
-        {
-            playerController.isinanim = true; // Keep player paused during transition
-            playerController.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
-            playerController.GetComponent<Rigidbody2D>().angularVelocity = 0f;
-        }
+        // // Ensure player is ready for transition
+        // player.SetActive(true);
+        // PlainController playerController = player.GetComponent<PlainController>();
+        // if (playerController != null)
+        // {
+        //     playerController.isinanim = true; // Keep player paused during transition
+        //     playerController.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+        //     playerController.GetComponent<Rigidbody2D>().angularVelocity = 0f;
+        // }
 
         // Reset and delete all baskets
         Basket[] baskets = GameObject.FindObjectsByType<Basket>(FindObjectsSortMode.None);
@@ -122,11 +122,11 @@ public class LevelManager : MonoBehaviour
             Destroy(basket.gameObject);
         }
 
-        // Notify player controller to reset basket state
-        if (playerController != null)
-        {
-            playerController.OnBasketDelivered(); // This resets carrying state
-        }
+        // // Notify player controller to reset basket state
+        // if (playerController != null)
+        // {
+        //     playerController.OnBasketDelivered(); // This resets carrying state
+        // }
 
         // Clean up any remaining cows from previous level
         GameObject[] remainingCows = GameObject.FindGameObjectsWithTag("Cow");
@@ -146,19 +146,19 @@ public class LevelManager : MonoBehaviour
         // Create the old plane effect
         Instantiate(oldPlane, player.transform.position, player.transform.rotation);
         // Reset player position
-        if (startPoint != null)
-        {
-            player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, -44.3f);
-            player.transform.rotation = Quaternion.identity;
+        // if (startPoint != null)
+        // {
+        //     player.transform.position = new Vector3(startPoint.position.x, startPoint.position.y, -44.3f);
+        //     player.transform.rotation = Quaternion.identity;
 
-            if (playerController != null)
-            {
-                playerController.started = false;
-                playerController.ResetPlayer();
-                playerController.isdead = false;
-                // Keep isinanim true during transition - will be reset by LevelAddition
-            }
-        }
+        //     if (playerController != null)
+        //     {
+        //         playerController.started = false;
+        //         playerController.ResetPlayer();
+        //         playerController.isdead = false;
+        //         // Keep isinanim true during transition - will be reset by LevelAddition
+        //     }
+        // }
         player.SetActive(false);
         // Save progress
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);
