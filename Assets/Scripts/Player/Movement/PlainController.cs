@@ -734,7 +734,6 @@ public class PlainController : MonoBehaviour
 
         // Reset all player states
         ResetPlayer();
-
         Debug.Log("Player respawn complete");
     }
     public void ResetPlayer()
@@ -770,16 +769,12 @@ public class PlainController : MonoBehaviour
         isOnTimeSlowCooldown = false;
         timeSlowCooldownTimer = 0f;
 
-        // Reset basket carrying state
-        isCarryingBasket = false;
-        carriedBasket = null;
-
         // Reset magnet state
-        MagnetScript magnetScript = FindFirstObjectByType<MagnetScript>();
-        if (magnetScript != null)
-        {
-            magnetScript.Taken = false;
-        }
+        // MagnetScript magnetScript = FindFirstObjectByType<MagnetScript>();
+        // if (magnetScript != null)
+        // {
+        //     magnetScript.Taken = false;
+        // }
 
         // Force reset chain state
         if (chainController != null)

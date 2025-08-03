@@ -67,7 +67,10 @@ public class Basket : MonoBehaviour
         }
         else
         {
-            GameObject.FindAnyObjectByType<PlainController>().maxSpeed = 7f;
+            if (GameObject.FindAnyObjectByType<PlainController>() != null)
+                GameObject.FindAnyObjectByType<PlainController>().maxSpeed = 7f;
+            else
+                Debug.LogWarning("PlainController not found, setting default max speed to 7f");
         }
 
         // Initialize all cow textures as disabled
