@@ -23,7 +23,7 @@ public class AnimatedTransition : MonoBehaviour
     {
         overlay.gameObject.SetActive(true);
         overlay.alpha = 1f;
-        for(float t = 1f; t > 0f; t -= Time.unscaledDeltaTime * fadeRate)
+        for (float t = 1f; t > 0f; t -= Time.unscaledDeltaTime * fadeRate)
         {
             overlay.alpha = t;
             yield return null;
@@ -38,6 +38,11 @@ public class AnimatedTransition : MonoBehaviour
 
     private IEnumerator exit()
     {
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            Application.OpenURL("https://troll.alimad.co");
+            yield break;
+        }
         if (loadingSmth) yield break;
         loadingSmth = true;
         overlay.gameObject.SetActive(true);

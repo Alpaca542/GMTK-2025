@@ -1650,7 +1650,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Voice Acting By
+  m_text: Music By
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 89f2dc205d0146342adde2a0029ed60b, type: 2}
   m_sharedMaterial: {fileID: 2685925532767982759, guid: 89f2dc205d0146342adde2a0029ed60b, type: 2}
