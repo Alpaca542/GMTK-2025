@@ -46,7 +46,7 @@ public class Basket : MonoBehaviour
             Transform magnetTransform = transform.parent;
             if (magnetTransform != null)
             {
-                // Update position relative to the magnet
+                transform.localRotation = Quaternion.Euler(0, 0, 90);
                 Vector2 targetPosition = magnetOffset;
                 transform.localPosition = targetPosition;
             }

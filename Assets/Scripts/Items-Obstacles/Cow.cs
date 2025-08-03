@@ -4,7 +4,7 @@ using DG.Tweening;
 public class Cow : MonoBehaviour
 {
     public bool isMagnetized = false;
-    public Vector3 magnetOffset = new Vector3(0, -1f, 0f);
+    public Vector3 magnetOffset = new Vector3(0, -2f, 0f);
     private void Update()
     {
         if (isMagnetized)
@@ -12,14 +12,14 @@ public class Cow : MonoBehaviour
             Transform magnetTransform = transform.parent;
             if (magnetTransform != null)
             {
-                // Update position relative to the magnet
+                transform.localRotation = Quaternion.Euler(0, 0, 90);
                 Vector3 targetPosition = magnetOffset;
                 transform.localPosition = targetPosition;
             }
             else
             {
                 Debug.LogError("Cow is magnetized but no parent magnet found!");
-                isMagnetized = false; // Reset state if no parent found
+                isMagnetized = false;
             }
         }
     }
