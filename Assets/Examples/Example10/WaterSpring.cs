@@ -52,14 +52,12 @@ namespace Example10
                 waterSpline.SetPosition(waveIndex, new Vector3(wavePosition.x, transform.localPosition.y, wavePosition.z));
             }
         }
-        // Adding a collider so we can detect the falling object
-        // Force send layers set to Nothing
-        // so we the circle springs do not interact with the falling object
-        // we only want to detect when they collide so we can trigger the impact
         private void OnCollisionEnter2D(Collision2D other)
         {
+            Debug.Log("Collision with water spring detected!");
             if (other.gameObject.CompareTag("Player"))
             {
+                Debug.Log("Player hit a water spring!");
                 PlainController fallingObject = other.gameObject.GetComponent<PlainController>();
                 Rigidbody2D rb = fallingObject.GetComponent<Rigidbody2D>();
                 var speed = rb.linearVelocity;

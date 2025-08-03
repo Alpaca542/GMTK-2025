@@ -55,8 +55,10 @@ public class WaterSpring : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag.Equals("Player"))
+        Debug.Log("11");
+        if (other.gameObject.CompareTag("Player"))
         {
+            Debug.Log("22");
             PlainController fallingObject = other.gameObject.GetComponent<PlainController>();
             Rigidbody2D rb = fallingObject.GetComponent<Rigidbody2D>();
             var speed = rb.linearVelocity;

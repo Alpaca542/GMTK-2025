@@ -24,6 +24,7 @@ public class LevelEnding : MonoBehaviour
     {
         if (other.CompareTag("Basket") && active)
         {
+            active = false;
             Debug.Log("Basket reached the end point!");
 
             if (LevelManager.Instance != null)

@@ -28,7 +28,7 @@ public class CameraZoom : MonoBehaviour
 
         hasStartedInitialZoom = true;
         // Tween the orthographic size using DOTween with better easing
-        Camera.main.DOOrthoSize(zoomedInSize, zoomSpeed)
+        Camera.main.DOFieldOfView(zoomedInSize, zoomSpeed)
             .SetEase(Ease.OutQuart);
     }
 
@@ -39,8 +39,11 @@ public class CameraZoom : MonoBehaviour
 
         if (transitioning)
         {
-            // Cancel any ongoing zoom animations when transitioning starts
             Camera.main.DOKill();
+        }
+        else
+        {
+            ForceStartZoom();
         }
     }
 
@@ -49,15 +52,8 @@ public class CameraZoom : MonoBehaviour
     {
         if (!isLevelTransitioning)
         {
-            Camera.main.DOOrthoSize(zoomedInSize, zoomSpeed)
+            Camera.main.DOFieldOfView(zoomedInSize, zoomSpeed)
                 .SetEase(Ease.OutQuart);
         }
-    }
-
-    // Method to immediately set zoom without animation (for instant transitions)
-    public void SetZoomImmediate(float size)
-    {
-        Camera.main.DOKill();
-        Camera.main.orthographicSize = size;
     }
 }
