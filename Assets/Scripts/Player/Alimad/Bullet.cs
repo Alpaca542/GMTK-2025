@@ -2,16 +2,22 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public Vector2 initialSpeed = new Vector2(100f, 0f);
+    public float speed = 10f;
     public float maxLifetime = 2f;
     public float rayLength = 2f;
     public LayerMask hitMask;
 
+    private Rigidbody2D rb;
     float lifetime = 0f;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
 
     void FixedUpdate()
     {
-        Vector2 velocity = initialSpeed;
+        Vector2 velocity = rb.linearVelocity;
         float distance = velocity.magnitude * Time.fixedDeltaTime;
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, velocity.normalized, distance, hitMask);
@@ -22,8 +28,7 @@ public class Bullet : MonoBehaviour
             return;
         }
 
-        transform.position += (Vector3)(velocity * Time.deltaTime);
-        lifetime += Time.deltaTime;
+        lifetime += Time.fixedDeltaTime;
         if (lifetime >= maxLifetime) Destroy(gameObject);
     }
 }

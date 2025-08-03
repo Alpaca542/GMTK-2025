@@ -27,17 +27,17 @@ public class ShootingObject : MonoBehaviour
     void Shoot()
     {
         GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-        Quaternion lookRotation = Quaternion.LookRotation(
-            target.transform.position - transform.position,
-            transform.TransformDirection(Vector3.up)
-        );
-        bullet.transform.rotation = new Quaternion(0, 0, lookRotation.z, lookRotation.w);
-
-        Vector2 direction = (target.position - transform.position).normalized;
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
+        Vector2 direction = (target.position - transform.position).normalized;
         if (bulletRb != null)
         {
             bulletRb.AddForce(direction * bulletSpeed, ForceMode2D.Impulse);
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            bullet.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
+        if (bulletRb != null)
+        {
+            bulletRb.AddForce(direction * bulletSpeed);
         }
     }
 }
