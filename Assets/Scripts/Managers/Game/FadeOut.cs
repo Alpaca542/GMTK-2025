@@ -48,7 +48,7 @@ public class FadeOut : MonoBehaviour
         else
         {
             // If no sprite renderer, just turn off after 1 second
-            Invoke(nameof(TurnOff), 1f);
+            Invoke(nameof(TurnOff), 0.5f);
         }
     }
 
