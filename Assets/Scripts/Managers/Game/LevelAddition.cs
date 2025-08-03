@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using DG.Tweening;
+using UnityEditor.SearchService;
 
 public class LevelAddition : MonoBehaviour
 {
@@ -59,11 +61,7 @@ public class LevelAddition : MonoBehaviour
         else
         {
             Debug.LogWarning($"Level {level} does not exist!");
-            // Fallback: just tell LevelManager to spawn cows
-            if (LevelManager.Instance != null)
-            {
-                LevelManager.Instance.SpawnIn();
-            }
+            SceneManager.LoadScene("Ending");
         }
     }
 

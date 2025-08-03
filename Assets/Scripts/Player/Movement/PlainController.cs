@@ -710,7 +710,33 @@ public class PlainController : MonoBehaviour
         // 8. Respawn player
         RespawnPlayer();
     }
+    public void CleanUp()
+    {
+        if (chainController != null)
+        {
+            chainController.RetractChain();
+            chainController.ResetChainState();
+        }
 
+        if (LevelManager.Instance != null && LevelManager.Instance.startPoint != null)
+        {
+            transform.position = new Vector3(
+                LevelManager.Instance.startPoint.position.x,
+                LevelManager.Instance.startPoint.position.y,
+                -44.3f
+            );
+            transform.rotation = Quaternion.identity;
+            chainController.transform.position = transform.position;
+            Debug.Log($"Player respawned at spawn point: {transform.position}");
+        }
+        else
+        {
+            Debug.LogWarning("No spawn point found! Respawning at current position.");
+        }
+
+        ResetPlayer();
+        Debug.Log("Player respawn complete");
+    }
     private void RespawnPlayer()
     {
         Debug.Log("Respawning player");
