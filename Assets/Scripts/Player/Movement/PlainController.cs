@@ -93,7 +93,6 @@ public class PlainController : MonoBehaviour
             ResetPlayer();
         }
 
-        // Handle spacebar for rope extraction (only during time slow)
         if (Input.GetKey(KeyCode.Space))
         {
             if (!isChainDeployed && chainController != null)

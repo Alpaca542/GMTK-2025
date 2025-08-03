@@ -33,10 +33,6 @@ public class chainHolder : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-    }
-
     void FixedUpdate()
     {
         Vector2 targetPos = planeRb.position;
@@ -79,6 +75,7 @@ public class chainHolder : MonoBehaviour
     {
         if (magnetSpringJoint != null)
         {
+            CancelInvoke(nameof(SetPiecesOff));
             Invoke(nameof(SetPiecesOff), 0.3f);
             magnetSpringJoint.enabled = true;
             Debug.Log("Chain retracted - Spring joint enabled");
