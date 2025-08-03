@@ -674,9 +674,7 @@ public class PlainController : MonoBehaviour
         {
             GameObject particles = Instantiate(deathParticlesPrefab, transform.position, transform.rotation);
             Debug.Log("Death particles spawned");
-
-            // Destroy particles after a few seconds
-            Destroy(particles, 3f);
+            particles.GetComponent<FadeOut>().FadeMeOut();
         }
 
         // 2. Add camera shake for dramatic effect
