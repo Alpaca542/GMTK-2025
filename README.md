@@ -2,6 +2,12 @@
 
 ---
 
+## How to get started:
+Open the project in unity, duh
+
+## How to play:
+That'll be https://alimad.itch.io/gmtk25
+
 ## Contributors:
 Alpaca
 Alimad Co
